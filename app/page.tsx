@@ -1,6 +1,5 @@
-import Image from "next/image";
 import {query} from "@/app/db";
-import Login from "@/app/components/login";
+import Login from "@/app/components/Login";
 
 async function fetchData(){
   return await query("SELECT * FROM user");
@@ -9,11 +8,9 @@ async function fetchData(){
 export default async function Home() {
   const data = await fetchData();
 
-  console.log(data);
-
   return (
       <main className="flex min-h-screen flex-col items-center justify-between p-24">
-        <Login/>
+          <Login/>
       </main>
   );
 }
