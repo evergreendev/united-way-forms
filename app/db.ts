@@ -54,3 +54,26 @@ export async function createUser(user:UserDTO) {
         }
     }
 }
+
+export async function deleteUser(userId:string) {
+    try {
+        const db = await createConnection();
+
+        const sql = 'DELETE FROM user WHERE id= ?';
+
+        const values = [userId];
+
+        const [result] = await db.execute(sql, values);
+
+        await db.end();
+
+        return "Success";
+
+    } catch (e:any){
+
+        return {
+            message: e.message,
+            errno: e.errno,
+        }
+    }
+}

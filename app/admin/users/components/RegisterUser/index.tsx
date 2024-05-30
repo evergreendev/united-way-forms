@@ -1,16 +1,25 @@
 "use client"
 import {useFormState} from 'react-dom'
 import {submitCreateUser} from "@/app/admin/users/formActions";
+import {useEffect} from "react";
+import {redirect} from "next/navigation";
 
 const initialState = {
     message: "",
-    error: ""
+    error: "",
+    success: false,
 }
 
 const RegisterUser = () => {
     const [state, formAction] = useFormState(submitCreateUser, initialState);
 
-    return <form action={formAction} className="text-slate-950">
+    useEffect(() => {
+        if(state.success){
+            setTimeout(redirect("/admin/users"), 2000);
+        }
+    },[state]);
+
+    return state.message ? <h2>{state.message}</h2> : <form action={formAction} className="text-slate-950">
         <input id="username" name="username" type="text"/>
         <input id="email" name="email" type="email"/>
         <input id="password" name="password" type="password"/>

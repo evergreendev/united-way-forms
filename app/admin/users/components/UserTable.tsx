@@ -1,10 +1,35 @@
 "use client"
 import DataTable from "@/app/admin/users/components/DataTableBase";
+import {useMemo, useState} from "react";
+import {deleteUser} from "@/app/db";
+import Link from "next/link";
 
 const UserTable = ({userData}:{userData:any}) => {
+    const [selectedRows, setSelectedRows] = useState<any>([]);
+    const handleRowSelected = (selectedRows:any) => {
+        setSelectedRows(selectedRows);
+    }
+    const contextActions = useMemo(() => {
+        const handleDelete = async () => {
+            for (const row of selectedRows.selectedRows) {
+                await deleteUser(row.id);
+            }
+        };
+        return <button key="delete" onClick={handleDelete} className="bg-red-600">
+            Delete
+        </button>;
+    }, [userData, selectedRows]);
+
+
     return <DataTable
+        title="Users"
+        subHeader
+        subHeaderComponent={<Link href="/admin/users/create">Add User</Link>}
         highlightOnHover
         pointerOnHover
+        selectableRows
+        contextActions={contextActions}
+        onSelectedRowsChange={handleRowSelected}
         onRowClicked={(row,e)=> {
             console.log(row);/*todo change this to a redirect to manage user page*/
         }}

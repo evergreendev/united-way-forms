@@ -1,6 +1,4 @@
 import {query} from "@/app/db";
-import DataTable from "./components/DataTableBase";
-import {selector} from "postcss-selector-parser";
 import UserTable from "@/app/admin/users/components/UserTable";
 
 

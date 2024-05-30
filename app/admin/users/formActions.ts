@@ -19,22 +19,24 @@ export const submitCreateUser = async (prevState:any, formData:FormData) => {
     if (error){
         return{
             message: "",
-            error: error
+            error: error,
+            success: false
         }
     }
 
     const result = await createUser({userName, email, password, isAdmin});
 
     if (result !== "Success"){
-        console.log(result);
         return {
             error: result?.errno === 1062 ? "Username already exists" : result?.message,
-            message: ""
+            message: "",
+            success: false
         }
     }
 
     return {
         message: "User Created Successfully",
-        error: ""
+        error: "",
+        success: true
     }
 }
