@@ -17,8 +17,6 @@ export async function query(query: string): Promise<any> {
     try {
         const db = await createConnection();
 
-
-
         const [result] = await db.execute(query,[]);
 
         await db.end();
@@ -27,6 +25,37 @@ export async function query(query: string): Promise<any> {
 
     } catch (e){
         console.error(e);
+    }
+}
+
+export async function getUserByLogin(userName: string, password:string): Promise<any> {
+    try {
+
+        const db = await createConnection();
+
+        console.log(userName)
+
+        const passwordHashQuery = 'SELECT password FROM user WHERE user_name=?';
+
+        const [passwordHash] = await db.execute<any[]>(passwordHashQuery,[userName]);
+
+        const passwordsMatch = await bcryptjs.compare(password, passwordHash?.[0]?.password);
+
+        if (!passwordsMatch) return null;
+
+        const sql = 'SELECT * FROM user WHERE user_name= ?';
+
+        const values = [userName];
+
+        const [result] = await db.execute(sql, values);
+
+        await db.end();
+
+        return result;
+
+    } catch (e:any){
+
+        return null
     }
 }
 

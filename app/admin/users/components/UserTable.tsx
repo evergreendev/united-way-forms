@@ -4,9 +4,9 @@ import {useMemo, useState} from "react";
 import {deleteUser} from "@/app/db";
 import Link from "next/link";
 
-const UserTable = ({userData}:{userData:any}) => {
+const UserTable = ({userData}: { userData: any }) => {
     const [selectedRows, setSelectedRows] = useState<any>([]);
-    const handleRowSelected = (selectedRows:any) => {
+    const handleRowSelected = (selectedRows: any) => {
         setSelectedRows(selectedRows);
     }
     const contextActions = useMemo(() => {
@@ -20,7 +20,6 @@ const UserTable = ({userData}:{userData:any}) => {
         </button>;
     }, [selectedRows]);
 
-
     return <DataTable
         title="Users"
         subHeader
@@ -30,14 +29,14 @@ const UserTable = ({userData}:{userData:any}) => {
         selectableRows
         contextActions={contextActions}
         onSelectedRowsChange={handleRowSelected}
-        onRowClicked={(row,e)=> {
+        onRowClicked={(row, e) => {
             console.log(row);/*todo change this to a redirect to manage user page*/
         }}
         columns={[
-        {name: "User Name", selector: (row:any) => row["user_name"], sortable:true},
-        {name: "Email", selector: (row:any) => row["email"], sortable: true},
-        {name: "Is Admin", selector: (row:any) => row["is_admin"] === 1 ? "Admin":"User", sortable: true},
-    ]} data={userData}/>
+            {name: "User Name", selector: (row: any) => row["user_name"], sortable: true},
+            {name: "Email", selector: (row: any) => row["email"], sortable: true},
+            {name: "Is Admin", selector: (row: any) => row["is_admin"] === 1 ? "Admin" : "User", sortable: true},
+        ]} data={userData}/>
 }
 
 export default UserTable;

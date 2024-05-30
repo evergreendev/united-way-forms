@@ -9,7 +9,6 @@ async function fetchData() {
 const users = async () => {
     const userData = await fetchData();
 
-
     return <div>
         <UserTable userData={userData}/>
     </div>
