@@ -18,7 +18,7 @@ const UserTable = ({userData}:{userData:any}) => {
         return <button key="delete" onClick={handleDelete} className="bg-red-600">
             Delete
         </button>;
-    }, [userData, selectedRows]);
+    }, [selectedRows]);
 
 
     return <DataTable
