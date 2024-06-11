@@ -172,8 +172,8 @@ export async function generateUserTokenURL(userId:string) {
     const addTokenQuery =
         `
             INSERT INTO user_token(user_id, expiration, token)
-            VALUES (?, DATE_ADD(NOW(), INTERVAL 2 MINUTE), uuid())
-        `//todo change to 2 days
+            VALUES (?, DATE_ADD(NOW(), INTERVAL 2 DAY), uuid())
+        `
     const values = [userId];
     await db.execute(addTokenQuery,values);
 
