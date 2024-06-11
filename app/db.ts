@@ -1,6 +1,6 @@
 'use server'
 import mysql, {RowDataPacket} from 'mysql2/promise'
-import {UserDTO} from "@/app/admin/users/types";
+import {UserCompanyDTO, UserDTO} from "@/app/admin/users/types";
 import bcryptjs from "bcryptjs";
 import {headers} from "next/headers";
 
@@ -129,6 +129,59 @@ export async function createUser(user:UserDTO) {
         }
     }
 }
+
+export async function getCompanies() {
+    try {
+        const db = await createConnection();
+
+        const sql = 'SELECT * FROM company';
+
+        interface ICompany extends RowDataPacket{
+            id: string;
+            company_name: string;
+            internal_id: string;
+        }
+
+        const [result] = await db.execute<ICompany[]>(sql);
+
+        await db.end();
+
+        return result;
+
+    } catch (e:any){
+
+        return null
+    }
+}
+
+export async function getUserCompany(userId:string) {
+    const db = await createConnection();
+
+    interface ICompanyIds extends RowDataPacket{
+        company_id: string;
+    }
+
+    const [companyIds] = await db.execute<ICompanyIds[]>(`SELECT company_id FROM company_user WHERE user_id = ?`, [userId]);
+
+    await db.end();
+
+    return companyIds;
+}
+
+export async function updateUserCompany(userCompany:UserCompanyDTO){
+    if (!userCompany.company_id || !userCompany.user_id) return null;
+
+    console.log(userCompany);
+
+    const db = await createConnection();
+
+    await db.execute("DELETE FROM company_user WHERE user_id = ?",[userCompany.user_id]); //delete the old company. this won't be necessary if we ever allow multiple companies on one user.
+
+    await db.execute("INSERT INTO company_user (company_id, user_id) values (?,?)",[userCompany.company_id, userCompany.user_id]);
+
+    await db.end();
+}
+
 
 export async function deleteUser(userId:string) {
     try {

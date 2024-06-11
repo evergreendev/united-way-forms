@@ -1,4 +1,4 @@
-import {updateUser} from "@/app/db";
+import {getUserCompany, updateUser, updateUserCompany} from "@/app/db";
 import bcryptjs from "bcryptjs";
 
 export const submitUpdateUserForm = async (prevState: any, formData: FormData) => {
@@ -7,6 +7,7 @@ export const submitUpdateUserForm = async (prevState: any, formData: FormData) =
     const password = formData.get('password');
     const confirmPassword = formData.get('confirmPassword');
     const id = formData.get('id');
+    const company = formData.get('company');
 
     const validateEmail = (email: any) => {
         return String(email)
@@ -45,6 +46,11 @@ export const submitUpdateUserForm = async (prevState: any, formData: FormData) =
         user_name: userName,
         email: email as string,
         password: password !== "" ? await bcryptjs.hash((password as string), 10) : undefined,
+    });
+
+    await updateUserCompany({
+        user_id: id as string,
+        company_id: company as string,
     });
 
 

@@ -8,16 +8,21 @@ const initialState: {message:string|null, error:{message:string,fieldName:string
     message:null,
     error:null
 }
-const UpdateUserForm = ({user, isAdmin, isEditingSelf}: {
+const UpdateUserForm = ({user, isAdmin, isEditingSelf,companies}: {
     user: {
         id: string;
         user_name: string;
         is_admin: number;
         email: string;
         password: string;
+        company?: string;
     },
     isAdmin: boolean,
     isEditingSelf: boolean,
+    companies: {
+        companyName: string,
+        id: string
+    }[]
 }) => {
     const [state, formAction] = useFormState(submitUpdateUserForm, initialState);
     const [newPassword, setNewPassword] = useState(false);
@@ -31,14 +36,26 @@ const UpdateUserForm = ({user, isAdmin, isEditingSelf}: {
         }
     }, [newPassword]);
 
-    return <form className="max-w-screen-xl mx-auto bg-blue-100 p-8" action={formAction}>
+    return <form className="max-w-screen-xl mx-auto bg-blue-100 p-8 text-blue-950" action={formAction}>
         <div className="flex flex-wrap gap-2 mb-4">
             <input defaultValue={user.id} name="id" hidden/>
             <InputField error={state.error} name="userName" label="User Name" defaultValue={user.user_name}/>
             <InputField error={state.error} name="email" label="Email" defaultValue={user.email}/>
             {
-                isAdmin && !isEditingSelf ? <input type="checkbox" defaultValue={isAdmin ? 1 : 0}/> : ""
+                isAdmin && !isEditingSelf ? <div className="text-blue-950 w-full bg-blue-400 p-2"><label>Is Admin: </label><input type="checkbox" defaultChecked={isAdmin}/></div> : ""
             }
+            <div className="w-full">
+                <label htmlFor="company">Company: </label>
+                <select name="company" id="company" disabled={!isAdmin}>
+                    <option value="">Select Company</option>
+                    {
+                        companies.map(company => {
+                            return <option selected={company.id === user.company} key={company.id} value={company.id}>{company.companyName}</option>;
+                        })
+                    }
+                </select>
+            </div>
+
             <div className="w-full">
                 <button onClick={(e) => {
                     e.preventDefault();
@@ -51,7 +68,7 @@ const UpdateUserForm = ({user, isAdmin, isEditingSelf}: {
                 </div>
             </div>
         </div>
-        <button className="bg-blue-900 p-8 py-2">Update Account</button>
+        <button className="bg-blue-900 p-8 py-2 text-white">Update Account</button>
     </form>
 }
 
