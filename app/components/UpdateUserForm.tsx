@@ -64,7 +64,7 @@ const UpdateUserForm = ({user, isAdmin, isEditingSelf,companies}: {
                 </button>
                 <div className={`${newPassword ? '' : 'h-0'} transition-all overflow-hidden w-full`}>
                     <InputField error={state.error} ref={passwordRef} name="password" label="New Password" password/>
-                    <InputField error={state.error} ref={confirmPasswordRef} name="confirmPassword" label="Verfiy New Password" password/>
+                    <InputField error={state.error} ref={confirmPasswordRef} name="confirmPassword" label="Verify New Password" password/>
                 </div>
             </div>
         </div>
