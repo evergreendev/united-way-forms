@@ -78,6 +78,33 @@ export async function getUserByEmail(email: string): Promise<any> {
     }
 }
 
+export async function getUserByID(id: string): Promise<any> {
+    try {
+        const db = await createConnection();
+
+        const sql = 'SELECT * FROM user WHERE id = ?';
+
+        const values = [id];
+        interface IUser extends RowDataPacket{
+            id: string;
+            user_name: string;
+            is_admin: number;
+            email: string;
+            password: string;
+        }
+
+        const [result] = await db.execute<IUser[]>(sql, values);
+
+        await db.end();
+
+        return result[0];
+
+    } catch (e:any){
+
+        return null
+    }
+}
+
 export async function createUser(user:UserDTO) {
     try {
         if (!user.password || !user.userName) return null;
@@ -126,14 +153,22 @@ export async function deleteUser(userId:string) {
     }
 }
 
+export async function clearExpiredTokens(){
+    const db = await createConnection();
+    const clearExpiredTokens = `DELETE FROM user_token WHERE expiration < NOW()`
+    await db.execute(clearExpiredTokens);
+    await db.end();
+}
+
 export async function generateUserTokenURL(userId:string) {
     const headersList = headers();
 
     const domain = headersList.get('host');
 
     const db = await createConnection();
-    const clearExpiredTokens = `DELETE FROM user_token WHERE expiration < NOW()`
-    await db.execute(clearExpiredTokens);
+
+    await clearExpiredTokens();
+
     const addTokenQuery =
         `
             INSERT INTO user_token(user_id, expiration, token)
@@ -154,5 +189,25 @@ export async function generateUserTokenURL(userId:string) {
 
     if (token.length <= 0) return null;
 
-    return `https://${domain}/update-user/?token=${token[0].token}&user_id=${token[0].user_id}`;
+    return `https://${domain}/update-account/?token=${token[0].token}&user_id=${token[0].user_id}`;
+}
+
+export async function validateToken(token:string,user_id:string):Promise<boolean> {
+    const db = await createConnection();
+
+    await clearExpiredTokens();
+
+    const query =
+        `SELECT id FROM user_token 
+          WHERE expiration > NOW() AND user_id = ? AND token = ?`;
+    interface IToken extends RowDataPacket {
+        id: string
+    }
+    const [result] = await db.execute<IToken[]>(query,[user_id, token]);
+
+    await db.end();
+
+    if(result.length <= 0) return false;
+
+    return true;
 }
