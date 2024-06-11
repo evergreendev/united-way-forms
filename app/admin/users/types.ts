@@ -1,6 +1,7 @@
 export type UserDTO = {
+    id?: string|null,
     email?: string|null,
-    userName?: string|null,
-    isAdmin?: boolean|null,
+    user_name?: string|null,
+    is_admin?: boolean|null,
     password?: string|null,
 }

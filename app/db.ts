@@ -107,13 +107,13 @@ export async function getUserByID(id: string): Promise<any> {
 
 export async function createUser(user:UserDTO) {
     try {
-        if (!user.password || !user.userName) return null;
+        if (!user.password || !user.user_name) return null;
 
         const db = await createConnection();
 
         const sql = 'INSERT INTO user (user_name, password, is_admin, email) VALUES (?,?,?,?)';
         const hashedPassword = await bcryptjs.hash(user.password,10);
-        const values = [user.userName, hashedPassword, user.isAdmin, user.email];
+        const values = [user.user_name, hashedPassword, user.is_admin, user.email];
 
         const [result] = await db.execute(sql, values);
 
@@ -151,6 +151,39 @@ export async function deleteUser(userId:string) {
             errno: e.errno,
         }
     }
+}
+
+export async function updateUser(userDTO:UserDTO) {
+    if (!userDTO.id) return {
+        message: "User does not exist",
+        error: "User does not exist"
+    }
+
+    const db = await createConnection();
+
+    const valuesToUpdate = [];
+    const values = [];
+
+    for(const[key,value] of Object.entries(userDTO)) {
+        if (key !== "id"){
+            valuesToUpdate.push(`${key} = ?`);
+            values.push(value);
+        }
+    }
+
+    const valuesToUpdateString = valuesToUpdate.join(",");
+    
+    const updateUserQuery = `
+        UPDATE user
+        SET ${valuesToUpdateString}
+        where id = ?;`
+
+    values.push(userDTO.id);
+
+    if (values.length === 1) return;
+
+    await db.execute(updateUserQuery, values);
+    await db.end();
 }
 
 export async function clearExpiredTokens(){
