@@ -1,7 +1,8 @@
 'use server'
-import mysql from 'mysql2/promise'
+import mysql, {RowDataPacket} from 'mysql2/promise'
 import {UserDTO} from "@/app/admin/users/types";
 import bcryptjs from "bcryptjs";
+import {headers} from "next/headers";
 
 const createConnection = async () => {
     return mysql.createConnection({
@@ -33,8 +34,6 @@ export async function getUserByLogin(userName: string, password:string): Promise
 
         const db = await createConnection();
 
-        console.log(userName)
-
         const passwordHashQuery = 'SELECT password FROM user WHERE user_name=?';
 
         const [passwordHash] = await db.execute<any[]>(passwordHashQuery,[userName]);
@@ -46,6 +45,26 @@ export async function getUserByLogin(userName: string, password:string): Promise
         const sql = 'SELECT * FROM user WHERE user_name= ?';
 
         const values = [userName];
+
+        const [result] = await db.execute(sql, values);
+
+        await db.end();
+
+        return result;
+
+    } catch (e:any){
+
+        return null
+    }
+}
+
+export async function getUserByEmail(email: string): Promise<any> {
+    try {
+        const db = await createConnection();
+
+        const sql = 'SELECT * FROM user WHERE email= ?';
+
+        const values = [email];
 
         const [result] = await db.execute(sql, values);
 
@@ -105,4 +124,35 @@ export async function deleteUser(userId:string) {
             errno: e.errno,
         }
     }
+}
+
+export async function generateUserTokenURL(userId:string) {
+    const headersList = headers();
+
+    const domain = headersList.get('host');
+
+    const db = await createConnection();
+    const clearExpiredTokens = `DELETE FROM user_token WHERE expiration < NOW()`
+    await db.execute(clearExpiredTokens);
+    const addTokenQuery =
+        `
+            INSERT INTO user_token(user_id, expiration, token)
+            VALUES (?, DATE_ADD(NOW(), INTERVAL 2 MINUTE), uuid())
+        `//todo change to 2 days
+    const values = [userId];
+    await db.execute(addTokenQuery,values);
+
+    const getTokenQuery = `SELECT token,user_id FROM user_token WHERE expiration > NOW() AND user_id = ?`
+
+    interface IToken extends RowDataPacket {
+        token: string,
+        user_id: string,
+    }
+
+    const [token] = await db.execute<IToken[]>(getTokenQuery,[userId]);
+    await db.end();
+
+    if (token.length <= 0) return null;
+
+    return `https://${domain}/update-user/?token=${token[0].token}&user_id=${token[0].user_id}`;
 }
