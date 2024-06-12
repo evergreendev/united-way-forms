@@ -2,7 +2,7 @@ import UserEmailTokenForm from "@/app/components/UserEmailTokenForm";
 import UpdateUserForm from "@/app/components/UpdateUserForm";
 import {getCompanies, getUserByID, getUserCompany, validateToken} from "@/app/db";
 import {getServerSession} from "next-auth";
-import {authOptions} from "@/app/api/auth/[...nextauth]/route";
+import {authOptions} from "@/app/auth";
 import Login from "@/app/admin/users/components/Login";
 
 async function getUser(userId:string){

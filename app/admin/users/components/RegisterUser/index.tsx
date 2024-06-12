@@ -3,10 +3,14 @@ import {useFormState} from 'react-dom'
 import {submitCreateUser} from "@/app/admin/users/formActions";
 import {useEffect} from "react";
 import {redirect} from "next/navigation";
+import InputField from "@/app/components/InputField";
 
 const initialState = {
     message: "",
-    error: "",
+    error: {
+        message:"",
+        fieldName:""
+    },
     success: false,
 }
 
@@ -20,14 +24,13 @@ const RegisterUser = () => {
     },[state]);
 
     return state.message ? <h2>{state.message}</h2> : <form action={formAction} className="text-slate-950">
-        <input id="username" name="username" type="text"/>
-        <input id="email" name="email" type="email"/>
-        <input id="password" name="password" type="password"/>
-        <input id="isAdmin" name="isAdmin" type="checkbox"/>
-
-        <p className="text-red-600">
-            {state?.error}
-        </p>
+        <InputField error={state.error} name="userName" label="User Name" />
+        <InputField error={state.error} name="email" label="Email" />
+        <InputField error={state.error} name="password" label="Password" password/>
+        <div>
+            <label htmlFor="isAdmin">Company: </label>
+            <input id="isAdmin" name="isAdmin" type="checkbox"/>
+        </div>
         <button className="bg-orange-600 text-white py-1 px-6 rounded font-bold">Submit</button>
     </form>
 
