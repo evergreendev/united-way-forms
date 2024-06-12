@@ -1,14 +1,26 @@
 'use client'
 import InputField from "@/app/components/InputField";
 import {useEffect, useRef, useState} from "react";
-import {useFormState} from "react-dom";
+import {useFormState, useFormStatus} from "react-dom";
 import {submitUpdateUserForm} from "@/app/update-account/userActions";
+import {useRouter} from "next/navigation";
 
-const initialState: {message:string|null, error:{message:string,fieldName:string}|null} = {
-    message:null,
-    error:null
+const initialState: { message: string | null, error: { message: string, fieldName: string } | null } = {
+    message: null,
+    error: null
 }
-const UpdateUserForm = ({user, isAdmin, isEditingSelf,companies}: {
+const SubmitButton = () => {
+    const {pending} = useFormStatus();
+
+    return (
+        <button className="bg-blue-900 p-8 py-2 text-white" type="submit" disabled={pending}>
+            {pending ? <div className="size-8 border-2 border-l-blue-500 border-white animate-spin rounded-full"/> : 'Update Account'}
+        </button>
+    )
+}
+
+
+const UpdateUserForm = ({user, isAdmin, isEditingSelf, companies, callbackUrl}: {
     user: {
         id: string;
         user_name: string;
@@ -22,27 +34,42 @@ const UpdateUserForm = ({user, isAdmin, isEditingSelf,companies}: {
     companies: {
         companyName: string,
         id: string
-    }[]
+    }[],
+    callbackUrl: string,
 }) => {
     const [state, formAction] = useFormState(submitUpdateUserForm, initialState);
+    const {pending} = useFormStatus();
     const [newPassword, setNewPassword] = useState(false);
     const passwordRef = useRef<HTMLInputElement>(null);
     const confirmPasswordRef = useRef<HTMLInputElement>(null);
+    const router = useRouter();
 
     useEffect(() => {
-        if (newPassword && passwordRef.current && confirmPasswordRef.current){
+        if (newPassword && passwordRef.current && confirmPasswordRef.current) {
             passwordRef.current.value = "";
             confirmPasswordRef.current.value = "";
         }
     }, [newPassword]);
 
+    useEffect(() => {
+        if (state.message === "Success"){
+            console.log("Successfully updated");
+            router.push(callbackUrl);
+        }
+    }, [state]);
+
     return <form className="max-w-screen-xl mx-auto bg-blue-100 p-8 text-blue-950" action={formAction}>
+        {
+            pending ? <div>a</div> : ""
+        }
         <div className="flex flex-wrap gap-2 mb-4">
             <input defaultValue={user.id} name="id" hidden/>
             <InputField error={state.error} name="userName" label="User Name" defaultValue={user.user_name}/>
             <InputField error={state.error} name="email" label="Email" defaultValue={user.email}/>
             {
-                isAdmin && !isEditingSelf ? <div className="text-blue-950 w-full bg-blue-400 p-2"><label>Is Admin: </label><input type="checkbox" defaultChecked={user.is_admin === 1}/></div> : ""
+                isAdmin && !isEditingSelf ?
+                    <div className="text-blue-950 w-full bg-blue-400 p-2"><label>Is Admin: </label><input
+                        type="checkbox" defaultChecked={user.is_admin === 1}/></div> : ""
             }
             <div className="w-full">
                 <label htmlFor="company">Company: </label>
@@ -64,11 +91,12 @@ const UpdateUserForm = ({user, isAdmin, isEditingSelf,companies}: {
                 </button>
                 <div className={`${newPassword ? '' : 'h-0'} transition-all overflow-hidden w-full`}>
                     <InputField error={state.error} ref={passwordRef} name="password" label="New Password" password/>
-                    <InputField error={state.error} ref={confirmPasswordRef} name="confirmPassword" label="Verify New Password" password/>
+                    <InputField error={state.error} ref={confirmPasswordRef} name="confirmPassword"
+                                label="Verify New Password" password/>
                 </div>
             </div>
         </div>
-        <button className="bg-blue-900 p-8 py-2 text-white">Update Account</button>
+        <SubmitButton/>
     </form>
 }
 

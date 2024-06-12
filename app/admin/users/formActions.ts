@@ -24,7 +24,7 @@ export const submitCreateUser = async (prevState:any, formData:FormData) => {
         }
     }
 
-    const result = await createUser({userName, email, password, isAdmin});
+    const result = await createUser({user_name: userName, email, password, is_admin: isAdmin});
 
     if (result !== "Success"){
         return {

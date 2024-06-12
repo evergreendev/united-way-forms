@@ -28,7 +28,7 @@ const page = async ({params}: { params: { slug: string } }) => {
         }
     }) : []
 
-    return <UpdateUserForm user={{...user, company: userCompany[0]?.company_id}} companies={formattedCompanies}
+    return <UpdateUserForm callbackUrl="/admin/users" user={{...user, company: userCompany[0]?.company_id}} companies={formattedCompanies}
                            isEditingSelf={userId === session?.user?.id} isAdmin={session?.user?.isAdmin}/>
 
 

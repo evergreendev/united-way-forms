@@ -1,5 +1,7 @@
+"use server"
 import {getUserCompany, updateUser, updateUserCompany} from "@/app/db";
 import bcryptjs from "bcryptjs";
+import {revalidatePath} from "next/cache";
 
 export const submitUpdateUserForm = async (prevState: any, formData: FormData) => {
     const userName = formData.get('userName')
@@ -53,11 +55,10 @@ export const submitUpdateUserForm = async (prevState: any, formData: FormData) =
         company_id: company as string,
     });
 
-
-    console.log("successfully submitted");
+    revalidatePath("/admin/users","page");
 
     return {
         error: null,
-        message: null
+        message: "Success"
     }
 }

@@ -31,7 +31,7 @@ const page = async ({searchParams}: { searchParams?: { token?: string, user_id?:
             }
         }) : []
 
-        return <UpdateUserForm user={{...user, company:userCompany[0]?.company_id}} companies={formattedCompanies} isEditingSelf={userId === session?.user?.id} isAdmin={session?.user?.isAdmin} />
+        return <UpdateUserForm callbackUrl="/admin" user={{...user, company:userCompany[0]?.company_id}} companies={formattedCompanies} isEditingSelf={userId === session?.user?.id} isAdmin={session?.user?.isAdmin} />
     }
 
     return <div>
