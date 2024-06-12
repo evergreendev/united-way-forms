@@ -56,7 +56,7 @@ const UpdateUserForm = ({user, isAdmin, isEditingSelf, companies, callbackUrl}: 
             console.log("Successfully updated");
             router.push(callbackUrl);
         }
-    }, [state]);
+    }, [callbackUrl, router, state]);
 
     return <form className="max-w-screen-xl mx-auto bg-blue-100 p-8 text-blue-950" action={formAction}>
         {
