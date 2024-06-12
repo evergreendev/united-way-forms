@@ -42,15 +42,15 @@ const UpdateUserForm = ({user, isAdmin, isEditingSelf,companies}: {
             <InputField error={state.error} name="userName" label="User Name" defaultValue={user.user_name}/>
             <InputField error={state.error} name="email" label="Email" defaultValue={user.email}/>
             {
-                isAdmin && !isEditingSelf ? <div className="text-blue-950 w-full bg-blue-400 p-2"><label>Is Admin: </label><input type="checkbox" defaultChecked={isAdmin}/></div> : ""
+                isAdmin && !isEditingSelf ? <div className="text-blue-950 w-full bg-blue-400 p-2"><label>Is Admin: </label><input type="checkbox" defaultChecked={user.is_admin === 1}/></div> : ""
             }
             <div className="w-full">
                 <label htmlFor="company">Company: </label>
-                <select name="company" id="company" disabled={!isAdmin}>
+                <select name="company" id="company" disabled={!isAdmin} defaultValue={user.company}>
                     <option value="">Select Company</option>
                     {
                         companies.map(company => {
-                            return <option selected={company.id === user.company} key={company.id} value={company.id}>{company.companyName}</option>;
+                            return <option key={company.id} value={company.id}>{company.companyName}</option>;
                         })
                     }
                 </select>

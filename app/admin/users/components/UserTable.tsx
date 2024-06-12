@@ -3,12 +3,14 @@ import DataTable from "@/app/admin/users/components/DataTableBase";
 import {useMemo, useState} from "react";
 import {deleteUser} from "@/app/db";
 import Link from "next/link";
+import { useRouter } from 'next/navigation'
 
 const UserTable = ({userData}: { userData: any }) => {
     const [selectedRows, setSelectedRows] = useState<any>([]);
     const handleRowSelected = (selectedRows: any) => {
         setSelectedRows(selectedRows);
     }
+    const router = useRouter();
     const contextActions = useMemo(() => {
         const handleDelete = async () => {
             for (const row of selectedRows.selectedRows) {
@@ -30,11 +32,12 @@ const UserTable = ({userData}: { userData: any }) => {
         contextActions={contextActions}
         onSelectedRowsChange={handleRowSelected}
         onRowClicked={(row, e) => {
-            console.log(row);/*todo change this to a redirect to manage user page*/
+            router.push('/admin/users/update/' + row.id);
         }}
         columns={[
             {name: "User Name", selector: (row: any) => row["user_name"], sortable: true},
             {name: "Email", selector: (row: any) => row["email"], sortable: true},
+            {name: "Company", selector: (row: any) => row["company"], sortable: true},
             {name: "Is Admin", selector: (row: any) => row["is_admin"] === 1 ? "Admin" : "User", sortable: true},
         ]} data={userData}/>
 }

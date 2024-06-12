@@ -29,6 +29,20 @@ export async function query(query: string): Promise<any> {
     }
 }
 
+export async function getUsers(){
+    const db = await createConnection();
+
+    const sql = 'SELECT * FROM user';
+
+    interface IUser extends RowDataPacket{
+
+    }
+
+    const [result] = await db.query<IUser[]>(sql);
+
+    return result;
+}
+
 export async function getUserByLogin(userName: string, password:string): Promise<any> {
     try {
 
@@ -168,14 +182,46 @@ export async function getUserCompany(userId:string) {
     return companyIds;
 }
 
-export async function updateUserCompany(userCompany:UserCompanyDTO){
-    if (!userCompany.company_id || !userCompany.user_id) return null;
-
-    console.log(userCompany);
-
+export async function getCompany(id:string) {
     const db = await createConnection();
 
+    interface ICompany extends RowDataPacket{
+        id: string;
+        company_name: string;
+        internal_id: string;
+    }
+
+    const [companyIds] = await db.execute<ICompany[]>(`SELECT * FROM company WHERE id = ?`, [id]);
+
+    await db.end();
+
+    return companyIds;
+}
+
+export async function getUserCompanies(){
+    const db = await createConnection();
+
+    interface ICompanyIds extends RowDataPacket{
+        company_id: string;
+        user_id:string;
+    }
+
+    const [userCompanies] = await db.execute<ICompanyIds[]>(`
+    SELECT * FROM company_user;
+    `);
+
+    await db.end();
+
+    return userCompanies;
+}
+
+export async function updateUserCompany(userCompany:UserCompanyDTO){
+    const db = await createConnection();
+    if (!userCompany.user_id) return null;
+
     await db.execute("DELETE FROM company_user WHERE user_id = ?",[userCompany.user_id]); //delete the old company. this won't be necessary if we ever allow multiple companies on one user.
+
+    if (!userCompany.company_id) return null;
 
     await db.execute("INSERT INTO company_user (company_id, user_id) values (?,?)",[userCompany.company_id, userCompany.user_id]);
 
