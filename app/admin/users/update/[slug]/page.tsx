@@ -35,3 +35,5 @@ const page = async ({params}: { params: { slug: string } }) => {
 }
 
 export default page;
+
+export const dynamic = 'force-dynamic'

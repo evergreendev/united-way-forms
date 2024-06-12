@@ -39,3 +39,4 @@ const users = async () => {
 
 export default users;
 
+export const dynamic = 'force-dynamic';

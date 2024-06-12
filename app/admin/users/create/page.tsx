@@ -5,3 +5,5 @@ const users = () => {
 }
 
 export default users;
+
+export const dynamic = 'force-dynamic'

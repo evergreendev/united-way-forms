@@ -42,3 +42,5 @@ const page = async ({searchParams}: { searchParams?: { token?: string, user_id?:
 }
 
 export default page;
+
+export const dynamic = 'force-dynamic'
