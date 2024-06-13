@@ -1,6 +1,6 @@
 'use server'
 import mysql, {RowDataPacket} from 'mysql2/promise'
-import {UserCompanyDTO, UserDTO} from "@/app/admin/users/types";
+import {CompanyDTO, ICompany, UserCompanyDTO, UserDTO} from "@/app/admin/users/types";
 import bcryptjs from "bcryptjs";
 import {headers} from "next/headers";
 
@@ -129,7 +129,30 @@ export async function createUser(user:UserDTO) {
         const hashedPassword = await bcryptjs.hash(user.password,10);
         const values = [user.user_name, hashedPassword, user.is_admin, user.email];
 
-        const [result] = await db.execute(sql, values);
+        await db.execute(sql, values);
+
+        await db.end();
+
+        return "Success";
+
+    } catch (e:any){
+
+        return {
+            message: e.message,
+            errno: e.errno,
+        }
+    }
+}
+
+export async function deleteCompany(id:string) {
+    try {
+        const db = await createConnection();
+
+        const sql = 'DELETE FROM company WHERE id= ?';
+
+        const values = [id];
+
+        await db.execute(sql, values);
 
         await db.end();
 
@@ -148,13 +171,7 @@ export async function getCompanies() {
     try {
         const db = await createConnection();
 
-        const sql = 'SELECT * FROM company';
-
-        interface ICompany extends RowDataPacket{
-            id: string;
-            company_name: string;
-            internal_id: string;
-        }
+        const sql = 'SELECT * FROM company ORDER BY company_name';
 
         const [result] = await db.execute<ICompany[]>(sql);
 
@@ -192,6 +209,19 @@ export async function getCompany(id:string) {
     }
 
     const [companyIds] = await db.execute<ICompany[]>(`SELECT * FROM company WHERE id = ?`, [id]);
+
+    await db.end();
+
+    return companyIds;
+}
+
+export async function updateCompany(company:CompanyDTO) {
+    const db = await createConnection();
+
+    const [companyIds] = await db.execute<ICompany[]>(
+        `UPDATE company company_id 
+SET company_name = ?, internal_id = ? WHERE id=?;`,
+        [company.company_name, company.internal_id, company.id]);
 
     await db.end();
 
@@ -237,7 +267,7 @@ export async function deleteUser(userId:string) {
 
         const values = [userId];
 
-        const [result] = await db.execute(sql, values);
+        await db.execute(sql, values);
 
         await db.end();
 

@@ -1,11 +1,11 @@
 "use client"
 import DataTable from "@/app/components/DataTableBase";
 import {useMemo, useState} from "react";
-import {deleteUser} from "@/app/db";
+import {deleteCompany} from "@/app/db";
 import Link from "next/link";
 import { useRouter } from 'next/navigation'
 
-const UserTable = ({userData}: { userData: any }) => {
+const CompanyTable = ({companyData}: { companyData: any }) => {
     const [selectedRows, setSelectedRows] = useState<any>([]);
     const handleRowSelected = (selectedRows: any) => {
         setSelectedRows(selectedRows);
@@ -14,7 +14,7 @@ const UserTable = ({userData}: { userData: any }) => {
     const contextActions = useMemo(() => {
         const handleDelete = async () => {
             for (const row of selectedRows.selectedRows) {
-                await deleteUser(row.id);
+                await deleteCompany(row.id);
             }
         };
         return <button key="delete" onClick={handleDelete} className="bg-red-600">
@@ -23,23 +23,22 @@ const UserTable = ({userData}: { userData: any }) => {
     }, [selectedRows]);
 
     return <DataTable
-        title="Users"
+        title="Companys"
         subHeader
-        subHeaderComponent={<Link href="/admin/users/create">Add User</Link>}
+        defaultSortFieldId="company_name"
+        subHeaderComponent={<Link href="/admin/companys/create">Add Company</Link>}
         highlightOnHover
         pointerOnHover
         selectableRows
         contextActions={contextActions}
         onSelectedRowsChange={handleRowSelected}
         onRowClicked={(row) => {
-            router.push('/admin/users/update/' + row.id);
+            router.push('/admin/companies/update/' + row.id);
         }}
         columns={[
-            {name: "User Name", selector: (row: any) => row["user_name"], sortable: true},
-            {name: "Email", selector: (row: any) => row["email"], sortable: true},
-            {name: "Company", selector: (row: any) => row["company"], sortable: true},
-            {name: "Is Admin", selector: (row: any) => row["is_admin"] === 1 ? "Admin" : "User", sortable: true},
-        ]} data={userData}/>
+            {name: "Company Name", selector: (row: any) => row["company_name"], sortable: true, id: "company_name"},
+            {name: "Constituent ID", selector: (row: any) => row["internal_id"]},
+        ]} data={companyData}/>
 }
 
-export default UserTable;
+export default CompanyTable;
