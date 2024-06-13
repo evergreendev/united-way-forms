@@ -4,6 +4,7 @@ import {useEffect, useRef, useState} from "react";
 import {useFormState, useFormStatus} from "react-dom";
 import {submitUpdateUserForm} from "@/app/update-account/userActions";
 import {useRouter} from "next/navigation";
+import {ICompany} from "@/app/admin/users/types";
 
 const initialState: { message: string | null, error: { message: string, fieldName: string } | null } = {
     message: null,
@@ -31,10 +32,7 @@ const UpdateUserForm = ({user, isAdmin, isEditingSelf, companies, callbackUrl}: 
     },
     isAdmin: boolean,
     isEditingSelf: boolean,
-    companies: {
-        companyName: string,
-        id: string
-    }[],
+    companies: ICompany[],
     callbackUrl: string,
 }) => {
     const [state, formAction] = useFormState(submitUpdateUserForm, initialState);

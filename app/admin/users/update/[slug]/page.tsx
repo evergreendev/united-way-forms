@@ -19,14 +19,8 @@ const page = async ({params}: { params: { slug: string } }) => {
     const user = await getUser(userId);
     const userCompany = await getUserCompany(userId);
     const companies = await fetchCompanies();
-    const formattedCompanies = companies ? companies.map(company => {
-        return {
-            companyName: company.company_name,
-            id: company.id
-        }
-    }) : []
 
-    return <UpdateUserForm callbackUrl="/admin/users" user={{...user, company: userCompany[0]?.company_id}} companies={formattedCompanies}
+    return <UpdateUserForm callbackUrl="/admin/users" user={{...user, company: userCompany[0]?.company_id}} companies={companies||[]}
                            isEditingSelf={userId === session?.user?.id} isAdmin={session?.user?.isAdmin}/>
 
 

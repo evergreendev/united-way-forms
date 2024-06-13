@@ -2,6 +2,7 @@
 import * as AWS from "aws-sdk";
 import * as nodeMailer from "nodemailer";
 import {generateUserTokenURL, getUserByEmail} from "@/app/db";
+import {UserDTO} from "@/app/admin/users/types";
 
 AWS.config.update({
     credentials: {
@@ -70,6 +71,52 @@ export const sendResetPasswordLink = async (prevState: any, formData: FormData) 
 
         return {
             message: `A link was mailed to update your profile. Please check ${email}`,
+            error: ""
+        }
+
+    } catch (e) {
+        console.error(e);
+        return {error: "There was a problem sending your message please try again later.", msg: ""}
+    }
+}
+
+export const sendNewUserEmail = async (user:UserDTO) => {
+    if (!user.id) return {}
+
+    const tokenUrl = await generateUserTokenURL(user.id);
+
+    if(!tokenUrl) return {error: "Invalid User", msg: ""}
+
+    try {
+        await transporter.sendMail({
+            from: adminMail,
+            to: user.email as string,
+            replyTo: adminMail,
+            subject: `Activate Your United Way Pledge Forms Account`,
+            html: `
+            <!DOCTYPE html >
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>test</title>
+</head>
+<body>
+<div style="padding:20px;">
+<div style="max-width: 500px;">
+<p>
+<strong>Please use the following link to set your password for your new United Way Pledge Form Account</strong>
+<p>Please not this link will expire after use, or after 48 hours for security purposes</p>
+<a href="${tokenUrl}">Activate Account</a>
+<br/>
+</p>
+</div>
+</div>
+</body>
+</html>
+            `
+        });
+
+        return {
+            message: `A link was mailed to update your profile. Please check ${user.email}`,
             error: ""
         }
 

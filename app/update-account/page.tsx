@@ -24,13 +24,7 @@ const page = async ({searchParams}: { searchParams?: { token?: string, user_id?:
         const user = await getUser(userId||session?.user?.id);
         const userCompany = await getUserCompany(user.id);
         const companies = await fetchCompanies();
-        const formattedCompanies = companies ? companies.map(company => {
-            return {
-                companyName: company.company_name,
-                id: company.id
-            }
-        }) : []
-        return <UpdateUserForm callbackUrl="/admin" user={{...user, company:userCompany[0]?.company_id}} companies={formattedCompanies} isEditingSelf={userId === session?.user?.id} isAdmin={session?.user?.isAdmin} />
+        return <UpdateUserForm callbackUrl="/admin" user={{...user, company:userCompany[0]?.company_id}} companies={companies||[]} isEditingSelf={userId === session?.user?.id} isAdmin={session?.user?.isAdmin} />
     }
 
     return <div>

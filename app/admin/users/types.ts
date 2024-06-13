@@ -8,15 +8,17 @@ export type UserDTO = {
     password?: string|null,
 }
 
+export interface IUser extends RowDataPacket, UserDTO{}
+
 export type UserCompanyDTO = {
     company_id?: string|null,
     user_id?: string|null,
 }
 
 export type CompanyDTO = {
-    id: string;
-    company_name: string;
-    internal_id: string;
+    id?: string;
+    company_name?: string;
+    internal_id?: string;
 }
 
 export interface ICompany extends RowDataPacket, CompanyDTO{}

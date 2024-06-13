@@ -129,11 +129,37 @@ export async function createUser(user:UserDTO) {
         const hashedPassword = await bcryptjs.hash(user.password,10);
         const values = [user.user_name, hashedPassword, user.is_admin, user.email];
 
-        await db.execute(sql, values);
+        const [result] = await db.execute(sql, values);
 
         await db.end();
 
         return "Success";
+
+    } catch (e:any){
+
+        return {
+            message: e.message,
+            errno: e.errno,
+        }
+    }
+}
+
+export async function createCompany(companyDTO:CompanyDTO) {
+    try {
+        if (!companyDTO.company_name || !companyDTO.internal_id) return null;
+
+        const db = await createConnection();
+
+        const sql = 'INSERT INTO company (company_name, internal_id) VALUES (?,?)';
+        const values = [companyDTO.company_name, companyDTO.internal_id];
+
+        const [result] = await db.execute<ICompany[]>(sql, values);
+
+        const [id] = await db.execute<any>('SELECT LAST_INSERT_ID()')
+
+        await db.end();
+
+        return id[0]["LAST_INSERT_ID()"];
 
     } catch (e:any){
 
@@ -262,6 +288,8 @@ export async function updateUserCompany(userCompany:UserCompanyDTO){
 export async function deleteUser(userId:string) {
     try {
         const db = await createConnection();
+
+        await db.execute('DELETE FROM user_token WHERE user_id = ?', [userId]);
 
         const sql = 'DELETE FROM user WHERE id= ?';
 
