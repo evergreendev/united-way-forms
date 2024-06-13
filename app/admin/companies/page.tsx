@@ -1,5 +1,6 @@
 import {getCompanies} from "@/app/db";
 import CompanyTable from "@/app/admin/companies/components/CompanyTable";
+import RequireAdminAccess from "@/app/admin/components/RequireAdminAccess";
 
 
 async function fetchData() {
@@ -9,9 +10,9 @@ async function fetchData() {
 const companies = async () => {
     const companyData = await fetchData();
 
-    return <div>
+    return <RequireAdminAccess>
         <CompanyTable companyData={companyData}/>
-    </div>
+    </RequireAdminAccess>
 }
 
 export default companies;

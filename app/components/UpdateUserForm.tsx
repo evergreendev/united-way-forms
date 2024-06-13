@@ -56,6 +56,10 @@ const UpdateUserForm = ({user, isAdmin, isEditingSelf, companies, callbackUrl}: 
         }
     }, [callbackUrl, router, state]);
 
+    if (!isEditingSelf && !isAdmin) {
+        router.push("/admin");
+    }
+
     return <form className="max-w-screen-xl mx-auto bg-blue-100 p-8 text-blue-950" action={formAction}>
         {
             pending ? <div>a</div> : ""
@@ -71,11 +75,11 @@ const UpdateUserForm = ({user, isAdmin, isEditingSelf, companies, callbackUrl}: 
             }
             <div className="w-full">
                 <label htmlFor="company">Company: </label>
-                <select name="company" id="company" disabled={!isAdmin} defaultValue={user.company}>
+                <select className="text-blue-950" name="company" id="company" disabled={!isAdmin} defaultValue={user.company}>
                     <option value="">Select Company</option>
                     {
                         companies.map(company => {
-                            return <option key={company.id} value={company.id}>{company.companyName}</option>;
+                            return <option key={company.id} value={company.id}>{company.company_name}</option>;
                         })
                     }
                 </select>

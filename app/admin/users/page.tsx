@@ -1,5 +1,6 @@
 import {getCompany, getUserCompany, getUsers} from "@/app/db";
 import UserTable from "@/app/admin/users/components/UserTable";
+import RequireAdminAccess from "@/app/admin/components/RequireAdminAccess";
 
 
 async function fetchData() {
@@ -32,9 +33,9 @@ const users = async () => {
             }
         ));
 
-    return <div>
+    return <RequireAdminAccess>
         <UserTable userData={formattedUserData}/>
-    </div>
+    </RequireAdminAccess>
 }
 
 export default users;

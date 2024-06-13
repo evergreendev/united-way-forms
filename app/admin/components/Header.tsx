@@ -1,16 +1,51 @@
 "use client"
 import Link from "next/link";
-import {signOut} from "next-auth/react";
+import {SessionProvider, signOut, useSession} from "next-auth/react";
+import {ReactNode} from "react";
 
-const Header = () => {
-    return <div className="w-full bg-slate-800 p-4">
-        <div className="flex mx-auto max-w-screen-xl items-center flex-wrap w-full">
-            <Link className="hover:text-slate-300 border-r-slate-700 border-r-2 p-2" href="/admin">Dashboard</Link>
-            <Link className="hover:text-slate-300 border-r-slate-700 border-r-2 p-2" href="/admin/users">Manage Users</Link>
-            <Link className="hover:text-slate-300 border-r-slate-700 border-r-2 p-2" href="/admin/companies">Manage Companies</Link>
-            <button className="hover:text-slate-300 border-r-slate-700 p-2 self-end ml-auto" onClick={() => signOut()}>Sign Out</button>
+
+const Header = ({children}: { children: ReactNode }) => {
+    return <SessionProvider>
+        <Inner/>
+    </SessionProvider>
+}
+
+const Inner = () => {
+
+    const {data: session, status} = useSession();
+
+
+    if (status === "loading") {
+        return <div className="w-full bg-slate-800 p-4">
+            <div className="flex mx-auto max-w-screen-xl items-center flex-wrap w-full">Loading...</div>
         </div>
-    </div>
+            ;
+    }
+    if (status === "authenticated") {
+        const isAdmin = (session?.user as any).isAdmin
+        const company = (session?.user as any).company
+
+        return <div className="w-full bg-slate-800 p-4">
+            <div className="flex mx-auto max-w-screen-xl items-center flex-wrap w-full">
+                {
+                    isAdmin ? <><Link className="hover:text-slate-300 border-r-slate-700 border-r-2 p-2"
+                                      href="/admin/users">Manage Users</Link>
+                        <Link className="hover:text-slate-300 border-r-slate-700 border-r-2 p-2"
+                              href="/admin/companies">Manage Companies</Link></> : ""
+                }
+                {
+                    company ? <Link className="hover:text-slate-300 border-r-slate-700 border-r-2 p-2"
+                       href={`/admin/entries/${company}`}>Manage Entries</Link> : ""
+                }
+                <Link className="hover:text-slate-300 border-r-slate-700 border-r-2 p-2"
+                      href={`/admin/users/update/${(session?.user as any).id}`}>Manage Account</Link>
+                <button className="hover:text-slate-300 border-r-slate-700 p-2 self-end ml-auto"
+                        onClick={() => signOut()}>Sign Out
+                </button>
+            </div>
+        </div>
+    }
+
 }
 
 export default Header;

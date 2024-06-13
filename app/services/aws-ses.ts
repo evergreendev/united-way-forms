@@ -33,6 +33,11 @@ export const sendResetPasswordLink = async (prevState: any, formData: FormData) 
     }
 
     const user = await getUserByEmail(email as string);
+    if(user.length <= 0) return {
+        message:"",
+        error: "A user with that email address does not exist"
+    }
+
     const userId = user[0].id;
 
     const tokenUrl = await generateUserTokenURL(userId);
