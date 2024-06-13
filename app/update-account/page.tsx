@@ -16,13 +16,13 @@ const page = async ({searchParams}: { searchParams?: { token?: string, user_id?:
     const token = searchParams?.token;
     const userId = searchParams?.user_id;
 
+
     const tokenIsValid = token && userId ? await validateToken(token, userId) : false;
     const session = await getServerSession(authOptions);
-    const userCanAccess = tokenIsValid || session?.user?.id === userId || session?.user?.isAdmin;
-
+    const userCanAccess = tokenIsValid || (session && session?.user?.id === userId) || session?.user?.isAdmin;
     if (userCanAccess) {
         const user = await getUser(userId||session?.user?.id);
-        const userCompany = await getUserCompany(session?.user?.id);
+        const userCompany = await getUserCompany(user.id);
         const companies = await fetchCompanies();
         const formattedCompanies = companies ? companies.map(company => {
             return {
@@ -30,7 +30,6 @@ const page = async ({searchParams}: { searchParams?: { token?: string, user_id?:
                 id: company.id
             }
         }) : []
-
         return <UpdateUserForm callbackUrl="/admin" user={{...user, company:userCompany[0]?.company_id}} companies={formattedCompanies} isEditingSelf={userId === session?.user?.id} isAdmin={session?.user?.isAdmin} />
     }
 
