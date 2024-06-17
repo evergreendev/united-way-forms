@@ -315,10 +315,12 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                     </div>
                 </div>
                 <div className="bg-orange-300 p-6 my-8 flex flex-wrap gap-4 w-full">
-                    <label htmlFor="authorization" className="font-bold text-xl">By submitting this form I acknowledge
-                        that I authorize all of my donation amounts as submitted</label>
                     <input className="size-6" type="checkbox" required id="authorization" name="authorization"
                            value="Authorized by user"/>
+                    <label htmlFor="authorization" className="font-bold text-xl">By
+                    submitting this form I acknowledge
+                    that I authorize all of my donation amounts as submitted</label>
+
                 </div>
             </div>
         </div>
