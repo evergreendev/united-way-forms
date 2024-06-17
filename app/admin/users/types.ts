@@ -22,3 +22,12 @@ export type CompanyDTO = {
 }
 
 export interface ICompany extends RowDataPacket, CompanyDTO{}
+
+export type EntryDTO = {
+    id?: string|null,
+    entry?: JSON|null,
+    submit_date?: string|null,
+    modified_date?: string|null,
+}
+
+export interface IEntry extends RowDataPacket, EntryDTO{}

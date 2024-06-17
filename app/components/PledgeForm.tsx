@@ -86,9 +86,11 @@ const PledgeForm = ({company}: { company: ICompany }) => {
     }
 
     return <form action={formAction}>
+        <input type="text" hidden value={company.internal_id} name="Constituent_ID"/>
         <div className="flex flex-wrap justify-between gap-8">
-            <h2 className="text-3xl font-bold text-orange-400 mb-6">United Way of The Black Hills<br/> Pledge form for <div
-                className="text-blue-900 text-4xl">{company.company_name}</div></h2>
+            <h2 className="text-3xl font-bold text-orange-400 mb-6">United Way of The Black Hills<br/> Pledge form
+                for <div
+                    className="text-blue-900 text-4xl">{company.company_name}</div></h2>
             <h2 className="text-4xl font-bold text-orange-400 mb-6">{pledgeYear} CAMPAIGN DONATIONS</h2>
         </div>
 
@@ -112,13 +114,13 @@ const PledgeForm = ({company}: { company: ICompany }) => {
 
         <div className="flex flex-wrap my-4">
             <div className="flex flex-wrap gap-4">
-                <InputField required error={state.error} name="firstName" label="First Name"/>
+                <InputField required error={state.error} name="First_Name" label="First Name"/>
                 <InputField error={state.error} name="MI" label="MI"/>
-                <InputField required error={state.error} name="lastName" label="Last Name"/>
-                <InputField required error={state.error} name="homeAddress" label="Home Address"/>
-                <InputField required error={state.error} name="city" label="City"/>
-                <InputField required error={state.error} name="state" label="State"/>
-                <InputField required error={state.error} name="zip" label="Zip"/>
+                <InputField required error={state.error} name="Last_Name" label="Last Name"/>
+                <InputField required error={state.error} name="Home_Address" label="Home Address"/>
+                <InputField required error={state.error} name="City" label="City"/>
+                <InputField required error={state.error} name="State" label="State"/>
+                <InputField required error={state.error} name="Zip" label="Zip"/>
                 <div className="flex-col flex grow max-w-96">
                     <p className="w-full">Employer/Branch/Department</p>
                     <div className="border-b-2 border-slate-300 p-2 shadow-sm text-slate-950 bg-gray-200">
@@ -131,23 +133,23 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                     COMMUNITY:
                 </div>
                 <div className="flex items-center">
-                    <input className="size-6" id="rapidCity" name="useDonationIn" value="Rapid City" type="radio"/>
+                    <input className="size-6" id="rapidCity" name="Donation_Community" value="Rapid City" type="radio"/>
                     <label className="w-full font-bold ml-2" htmlFor="rapidCity">Rapid City</label>
                 </div>
 
                 <div className="flex items-center">
-                    <input className="size-6" id="sturgis" name="useDonationIn" value="Sturgis" type="radio"/>
+                    <input className="size-6" id="sturgis" name="Donation_Community" value="Sturgis" type="radio"/>
                     <label className="w-full font-bold ml-2" htmlFor="sturgis">Sturgis</label>
                 </div>
 
                 <div className="flex items-center">
-                    <input className="size-6" id="northernHills" name="useDonationIn" value="Northern Hills"
+                    <input className="size-6" id="northernHills" name="Donation_Community" value="Northern Hills"
                            type="radio"/>
                     <label className="w-full font-bold ml-2" htmlFor="northernHills">Northern Hills</label>
                 </div>
 
                 <div className="flex items-center">
-                    <input className="size-6" id="southernHills" name="useDonationIn" value="Southern Hills"
+                    <input className="size-6" id="southernHills" name="Donation_Community" value="Southern Hills"
                            type="radio"/>
                     <label className="w-full font-bold ml-2" htmlFor="southernHills">Southern Hills</label>
                 </div>
@@ -175,7 +177,7 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                             <li>Access to Books</li>
                         </ul>
                         <div className="flex mt-auto">
-                            <input name="educationPercentage"
+                            <input name="Education_Percentage"
                                    className="size-14 p-1 bg-transparent border-b-2 border-b-blue-200" type="number"
                                    value={educationAmount}
                                    onChange={(e) => handleChange(e.target.value, educationAmount, setEducationAmount)}/>
@@ -195,7 +197,7 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                             <li>Affordable Transportation</li>
                         </ul>
                         <div className="flex mt-auto">
-                            <input name="financialPercentage"
+                            <input name="Financial_Percentage"
                                    className="size-14 p-1 bg-transparent border-b-2 border-b-blue-200" type="number"
                                    value={stabilityAmount}
                                    onChange={(e) => handleChange(e.target.value, stabilityAmount, setStabilityAmount)}/>
@@ -216,7 +218,7 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                             <li>Health Services</li>
                         </ul>
                         <div className="flex mt-auto">
-                            <input name="financialPercentage"
+                            <input name="Health_Percentage"
                                    className="size-14 p-1 bg-transparent border-b-2 border-b-blue-200" type="number"
                                    value={healthAmount}
                                    onChange={(e) => handleChange(e.target.value, healthAmount, setHealthAmount)}/>
@@ -228,7 +230,10 @@ const PledgeForm = ({company}: { company: ICompany }) => {
 
                     </div>
                 </div>
-
+                {
+                    state.error?.fieldName === "financialPercentage" ? <div
+                        className="w-full text-red-800 font-bold p-3 text-center text-2xl bg-red-50">{state.error.message}</div> : ""
+                }
                 <div className="flex flex-wrap sm:flex-nowrap gap-4 bg-blue-50 shadow">
                     <div
                         className="[writing-mode:vertical-lr] rotate-180 bg-blue-100 font-bold p-8 text-2xl text-center">Payroll
@@ -239,12 +244,12 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                             <div className="flex items-end">
                                 <span className="text-xl font-bold mr-1 mb-2">$</span>
                                 <InputField onChange={handlePayPeriodChange} ref={perPayPeriodRef} min="0" step="0.01"
-                                            type="number" error={state.error} name="amountPerPayPeriod"
+                                            type="number" error={state.error} name="Amount_Per_Pay_Period"
                                             label="Amount per pay period"/>
                             </div>
                             <div className="text-xl font-bold mr-1 mb-2">X</div>
                             <InputField onChange={handlePayPeriodChange} ref={numberOfPayPeriodsRef} min="0"
-                                        type="number" error={state.error} name="numberOfPayPeriodsPerYear"
+                                        type="number" error={state.error} name="Number_of_Pay_Periods_Per_Year"
                                         label="Number of pay periods in full year"/>
                             <div className="text-xl font-bold mr-1 mb-2">=</div>
                             <div className="flex items-end ml-auto w-64"><span
@@ -262,7 +267,7 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                         <div className="flex flex-wrap gap-4 w-full p-2">
                             <div className="flex items-center">
                                 <input ref={dollarADayRef} onChange={handleDollarADayChange} className="size-8"
-                                       id="dollarADay" name="dollarADay" value="Dollar a day"
+                                       id="dollarADay" name="Dollar_A_Day" value="yes"
                                        type="checkbox"/>
                                 <label className="w-full font-bold ml-2" htmlFor="dollarADay">Consider “A Dollar A Day
                                     For United Way” ($365)</label>
@@ -287,7 +292,7 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                                 <span className="text-xl font-bold mr-1 mb-2">$</span>
                                 <InputField onChange={handleHourlyRateOfPay} ref={hourlyRateOfPayRef} min="0"
                                             step="0.01"
-                                            type="number" error={state.error} name="hourlyRateOfPay"
+                                            type="number" error={state.error} name="Hourly_Rate_of_Pay"
                                             label="Hourly rate of pay"/>
                             </div>
                             <div className="text-xl font-bold mr-1 mb-2">X</div>
@@ -318,8 +323,8 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                     <input className="size-6" type="checkbox" required id="authorization" name="authorization"
                            value="Authorized by user"/>
                     <label htmlFor="authorization" className="font-bold text-xl">By
-                    submitting this form I acknowledge
-                    that I authorize all of my donation amounts as submitted</label>
+                        submitting this form I acknowledge
+                        that I authorize all of my donation amounts as submitted</label>
 
                 </div>
             </div>

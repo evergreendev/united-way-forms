@@ -1,6 +1,6 @@
 'use server'
 import mysql, {RowDataPacket} from 'mysql2/promise'
-import {CompanyDTO, ICompany, UserCompanyDTO, UserDTO} from "@/app/admin/users/types";
+import {CompanyDTO, EntryDTO, ICompany, IEntry, UserCompanyDTO, UserDTO} from "@/app/admin/users/types";
 import bcryptjs from "bcryptjs";
 import {headers} from "next/headers";
 
@@ -12,6 +12,10 @@ const createConnection = async () => {
         password: process.env.DB_PASSWORD,
         database: process.env.DB_NAME,
     });
+}
+
+function dateToMySQLDate(date:Date){
+    return date.toISOString().slice(0, 19).replace('T', ' ');
 }
 
 export async function query(query: string): Promise<any> {
@@ -400,4 +404,73 @@ export async function validateToken(token:string,user_id:string):Promise<boolean
     if(result.length <= 0) return false;
 
     return true;
+}
+
+export async function addEntry(entryDTO:EntryDTO) {
+    try {
+        if (!entryDTO.entry) return null;
+
+        const db = await createConnection();
+
+        const sql = 'INSERT INTO form_entry (entry,submit_date,modified_date) VALUES (?,?,?)';
+        const values = [entryDTO.entry,dateToMySQLDate(new Date()), dateToMySQLDate(new Date())];
+
+        const [result] = await db.execute<IEntry[]>(sql, values);
+
+        const [id] = await db.execute<any>('SELECT LAST_INSERT_ID()')
+
+        await db.end();
+
+        return id[0]["LAST_INSERT_ID()"];
+
+    } catch (e:any){
+
+        return {
+            message: e.message,
+            errno: e.errno,
+        }
+    }
+}
+
+export async function updateEntry(entryDTO:EntryDTO) {
+    if (!entryDTO.id) return {
+        message: "Entry does not exist",
+        error: "Entry does not exist"
+    }
+    if(entryDTO.modified_date || entryDTO.submit_date)return {
+        message: "Modified Date and Submitted Date cannot be manually updated.",
+        error: "Modified Date and Submitted Date cannot be manually updated."
+    }
+
+    const db = await createConnection();
+
+    const valuesToUpdate = ['modified_date'];
+    const values: any = [dateToMySQLDate(new Date())];
+
+    for(const[key,value] of Object.entries(entryDTO)) {
+        if (key !== "id" && value){
+            valuesToUpdate.push(`${key} = ?`);
+            values.push(value);
+        }
+    }
+
+    const valuesToUpdateString = valuesToUpdate.join(",");
+
+    const updateEntryQuery = `
+        UPDATE form_entry
+        SET ${valuesToUpdateString}
+        where id = ?;`
+
+    values.push(entryDTO.id);
+
+    if (values.length === 1) return;
+
+    await db.execute(updateEntryQuery, values);
+    await db.end();
+}
+
+export async function deleteEntry(id:string){
+    const db = await createConnection();
+    
+    await db.execute('DELETE FROM form_entry WHERE id = ?',[id]);
 }

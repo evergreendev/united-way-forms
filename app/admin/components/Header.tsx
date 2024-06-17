@@ -21,8 +21,8 @@ const Inner = () => {
             ;
     }
     if (status === "authenticated") {
-        const isAdmin = (session?.user as any).isAdmin
-        const company = (session?.user as any).company
+        const isAdmin = session?.user.isAdmin
+        const company = session?.user.company
 
         return <div className="w-full bg-slate-800 p-4">
             <div className="flex mx-auto max-w-screen-xl items-center flex-wrap w-full">
@@ -37,7 +37,7 @@ const Inner = () => {
                        href={`/admin/entries/${company}`}>Manage Entries</Link> : ""
                 }
                 <Link className="hover:text-slate-300 border-r-slate-700 border-r-2 p-2"
-                      href={`/admin/users/update/${(session?.user as any).id}`}>Manage Account</Link>
+                      href={`/admin/users/update/${session?.user.id}`}>Manage Account</Link>
                 <button className="hover:text-slate-300 border-r-slate-700 p-2 self-end ml-auto"
                         onClick={() => signOut()}>Sign Out
                 </button>
