@@ -4,6 +4,8 @@ import {useFormState, useFormStatus} from "react-dom";
 import InputField from "@/app/components/InputField";
 import {submitPledgeForm} from "@/app/pledgeAction";
 import {useEffect, useRef, useState} from "react";
+import Image from "next/image";
+import logo from "@/public/united-way-horiz.png"
 
 const initialState: {
     message: string | null,
@@ -85,24 +87,29 @@ const PledgeForm = ({company}: { company: ICompany }) => {
 
     return <form action={formAction}>
         <div className="flex flex-wrap justify-between gap-8">
-            <h2 className="text-4xl font-bold text-orange-400 mb-6">Pledge form for <div
-                className="text-blue-900">{company.company_name}</div></h2>
+            <h2 className="text-3xl font-bold text-orange-400 mb-6">United Way of The Black Hills<br/> Pledge form for <div
+                className="text-blue-900 text-4xl">{company.company_name}</div></h2>
             <h2 className="text-4xl font-bold text-orange-400 mb-6">{pledgeYear} CAMPAIGN DONATIONS</h2>
         </div>
 
-        <div>
-            <span className="font-bold text-2xl">Mission Statement:</span>
-            <div>
-                At United Way of the Black Hills, we unite people and resources to improve lives in the Black Hills by
-                delivering measurable long-term solutions to community issues
-                in <span className="font-bold">education, financial stability</span> and <span
-                className="font-bold">health</span>. For more information look on the backside of this pledge form.
-            </div>
-            <div className="text-sm text-slate-700 text-center my-4">
-                621 6th St Ste 100, Rapid City, SD 57701 | Phone: 605-343-5872 / Fax: 605-343-9437 | Email:
-                info@unitedwayblackhills.org | www.unitedwayblackhills.org
+        <div className="flex flex-wrap gap-4 items-center">
+            <Image src={logo} className="w-40" alt="United Way of the Black Hills"/>
+            <div className="w-96 grow">
+                <span className="font-bold text-2xl">Mission Statement:</span>
+                <div>
+                    At United Way of the Black Hills, we unite people and resources to improve lives in the Black Hills
+                    by
+                    delivering measurable long-term solutions to community issues
+                    in <span className="font-bold">education, financial stability</span> and <span
+                    className="font-bold">health</span>. For more information look on the backside of this pledge form.
+                </div>
+                <div className="text-sm text-slate-700 text-center my-4">
+                    621 6th St Ste 100, Rapid City, SD 57701 | Phone: 605-343-5872 / Fax: 605-343-9437 | Email:
+                    info@unitedwayblackhills.org | www.unitedwayblackhills.org
+                </div>
             </div>
         </div>
+
         <div className="flex flex-wrap my-4">
             <div className="flex flex-wrap gap-4">
                 <InputField required error={state.error} name="firstName" label="First Name"/>
