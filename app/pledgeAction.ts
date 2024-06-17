@@ -7,8 +7,6 @@ export async function submitPledgeForm(prevState:  { message: string | null, err
     const eduPercent = formData.get('Education_Percentage');
     const healthPercent = formData.get('Health_Percentage');
 
-    console.log((parseInt(finPercent as string) + parseInt(eduPercent as string) + parseInt(healthPercent as string)))
-
     if ((parseInt(finPercent as string) + parseInt(eduPercent as string) + parseInt(healthPercent as string)) > 100){
         return {
             message: null,
@@ -21,14 +19,20 @@ export async function submitPledgeForm(prevState:  { message: string | null, err
 
     let json:any = {};
 
+    console.log(formData)
+
+
     formData.forEach((value, key) => {
-        json[key] = value;
+        if (key !== "Company_ID"){
+            json[key] = value;
+        }
     })
 
     json = JSON.stringify(json);
 
     await addEntry({
-        entry: json
+        entry: json,
+        company_id: formData.get("Company_ID") as string,
     })
 
     return {

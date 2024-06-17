@@ -14,7 +14,7 @@ const createConnection = async () => {
     });
 }
 
-function dateToMySQLDate(date:Date){
+function dateToMySQLDate(date: Date) {
     return date.toISOString().slice(0, 19).replace('T', ' ');
 }
 
@@ -22,23 +22,23 @@ export async function query(query: string): Promise<any> {
     try {
         const db = await createConnection();
 
-        const [result] = await db.execute(query,[]);
+        const [result] = await db.execute(query, []);
 
         await db.end();
 
         return result;
 
-    } catch (e){
+    } catch (e) {
         console.error(e);
     }
 }
 
-export async function getUsers(){
+export async function getUsers() {
     const db = await createConnection();
 
     const sql = 'SELECT * FROM user';
 
-    interface IUser extends RowDataPacket{
+    interface IUser extends RowDataPacket {
 
     }
 
@@ -47,14 +47,14 @@ export async function getUsers(){
     return result;
 }
 
-export async function getUserByLogin(userName: string, password:string): Promise<any> {
+export async function getUserByLogin(userName: string, password: string): Promise<any> {
     try {
 
         const db = await createConnection();
 
         const passwordHashQuery = 'SELECT password FROM user WHERE user_name=?';
 
-        const [passwordHash] = await db.execute<any[]>(passwordHashQuery,[userName]);
+        const [passwordHash] = await db.execute<any[]>(passwordHashQuery, [userName]);
 
         const passwordsMatch = await bcryptjs.compare(password, passwordHash?.[0]?.password);
 
@@ -70,7 +70,7 @@ export async function getUserByLogin(userName: string, password:string): Promise
 
         return result;
 
-    } catch (e:any){
+    } catch (e: any) {
 
         return null
     }
@@ -90,7 +90,7 @@ export async function getUserByEmail(email: string): Promise<any> {
 
         return result;
 
-    } catch (e:any){
+    } catch (e: any) {
 
         return null
     }
@@ -103,7 +103,8 @@ export async function getUserByID(id: string): Promise<any> {
         const sql = 'SELECT * FROM user WHERE id = ?';
 
         const values = [id];
-        interface IUser extends RowDataPacket{
+
+        interface IUser extends RowDataPacket {
             id: string;
             user_name: string;
             is_admin: number;
@@ -117,20 +118,20 @@ export async function getUserByID(id: string): Promise<any> {
 
         return result[0];
 
-    } catch (e:any){
+    } catch (e: any) {
 
         return null
     }
 }
 
-export async function createUser(user:UserDTO) {
+export async function createUser(user: UserDTO) {
     try {
         if (!user.password || !user.user_name) return null;
 
         const db = await createConnection();
 
         const sql = 'INSERT INTO user (user_name, password, is_admin, email) VALUES (?,?,?,?)';
-        const hashedPassword = await bcryptjs.hash(user.password,10);
+        const hashedPassword = await bcryptjs.hash(user.password, 10);
         const values = [user.user_name, hashedPassword, user.is_admin, user.email];
 
         const [result] = await db.execute(sql, values);
@@ -139,7 +140,7 @@ export async function createUser(user:UserDTO) {
 
         return "Success";
 
-    } catch (e:any){
+    } catch (e: any) {
 
         return {
             message: e.message,
@@ -148,7 +149,7 @@ export async function createUser(user:UserDTO) {
     }
 }
 
-export async function createCompany(companyDTO:CompanyDTO) {
+export async function createCompany(companyDTO: CompanyDTO) {
     try {
         if (!companyDTO.company_name || !companyDTO.internal_id) return null;
 
@@ -165,7 +166,7 @@ export async function createCompany(companyDTO:CompanyDTO) {
 
         return id[0]["LAST_INSERT_ID()"];
 
-    } catch (e:any){
+    } catch (e: any) {
 
         return {
             message: e.message,
@@ -174,7 +175,7 @@ export async function createCompany(companyDTO:CompanyDTO) {
     }
 }
 
-export async function deleteCompany(id:string) {
+export async function deleteCompany(id: string) {
     try {
         const db = await createConnection();
 
@@ -188,7 +189,7 @@ export async function deleteCompany(id:string) {
 
         return "Success";
 
-    } catch (e:any){
+    } catch (e: any) {
 
         return {
             message: e.message,
@@ -209,48 +210,54 @@ export async function getCompanies() {
 
         return result;
 
-    } catch (e:any){
+    } catch (e: any) {
 
         return null
     }
 }
 
-export async function getUserCompany(userId:string) {
+export async function getUserCompany(userId: string) {
     const db = await createConnection();
 
-    interface ICompanyIds extends RowDataPacket{
+    interface ICompanyIds extends RowDataPacket {
         company_id: string;
     }
 
-    const [companyIds] = await db.execute<ICompanyIds[]>(`SELECT company_id FROM company_user WHERE user_id = ?`, [userId]);
+    const [companyIds] = await db.execute<ICompanyIds[]>(`SELECT company_id
+                                                          FROM company_user
+                                                          WHERE user_id = ?`, [userId]);
 
     await db.end();
 
     return companyIds;
 }
 
-export async function getCompany(id:string) {
+export async function getCompany(id: string) {
     const db = await createConnection();
 
-    interface ICompany extends RowDataPacket{
+    interface ICompany extends RowDataPacket {
         id: string;
         company_name: string;
         internal_id: string;
     }
 
-    const [companyIds] = await db.execute<ICompany[]>(`SELECT * FROM company WHERE id = ?`, [id]);
+    const [companyIds] = await db.execute<ICompany[]>(`SELECT *
+                                                       FROM company
+                                                       WHERE id = ?`, [id]);
 
     await db.end();
 
     return companyIds;
 }
 
-export async function updateCompany(company:CompanyDTO) {
+export async function updateCompany(company: CompanyDTO) {
     const db = await createConnection();
 
     const [companyIds] = await db.execute<ICompany[]>(
-        `UPDATE company company_id 
-SET company_name = ?, internal_id = ? WHERE id=?;`,
+        `UPDATE company company_id
+         SET company_name = ?,
+             internal_id = ?
+         WHERE id = ?;`,
         [company.company_name, company.internal_id, company.id]);
 
     await db.end();
@@ -258,16 +265,17 @@ SET company_name = ?, internal_id = ? WHERE id=?;`,
     return companyIds;
 }
 
-export async function getUserCompanies(){
+export async function getUserCompanies() {
     const db = await createConnection();
 
-    interface ICompanyIds extends RowDataPacket{
+    interface ICompanyIds extends RowDataPacket {
         company_id: string;
-        user_id:string;
+        user_id: string;
     }
 
     const [userCompanies] = await db.execute<ICompanyIds[]>(`
-    SELECT * FROM company_user;
+        SELECT *
+        FROM company_user;
     `);
 
     await db.end();
@@ -275,21 +283,21 @@ export async function getUserCompanies(){
     return userCompanies;
 }
 
-export async function updateUserCompany(userCompany:UserCompanyDTO){
+export async function updateUserCompany(userCompany: UserCompanyDTO) {
     const db = await createConnection();
     if (!userCompany.user_id) return null;
 
-    await db.execute("DELETE FROM company_user WHERE user_id = ?",[userCompany.user_id]); //delete the old company. this won't be necessary if we ever allow multiple companies on one user.
+    await db.execute("DELETE FROM company_user WHERE user_id = ?", [userCompany.user_id]); //delete the old company. this won't be necessary if we ever allow multiple companies on one user.
 
     if (!userCompany.company_id) return null;
 
-    await db.execute("INSERT INTO company_user (company_id, user_id) values (?,?)",[userCompany.company_id, userCompany.user_id]);
+    await db.execute("INSERT INTO company_user (company_id, user_id) values (?,?)", [userCompany.company_id, userCompany.user_id]);
 
     await db.end();
 }
 
 
-export async function deleteUser(userId:string) {
+export async function deleteUser(userId: string) {
     try {
         const db = await createConnection();
 
@@ -305,7 +313,7 @@ export async function deleteUser(userId:string) {
 
         return "Success";
 
-    } catch (e:any){
+    } catch (e: any) {
 
         return {
             message: e.message,
@@ -314,7 +322,7 @@ export async function deleteUser(userId:string) {
     }
 }
 
-export async function updateUser(userDTO:UserDTO) {
+export async function updateUser(userDTO: UserDTO) {
     if (!userDTO.id) return {
         message: "User does not exist",
         error: "User does not exist"
@@ -325,15 +333,15 @@ export async function updateUser(userDTO:UserDTO) {
     const valuesToUpdate = [];
     const values = [];
 
-    for(const[key,value] of Object.entries(userDTO)) {
-        if (key !== "id" && value){
+    for (const [key, value] of Object.entries(userDTO)) {
+        if (key !== "id" && value) {
             valuesToUpdate.push(`${key} = ?`);
             values.push(value);
         }
     }
 
     const valuesToUpdateString = valuesToUpdate.join(",");
-    
+
     const updateUserQuery = `
         UPDATE user
         SET ${valuesToUpdateString}
@@ -347,14 +355,16 @@ export async function updateUser(userDTO:UserDTO) {
     await db.end();
 }
 
-export async function clearExpiredTokens(){
+export async function clearExpiredTokens() {
     const db = await createConnection();
-    const clearExpiredTokens = `DELETE FROM user_token WHERE expiration < NOW()`
+    const clearExpiredTokens = `DELETE
+                                FROM user_token
+                                WHERE expiration < NOW()`
     await db.execute(clearExpiredTokens);
     await db.end();
 }
 
-export async function generateUserTokenURL(userId:string) {
+export async function generateUserTokenURL(userId: string) {
     const headersList = headers();
 
     const domain = headersList.get('host');
@@ -369,16 +379,19 @@ export async function generateUserTokenURL(userId:string) {
             VALUES (?, DATE_ADD(NOW(), INTERVAL 2 DAY), uuid())
         `
     const values = [userId];
-    await db.execute(addTokenQuery,values);
+    await db.execute(addTokenQuery, values);
 
-    const getTokenQuery = `SELECT token,user_id FROM user_token WHERE expiration > NOW() AND user_id = ?`
+    const getTokenQuery = `SELECT token, user_id
+                           FROM user_token
+                           WHERE expiration > NOW()
+                             AND user_id = ?`
 
     interface IToken extends RowDataPacket {
         token: string,
         user_id: string,
     }
 
-    const [token] = await db.execute<IToken[]>(getTokenQuery,[userId]);
+    const [token] = await db.execute<IToken[]>(getTokenQuery, [userId]);
     await db.end();
 
     if (token.length <= 0) return null;
@@ -386,34 +399,39 @@ export async function generateUserTokenURL(userId:string) {
     return `https://${domain}/update-account/?token=${token[0].token}&user_id=${token[0].user_id}`;
 }
 
-export async function validateToken(token:string,user_id:string):Promise<boolean> {
+export async function validateToken(token: string, user_id: string): Promise<boolean> {
     const db = await createConnection();
 
     await clearExpiredTokens();
 
     const query =
-        `SELECT id FROM user_token 
-          WHERE expiration > NOW() AND user_id = ? AND token = ?`;
+        `SELECT id
+         FROM user_token
+         WHERE expiration > NOW()
+           AND user_id = ?
+           AND token = ?`;
+
     interface IToken extends RowDataPacket {
         id: string
     }
-    const [result] = await db.execute<IToken[]>(query,[user_id, token]);
+
+    const [result] = await db.execute<IToken[]>(query, [user_id, token]);
 
     await db.end();
 
-    if(result.length <= 0) return false;
+    if (result.length <= 0) return false;
 
     return true;
 }
 
-export async function addEntry(entryDTO:EntryDTO) {
+export async function addEntry(entryDTO: EntryDTO) {
     try {
         if (!entryDTO.entry) return null;
 
         const db = await createConnection();
 
-        const sql = 'INSERT INTO form_entry (entry,submit_date,modified_date) VALUES (?,?,?)';
-        const values = [entryDTO.entry,dateToMySQLDate(new Date()), dateToMySQLDate(new Date())];
+        const sql = 'INSERT INTO form_entry (entry,submit_date,modified_date,company_id) VALUES (?,?,?,?)';
+        const values = [entryDTO.entry, dateToMySQLDate(new Date()), dateToMySQLDate(new Date()), entryDTO.company_id];
 
         const [result] = await db.execute<IEntry[]>(sql, values);
 
@@ -423,7 +441,7 @@ export async function addEntry(entryDTO:EntryDTO) {
 
         return id[0]["LAST_INSERT_ID()"];
 
-    } catch (e:any){
+    } catch (e: any) {
 
         return {
             message: e.message,
@@ -432,12 +450,42 @@ export async function addEntry(entryDTO:EntryDTO) {
     }
 }
 
-export async function updateEntry(entryDTO:EntryDTO) {
+export async function getEntries(companyId?: string) {
+    const db = await createConnection();
+
+    const [entries] = companyId
+        ? await db.execute<IEntry[]>(`
+                SELECT *
+                FROM form_entry;
+        `)
+        : await db.execute<IEntry[]>(`
+                SELECT *
+                FROM form_entry;
+        `);
+
+    await db.end();
+
+    return entries;
+}
+
+export async function getEntry(id: string) {
+    const db = await createConnection();
+
+    const [entries] = await db.execute<IEntry[]>(`SELECT *
+                                                  FROM form_entry
+                                                  WHERE id = ?`, [id]);
+
+    await db.end();
+
+    return entries;
+}
+
+export async function updateEntry(entryDTO: EntryDTO) {
     if (!entryDTO.id) return {
         message: "Entry does not exist",
         error: "Entry does not exist"
     }
-    if(entryDTO.modified_date || entryDTO.submit_date)return {
+    if (entryDTO.modified_date || entryDTO.submit_date) return {
         message: "Modified Date and Submitted Date cannot be manually updated.",
         error: "Modified Date and Submitted Date cannot be manually updated."
     }
@@ -447,8 +495,8 @@ export async function updateEntry(entryDTO:EntryDTO) {
     const valuesToUpdate = ['modified_date'];
     const values: any = [dateToMySQLDate(new Date())];
 
-    for(const[key,value] of Object.entries(entryDTO)) {
-        if (key !== "id" && value){
+    for (const [key, value] of Object.entries(entryDTO)) {
+        if (key !== "id" && value) {
             valuesToUpdate.push(`${key} = ?`);
             values.push(value);
         }
@@ -469,8 +517,8 @@ export async function updateEntry(entryDTO:EntryDTO) {
     await db.end();
 }
 
-export async function deleteEntry(id:string){
+export async function deleteEntry(id: string) {
     const db = await createConnection();
-    
-    await db.execute('DELETE FROM form_entry WHERE id = ?',[id]);
+
+    await db.execute('DELETE FROM form_entry WHERE id = ?', [id]);
 }
