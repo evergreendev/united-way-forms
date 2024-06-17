@@ -1,10 +1,9 @@
 "use client"
 import Link from "next/link";
 import {SessionProvider, signOut, useSession} from "next-auth/react";
-import {ReactNode} from "react";
 
 
-const Header = ({children}: { children: ReactNode }) => {
+const Header = () => {
     return <SessionProvider>
         <Inner/>
     </SessionProvider>
