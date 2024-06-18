@@ -29,7 +29,7 @@ export const submitUpdateUserForm = async (prevState: any, formData: FormData) =
 
     const userByEmail = await getUserByEmail(email as string);
 
-    if (userByEmail.length > 0 && userByEmail[0].id !== id) {
+    if (userByEmail.length > 0 && userByEmail[0].id !== parseInt(id as string)) {
         return {
             error: {
                 message: "Email is already in use by another account. Please choose another.",
