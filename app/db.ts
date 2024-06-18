@@ -508,11 +508,11 @@ export async function updateEntry(entryDTO: EntryDTO) {
 
     const db = await createConnection();
 
-    const valuesToUpdate = ['modified_date'];
+    const valuesToUpdate = ['modified_date = ?'];
     const values: any = [dateToMySQLDate(new Date())];
 
     for (const [key, value] of Object.entries(entryDTO)) {
-        if (key !== "id" && value) {
+        if (key !== "id") {
             valuesToUpdate.push(`${key} = ?`);
             values.push(value);
         }
