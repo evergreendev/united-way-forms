@@ -168,7 +168,7 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                     are made.
                 </div>
                 <div className="flex flex-wrap justify-around gap-2 bg-orange-50 grow p-6 mt-4 mb-4">
-                    <div className="w-3/12 grow flex flex-col">
+                    <div className="sm:w-3/12 mb-6 grow flex flex-col">
                         <h3 className="mb-2 underline text-lg font-bold">Education</h3>
                         <ul className="list-disc ml-4">
                             <li>Dolly Parton’s Imagination Library Program</li>
@@ -188,7 +188,7 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                                 gift</div></div>
                         </div>
                     </div>
-                    <div className="w-3/12 grow flex flex-col">
+                    <div className="sm:w-3/12 mb-6 grow flex flex-col">
                         <h3 className="mb-2 underline text-lg font-bold">Financial Stability & Basic Needs</h3>
                         <ul className="list-disc ml-4">
                             <li>Basic Needs & Economic Assistance</li>
@@ -209,7 +209,7 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                         </div>
 
                     </div>
-                    <div className="w-3/12 grow flex flex-col">
+                    <div className="sm:w-3/12 mb-6 grow flex flex-col">
                         <h3 className="mb-2 underline text-lg font-bold">Health</h3>
                         <ul className="list-disc ml-4">
                             <li>Mental Health Services</li>
@@ -237,7 +237,7 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                 }
                 <div className="flex flex-wrap sm:flex-nowrap gap-4 bg-blue-50 shadow">
                     <div
-                        className="[writing-mode:vertical-lr] rotate-180 bg-blue-100 font-bold p-8 text-2xl text-center">Payroll
+                        className="sm:[writing-mode:vertical-lr] sm:rotate-180 w-full sm:w-auto bg-blue-100 font-bold p-8 text-2xl text-center">Payroll
                         Deduction
                     </div>
                     <div className="flex flex-wrap gap-4 py-6">
