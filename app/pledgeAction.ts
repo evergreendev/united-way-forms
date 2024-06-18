@@ -30,11 +30,9 @@ export async function submitPledgeForm(prevState:  { message: string | null, err
 
     let json:any = {};
 
-    console.log(formData)
-
 
     formData.forEach((value, key) => {
-        if (typeof value === "string") {
+        if (typeof value === "string" && key.indexOf("$")===-1) {
             json[key] = value;
         }
     })
