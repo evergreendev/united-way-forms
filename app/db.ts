@@ -265,6 +265,18 @@ export async function updateCompany(company: CompanyDTO) {
     return companyIds;
 }
 
+export async function addCompany(company: CompanyDTO) {
+    const db = await createConnection();
+
+    const [companyIds] = await db.execute<ICompany[]>(
+        `INSERT INTO company (company_name, internal_id) VALUES (?,?)`,
+        [company.company_name, company.internal_id]);
+
+    await db.end();
+
+    return companyIds;
+}
+
 export async function getUserCompanies() {
     const db = await createConnection();
 

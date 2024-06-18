@@ -23,10 +23,10 @@ const CompanyTable = ({companyData}: { companyData: any }) => {
     }, [selectedRows]);
 
     return <DataTable
-        title="Companys"
+        title="Companies"
         subHeader
         defaultSortFieldId="company_name"
-        subHeaderComponent={<Link href="/admin/companys/create">Add Company</Link>}
+        subHeaderComponent={<Link href="/admin/companies/create">Add Company</Link>}
         highlightOnHover
         pointerOnHover
         selectableRows
