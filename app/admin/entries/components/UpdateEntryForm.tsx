@@ -59,6 +59,7 @@ const UpdateEntryForm = ({entry, callbackUrl}: {
                     }
                     if(entry[0] === "Donation_Community") {
                         return <div
+                            key={entry[0]}
                             className="flex flex-wrap gap-4 border-4 border-blue-700 text-blue-850 mt-4 w-full items-center">
                             <div className="text-white bg-blue-500 p-2 text-2xl font-bold">USE MY DONATION IN THE
                                 SELECTED
