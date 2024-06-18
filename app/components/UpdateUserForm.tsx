@@ -62,7 +62,7 @@ const UpdateUserForm = ({user, isAdmin, isEditingSelf, companies, callbackUrl}: 
 
     return <form className="max-w-screen-xl mx-auto bg-blue-100 p-8 text-blue-950" action={formAction}>
         {
-            pending ? <div>a</div> : ""
+            pending ? <div>...</div> : ""
         }
         <div className="flex flex-wrap gap-2 mb-4">
             <input defaultValue={user.id} name="id" hidden/>

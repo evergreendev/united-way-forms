@@ -1,5 +1,5 @@
 "use server"
-import {getUserCompany, updateUser, updateUserCompany} from "@/app/db";
+import {getUserByEmail, updateUser, updateUserCompany} from "@/app/db";
 import bcryptjs from "bcryptjs";
 import {revalidatePath} from "next/cache";
 
@@ -22,6 +22,19 @@ export const submitUpdateUserForm = async (prevState: any, formData: FormData) =
     if (typeof userName !== "string" || userName?.length <= 0){
         return {
             error: {message: 'User name cannot be blank', fieldName: 'userName'},
+            message: null
+        }
+    }
+
+
+    const userByEmail = await getUserByEmail(email as string);
+
+    if (userByEmail.length > 0) {
+        return {
+            error: {
+                message: "Email is already in use by another account. Please choose another.",
+                fieldName: "email",
+            },
             message: null
         }
     }
