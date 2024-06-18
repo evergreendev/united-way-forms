@@ -37,9 +37,17 @@ export async function submitPledgeForm(prevState:  { message: string | null, err
         }
     })
 
-    console.log(json)
+    const result = await addEntry(json);
 
-    await addEntry(json)
+    if (result.errno){
+        return {
+            message: null,
+            error: {
+                message: "Something went wrong please double check your information and try again later. Your form has not been submitted",
+                fieldName: "all",
+            }
+        }
+    }
 
     return {
         message: "Thank you for your pledge form submission. It has been successfully submitted.",

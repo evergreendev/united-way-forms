@@ -426,7 +426,6 @@ export async function validateToken(token: string, user_id: string): Promise<boo
 
 export async function addEntry(entryDTO: EntryDTO) {
     try {
-        console.log(entryDTO,"....................")
         const valuesToUpdate = ["submit_date","modified_date"];
         const values: any = [dateToMySQLDate(new Date()), dateToMySQLDate(new Date())];
         const questionArray = ["?","?"];
@@ -438,8 +437,6 @@ export async function addEntry(entryDTO: EntryDTO) {
                 questionArray.push("?")
             }
         }
-
-        console.log(values );
 
 
         const db = await createConnection();

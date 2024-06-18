@@ -85,6 +85,10 @@ const PledgeForm = ({company}: { company: ICompany }) => {
         }
     }
 
+    if (state.message){
+        return <h2 className="bg-blue-200 text-blue-950 text-4xl p-6">{state.message}</h2>
+    }
+
     return <form action={formAction}>
         <input type="text" hidden value={company.internal_id} name="Constituent_ID" readOnly/>
         <input type="text" hidden value={company.id} name="Company_ID" readOnly/>
@@ -330,6 +334,10 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                 </div>
             </div>
         </div>
+        {
+            state.error?.fieldName === "all" ?
+                <div className="bg-red-200 text-red-800">{state.error.message}</div> : ""
+        }
         <SubmitButton/>
     </form>
 }
