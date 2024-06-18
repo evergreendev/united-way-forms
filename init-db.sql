@@ -17,14 +17,30 @@ create table form
 
 create table form_entry
 (
-    id            int auto_increment
+    id                             int auto_increment
         primary key,
-    form_id       int      not null,
-    entry         json     null,
-    submit_date   datetime not null,
-    modified_date datetime null,
-    constraint form_entry_form_id_fk
-        foreign key (form_id) references form (id)
+    submit_date                    datetime     not null,
+    modified_date                  datetime     null,
+    company_id                     int          not null,
+    Constituent_ID                 varchar(255) null,
+    First_Name                     varchar(255) null,
+    MI                             varchar(1)   null,
+    Last_Name                      varchar(255) null,
+    Home_Address                   varchar(255) null,
+    City                           varchar(255) null,
+    State                          varchar(255) null,
+    Zip                            varchar(255) null,
+    Donation_Community             varchar(255) null,
+    Education_Percentage           varchar(255) null,
+    Financial_Percentage           varchar(255) null,
+    Health_Percentage              varchar(255) null,
+    Amount_Per_Pay_Period          varchar(255) null,
+    Number_of_Pay_Periods_Per_Year varchar(255) null,
+    Dollar_A_Day                   varchar(255) null,
+    Hourly_Rate_of_Pay             varchar(255) null,
+    authorization                  varchar(255) null,
+    constraint form_entry_company_id_fk
+        foreign key (company_id) references company (id)
 );
 
 create table user
@@ -62,5 +78,4 @@ create table user_token
     constraint user_token_user_id_fk
         foreign key (user_id) references user (id)
 );
-
 

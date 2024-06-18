@@ -6,6 +6,17 @@ export async function submitPledgeForm(prevState:  { message: string | null, err
     const finPercent = formData.get('Financial_Percentage');
     const eduPercent = formData.get('Education_Percentage');
     const healthPercent = formData.get('Health_Percentage');
+    const mi = formData.get('MI');
+
+    if (typeof mi === "string" && mi.length > 1){
+        return {
+            message: null,
+            error: {
+                message: "Middle Initial cannot be more than 1 character",
+                fieldName: "MI"
+            }
+        }
+    }
 
     if ((parseInt(finPercent as string) + parseInt(eduPercent as string) + parseInt(healthPercent as string)) > 100){
         return {
@@ -23,17 +34,14 @@ export async function submitPledgeForm(prevState:  { message: string | null, err
 
 
     formData.forEach((value, key) => {
-        if (key !== "Company_ID"){
+        if (typeof value === "string") {
             json[key] = value;
         }
     })
 
-    json = JSON.stringify(json);
+    console.log(json)
 
-    await addEntry({
-        entry: json,
-        company_id: formData.get("Company_ID") as string,
-    })
+    await addEntry(json)
 
     return {
         message: "Thank you for your pledge form submission. It has been successfully submitted.",

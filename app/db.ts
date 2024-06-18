@@ -426,12 +426,25 @@ export async function validateToken(token: string, user_id: string): Promise<boo
 
 export async function addEntry(entryDTO: EntryDTO) {
     try {
-        if (!entryDTO.entry) return null;
+        console.log(entryDTO,"....................")
+        const valuesToUpdate = ["submit_date","modified_date"];
+        const values: any = [dateToMySQLDate(new Date()), dateToMySQLDate(new Date())];
+        const questionArray = ["?","?"];
+
+        for (const [key, value] of Object.entries(entryDTO)) {
+            if (key !== "id" && value) {
+                valuesToUpdate.push(`${key}`);
+                values.push(value);
+                questionArray.push("?")
+            }
+        }
+
+        console.log(values );
+
 
         const db = await createConnection();
 
-        const sql = 'INSERT INTO form_entry (entry,submit_date,modified_date,company_id) VALUES (?,?,?,?)';
-        const values = [entryDTO.entry, dateToMySQLDate(new Date()), dateToMySQLDate(new Date()), entryDTO.company_id];
+        const sql = `INSERT INTO form_entry (${valuesToUpdate.join(",")}) VALUES (${questionArray.join(",")})`;
 
         const [result] = await db.execute<IEntry[]>(sql, values);
 
@@ -443,6 +456,7 @@ export async function addEntry(entryDTO: EntryDTO) {
 
     } catch (e: any) {
 
+        console.error(e);
         return {
             message: e.message,
             errno: e.errno,

@@ -116,7 +116,7 @@ const PledgeForm = ({company}: { company: ICompany }) => {
         <div className="flex flex-wrap my-4">
             <div className="flex flex-wrap gap-4">
                 <InputField required error={state.error} name="First_Name" label="First Name"/>
-                <InputField error={state.error} name="MI" label="MI"/>
+                <InputField maxLength={1} error={state.error} name="MI" label="MI"/>
                 <InputField required error={state.error} name="Last_Name" label="Last Name"/>
                 <InputField required error={state.error} name="Home_Address" label="Home Address"/>
                 <InputField required error={state.error} name="City" label="City"/>

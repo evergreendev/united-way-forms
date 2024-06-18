@@ -2,7 +2,7 @@
 
 import {ForwardedRef, forwardRef, useState} from "react";
 
-const InputField = forwardRef(({name, label,error,defaultValue = "", required = false, password = false,step,min,type = "text",onChange}: {
+const InputField = forwardRef(({name, label,error,defaultValue = "", required = false, password = false,step,min,type = "text",maxLength,onChange}: {
     name: string,
     label: string,
     error: {
@@ -14,7 +14,8 @@ const InputField = forwardRef(({name, label,error,defaultValue = "", required = 
     password?: boolean,
     step?: string,
     min?: string,
-    type?: string
+    type?: string,
+    maxLength?: number,
     onChange?: () => void;
 }, ref:ForwardedRef<any>) => {
     const [hidePassword, setHidePassword] = useState(password);
@@ -24,6 +25,7 @@ const InputField = forwardRef(({name, label,error,defaultValue = "", required = 
             <span className="text-red-600">*</span> : ""}</label>
         <input
             onChange={onChange}
+            maxLength={maxLength}
             step={step} min={min} autoComplete="new-password" className="border-b-2 border-slate-300 p-2 shadow-sm text-slate-950" id={name}
                name={name}
                ref={ref}
