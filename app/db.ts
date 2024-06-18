@@ -470,8 +470,10 @@ export async function getEntries(companyId?: string) {
     const [entries] = companyId
         ? await db.execute<IEntry[]>(`
                 SELECT *
-                FROM form_entry;
-        `)
+                FROM form_entry
+                WHERE company_id = ?
+                ;
+        `,[companyId])
         : await db.execute<IEntry[]>(`
                 SELECT *
                 FROM form_entry;

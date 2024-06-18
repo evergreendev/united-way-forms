@@ -1,16 +1,39 @@
-import {getEntries} from "@/app/db";
+import {getCompany, getEntries} from "@/app/db";
 import EntryTable from "@/app/admin/entries/components/EntryTable";
+import {IEntry} from "@/app/admin/users/types";
+import {getServerSession} from "next-auth";
+import {authOptions} from "@/app/auth";
 
 
 async function fetchData(companyId?: string) {
     return await getEntries(companyId);
 }
+export interface IEntriesWithCompanyName extends IEntry{
+    Company_Name: string;
+}
 
 const companies = async ({searchParams}: { searchParams?: { company?: string } }) => {
-    const company = searchParams?.company
+    const session = await getServerSession(authOptions);
+    const company = session.user.isAdmin ? searchParams?.company : session.user.company;
     const entryData = await fetchData(company);
+    const seenCompanies = new Set<string>();
+    const companyFilterOptions: { id: string; name: string; }[] = [];
+    const entryDataWithCompanyNames = await Promise.all<IEntriesWithCompanyName>(entryData.map(async function(entry){
+        const company = entry.company_id ? await getCompany(entry.company_id) : [];
+        const companyName = company[0] ? company[0].company_name : "";
 
-    return <EntryTable entryData={entryData}/>
+        if (entry.company_id && !seenCompanies.has(entry.company_id)) {
+            companyFilterOptions.push({id: entry.company_id, name: companyName});
+        }
+
+        seenCompanies.add(entry.company_id||"");
+        return {
+            Company_Name: companyName,
+            ...entry,
+        }
+    }))
+
+    return <EntryTable entryData={entryDataWithCompanyNames} companyFilterOption={companyFilterOptions}/>
 }
 
 export default companies;
