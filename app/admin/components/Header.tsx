@@ -40,6 +40,8 @@ const Inner = () => {
                 }
                 <Link className="hover:text-slate-300 border-r-slate-700 border-r-2 p-2"
                       href={`/admin/users/update/${session?.user.id}`}>Manage Account</Link>
+                <Link className="hover:text-slate-300 border-r-slate-700 border-r-2 p-2"
+                      href={`/admin/pledge-forms`}>Pledge Forms</Link>
                 <button className="hover:text-slate-300 border-r-slate-700 p-2 self-end ml-auto"
                         onClick={() => signOut()}>Sign Out
                 </button>
