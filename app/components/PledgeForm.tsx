@@ -93,7 +93,7 @@ const PledgeForm = ({company}: { company: ICompany }) => {
         <input type="text" hidden value={company.internal_id} name="Constituent_ID" readOnly/>
         <input type="text" hidden value={company.id} name="Company_ID" readOnly/>
         <div className="flex flex-wrap justify-between gap-8">
-            <h2 className="text-3xl font-bold text-orange-400 mb-6">United Way of The Black Hills<br/> Pledge form
+            <h2 className="text-3xl font-bold text-orange-400 mb-6 sm:w-5/12">United Way of The Black Hills<br/> Pledge form
                 for <div
                     className="text-blue-900 text-4xl">{company.company_name}</div></h2>
             <h2 className="text-4xl font-bold text-orange-400 mb-6">{pledgeYear} CAMPAIGN DONATIONS</h2>
