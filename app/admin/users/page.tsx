@@ -22,7 +22,7 @@ const users = async () => {
 
     const formattedUserData = await Promise.all(
         userData.map(async x => {
-                const userCompany = await fetchUserCompany(x.id)
+                const userCompany = await fetchUserCompany(x.id||"")
                 const company = userCompany ? await fetchCompany(userCompany.company_id) : "";
 
 
