@@ -34,9 +34,9 @@ const Inner = () => {
                 }
                 {
                     company ? <Link className="hover:text-slate-300 border-r-slate-700 border-r-2 p-2"
-                                    href={`/admin/entries?company=${company}`}>Manage Entries</Link> :
+                                    href={`/admin/entries?company=${company}`}>Entries</Link> :
                         <Link className="hover:text-slate-300 border-r-slate-700 border-r-2 p-2"
-                              href={`/admin/entries`}>Manage Entries</Link>
+                              href={`/admin/entries`}>Entries</Link>
                 }
                 <Link className="hover:text-slate-300 border-r-slate-700 border-r-2 p-2"
                       href={`/admin/users/update/${session?.user.id}`}>Manage Account</Link>
