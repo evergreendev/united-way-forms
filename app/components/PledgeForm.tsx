@@ -91,7 +91,7 @@ const PledgeForm = ({company}: { company: ICompany }) => {
 
     return <form action={formAction}>
         <input type="text" hidden value={company.internal_id} name="Constituent_ID" readOnly/>
-        <input type="text" hidden value={company.id} name="Company_ID" readOnly/>
+        <input type="text" hidden value={company.id} name="company_id" readOnly/>
         <div className="flex flex-wrap justify-between gap-8">
             <h2 className="text-3xl font-bold text-orange-400 mb-6 sm:w-5/12">United Way of The Black Hills<br/> Pledge form
                 for <div

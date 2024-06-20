@@ -1,6 +1,6 @@
 'use server'
 import mysql, {RowDataPacket} from 'mysql2/promise'
-import {CompanyDTO, EntryDTO, ICompany, IEntry, UserCompanyDTO, UserDTO} from "@/app/admin/users/types";
+import {CompanyDTO, EntryDTO, ICompany, IEntry, IUser, UserCompanyDTO, UserDTO} from "@/app/admin/users/types";
 import bcryptjs from "bcryptjs";
 import {headers} from "next/headers";
 
@@ -37,10 +37,6 @@ export async function getUsers() {
     const db = await createConnection();
 
     const sql = 'SELECT * FROM user';
-
-    interface IUser extends RowDataPacket {
-
-    }
 
     const [result] = await db.query<IUser[]>(sql);
 

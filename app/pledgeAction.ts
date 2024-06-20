@@ -1,5 +1,6 @@
 "use server"
-import {addEntry} from "@/app/db";
+import {addEntry, getUserCompany, getUsers} from "@/app/db";
+import {sendFormSubmissionEmail} from "@/app/services/aws-ses";
 
 export async function submitPledgeForm(prevState:  { message: string | null, error: { message: string, fieldName: string } | null}, formData: FormData) {
 
@@ -38,6 +39,15 @@ export async function submitPledgeForm(prevState:  { message: string | null, err
     })
 
     const result = await addEntry(json);
+    const users = await getUsers();
+
+    for (const user of users) {
+        const userCompany = user.id ? await getUserCompany(user.id) : null;
+        if (user.receive_form_submission_emails && (user.is_admin || userCompany === formData.get("company_id"))){
+            await sendFormSubmissionEmail(user, json);
+        }
+    }
+
 
     if (result.errno){
         return {

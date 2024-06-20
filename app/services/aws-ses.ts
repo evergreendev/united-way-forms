@@ -1,8 +1,8 @@
 "use server"
 import * as AWS from "aws-sdk";
 import * as nodeMailer from "nodemailer";
-import {generateUserTokenURL, getUserByEmail} from "@/app/db";
-import {UserDTO} from "@/app/admin/users/types";
+import {generateUserTokenURL, getCompany, getUserByEmail} from "@/app/db";
+import {EntryDTO, UserDTO} from "@/app/admin/users/types";
 
 AWS.config.update({
     credentials: {
@@ -33,8 +33,8 @@ export const sendResetPasswordLink = async (prevState: any, formData: FormData) 
     }
 
     const user = await getUserByEmail(email as string);
-    if(user.length <= 0) return {
-        message:"",
+    if (user.length <= 0) return {
+        message: "",
         error: "A user with that email address does not exist"
     }
 
@@ -42,7 +42,7 @@ export const sendResetPasswordLink = async (prevState: any, formData: FormData) 
 
     const tokenUrl = await generateUserTokenURL(userId);
 
-    if(!tokenUrl) return {error: "Invalid User", msg: ""}
+    if (!tokenUrl) return {error: "Invalid User", msg: ""}
 
     console.log(tokenUrl);
 
@@ -85,12 +85,64 @@ export const sendResetPasswordLink = async (prevState: any, formData: FormData) 
     }
 }
 
-export const sendNewUserEmail = async (user:UserDTO) => {
+export const sendFormSubmissionEmail = async (user: UserDTO, formEntry: EntryDTO) => {
+    if (!user.id) return {}
+
+    const companyName = formEntry.company_id ? await getCompany(formEntry.company_id) : null;
+
+    const dataTableHtml = Object.entries(formEntry).map((item)=>{
+        return(`
+        <div><strong>${item[0]}:</strong> ${item[1]}</div>
+        <hr/>
+        `)
+    })
+
+    try {
+        await transporter.sendMail({
+            from: adminMail,
+            to: user.email as string,
+            replyTo: adminMail,
+            subject: `New pledge form submission from ${formEntry.First_Name} ${formEntry.Last_Name} (${companyName?.[0].company_name})`,
+            html: `
+            <!DOCTYPE html >
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>test</title>
+</head>
+<body>
+<div style="padding:20px;">
+<div style="max-width: 500px;">
+<p>
+        <div><strong>Company Name:</strong> ${companyName?.[0].company_name}</div>
+        <hr/>
+${dataTableHtml.join("")}
+<br/>
+</p>
+</div>
+</div>
+</body>
+</html>
+            `
+        });
+
+        return {
+            message: `A link was mailed to update your profile. Please check ${user.email}`,
+            error: ""
+        }
+
+    } catch (e) {
+        console.error(e);
+        return {error: "There was a problem sending your message please try again later.", msg: ""}
+    }
+}
+
+
+export const sendNewUserEmail = async (user: UserDTO) => {
     if (!user.id) return {}
 
     const tokenUrl = await generateUserTokenURL(user.id);
 
-    if(!tokenUrl) return {error: "Invalid User", msg: ""}
+    if (!tokenUrl) return {error: "Invalid User", msg: ""}
 
     try {
         await transporter.sendMail({
