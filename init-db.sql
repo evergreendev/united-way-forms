@@ -45,12 +45,13 @@ create table form_entry
 
 create table user
 (
-    id        int auto_increment
+    id                             int auto_increment
         primary key,
-    user_name varchar(255) not null,
-    password  varchar(255) not null,
-    is_admin  tinyint(1)   not null,
-    email     varchar(255) null,
+    user_name                      varchar(255) not null,
+    password                       varchar(255) not null,
+    is_admin                       tinyint(1)   not null,
+    email                          varchar(255) null,
+    receive_form_submission_emails tinyint(1)   null,
     constraint user_pk
         unique (user_name)
 );

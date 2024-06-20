@@ -10,6 +10,7 @@ export const submitUpdateUserForm = async (prevState: any, formData: FormData) =
     const confirmPassword = formData.get('confirmPassword');
     const id = formData.get('id');
     const company = formData.get('company');
+    const shouldReceiveSub = formData.get('receive_form_submission_emails')
 
     const validateEmail = (email: any) => {
         return String(email)
@@ -61,6 +62,7 @@ export const submitUpdateUserForm = async (prevState: any, formData: FormData) =
         user_name: userName,
         email: email as string,
         password: password !== "" ? await bcryptjs.hash((password as string), 10) : undefined,
+        receive_form_submission_emails: shouldReceiveSub ? 1 : 0
     });
 
     await updateUserCompany({

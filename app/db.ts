@@ -346,7 +346,7 @@ export async function updateUser(userDTO: UserDTO) {
     const values = [];
 
     for (const [key, value] of Object.entries(userDTO)) {
-        if (key !== "id" && value) {
+        if (key !== "id" && value !== undefined) {
             valuesToUpdate.push(`${key} = ?`);
             values.push(value);
         }

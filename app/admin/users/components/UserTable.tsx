@@ -38,6 +38,7 @@ const UserTable = ({userData}: { userData: any }) => {
             {name: "User Name", selector: (row: any) => row["user_name"], sortable: true},
             {name: "Email", selector: (row: any) => row["email"], sortable: true},
             {name: "Company", selector: (row: any) => row["company"], sortable: true},
+            {name: "Receives Submission Emails", selector: (row:any)=> row["receive_form_submission_emails"] === 1 ? "Yes" : "",sortable: true},
             {name: "Is Admin", selector: (row: any) => row["is_admin"] === 1 ? "Admin" : "User", sortable: true},
         ]} data={userData}/>
 }

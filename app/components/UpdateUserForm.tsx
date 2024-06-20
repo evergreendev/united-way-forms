@@ -15,7 +15,8 @@ const SubmitButton = () => {
 
     return (
         <button className="bg-blue-900 p-8 py-2 text-white" type="submit" disabled={pending}>
-            {pending ? <div className="size-8 border-2 border-l-blue-500 border-white animate-spin rounded-full"/> : 'Update Account'}
+            {pending ? <div
+                className="size-8 border-2 border-l-blue-500 border-white animate-spin rounded-full"/> : 'Update Account'}
         </button>
     )
 }
@@ -28,6 +29,7 @@ const UpdateUserForm = ({user, isAdmin, isEditingSelf, companies, callbackUrl}: 
         is_admin: number;
         email: string;
         password: string;
+        receive_form_submission_emails: boolean;
         company?: string;
     },
     isAdmin: boolean,
@@ -50,7 +52,7 @@ const UpdateUserForm = ({user, isAdmin, isEditingSelf, companies, callbackUrl}: 
     }, [newPassword]);
 
     useEffect(() => {
-        if (state.message === "Success"){
+        if (state.message === "Success") {
             console.log("Successfully updated");
             router.push(callbackUrl);
         }
@@ -75,7 +77,8 @@ const UpdateUserForm = ({user, isAdmin, isEditingSelf, companies, callbackUrl}: 
             }
             <div className="w-full">
                 <label htmlFor="company">Company: </label>
-                <select className="text-blue-950" name="company" id="company" disabled={!isAdmin} defaultValue={user.company}>
+                <select className="text-blue-950" name="company" id="company" disabled={!isAdmin}
+                        defaultValue={user.company}>
                     <option value="">Select Company</option>
                     {
                         companies.map(company => {
@@ -96,6 +99,13 @@ const UpdateUserForm = ({user, isAdmin, isEditingSelf, companies, callbackUrl}: 
                     <InputField error={state.error} ref={confirmPasswordRef} name="confirmPassword"
                                 label="Verify New Password" password/>
                 </div>
+            </div>
+            <div className="bg-blue-200 w-full p-6">
+                <label htmlFor="receive_form_submission_emails" className="font-bold mr-2">Should receive submission emails:</label>
+                <input className="size-4" name="receive_form_submission_emails"
+                       id="receive_form_submission_emails"
+                       defaultChecked={user.receive_form_submission_emails}
+                       type="checkbox"/>
             </div>
         </div>
         <SubmitButton/>

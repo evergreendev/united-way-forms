@@ -1,11 +1,12 @@
 import {RowDataPacket} from "mysql2/promise";
 
 export type UserDTO = {
-    id?: string|null,
-    email?: string|null,
-    user_name?: string|null,
-    is_admin?: boolean|null,
-    password?: string|null,
+    id?: string,
+    email?: string,
+    user_name?: string,
+    is_admin?: boolean,
+    password?: string,
+    receive_form_submission_emails?: 1|0
 }
 
 export interface IUser extends RowDataPacket, UserDTO{}
