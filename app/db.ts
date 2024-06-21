@@ -11,6 +11,7 @@ const createConnection = async () => {
         user: process.env.DB_USER,
         password: process.env.DB_PASSWORD,
         database: process.env.DB_NAME,
+        idleTimeout: 10000
     });
 }
 
@@ -367,10 +368,12 @@ export async function updateUser(userDTO: UserDTO) {
 
     values.push(userDTO.id);
 
+    await db.end();
+
     if (values.length === 1) return;
 
     await db.execute(updateUserQuery, values);
-    await db.end();
+
 }
 
 export async function clearExpiredTokens() {
