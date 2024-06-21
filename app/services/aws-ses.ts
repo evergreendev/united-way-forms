@@ -63,7 +63,7 @@ export const sendResetPasswordLink = async (prevState: any, formData: FormData) 
 <div style="max-width: 500px;">
 <p>
 <strong>Please use the following link to update your account</strong>
-<p>Please not this link will expire after use, or after 48 hours for security purposes</p>
+<p>Please note this link will expire after use, or after 48 hours for security purposes</p>
 <a href="${tokenUrl}">Update Account</a>
 <br/>
 </p>
@@ -161,7 +161,7 @@ export const sendNewUserEmail = async (user: UserDTO) => {
 <div style="max-width: 500px;">
 <p>
 <strong>Please use the following link to set your password for your new United Way Pledge Form Account</strong>
-<p>Please not this link will expire after use, or after 48 hours for security purposes</p>
+<p>Please note this link will expire after use, or after 48 hours for security purposes</p>
 <a href="${tokenUrl}">Activate Account</a>
 <br/>
 </p>

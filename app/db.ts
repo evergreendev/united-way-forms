@@ -368,12 +368,14 @@ export async function updateUser(userDTO: UserDTO) {
 
     values.push(userDTO.id);
 
-    await db.end();
-
-    if (values.length === 1) return;
+    if (values.length === 1){
+        await db.end();
+        return;
+    }
 
     await db.execute(updateUserQuery, values);
 
+    await db.end();
 }
 
 export async function clearExpiredTokens() {
