@@ -1,13 +1,18 @@
 "use server"
 import {updateEntry} from "@/app/db";
 import {revalidatePath} from "next/cache";
-import {EntryDTO, IEntry} from "@/app/admin/users/types";
+import {EntryDTO} from "@/app/admin/users/types";
 
 export const submitUpdateEntryForm = async (prevState: { message?: string | null, error: { message: string, fieldName: string } | null, callbackUrl:string } , formData: FormData) => {
     const updatedEntry:EntryDTO = {}
     formData.forEach((value,key) => {
         if (typeof value === "string"){
-            updatedEntry[key as keyof EntryDTO] = value;
+            if (updatedEntry[key as keyof EntryDTO]){
+                updatedEntry[key as keyof EntryDTO] += " - "+value;
+            } else{
+                updatedEntry[key as keyof EntryDTO] = value;
+            }
+
         }
     })
 

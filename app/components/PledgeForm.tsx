@@ -133,29 +133,29 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                     </div>
                 </div>
             </div>
-            <div className="flex flex-wrap gap-4 border-4 border-blue-700 text-blue-850 mt-4 w-full items-center">
-                <div className="text-white bg-blue-500 p-2 text-2xl font-bold">USE MY DONATION IN THE SELECTED
+            <div className="flex flex-wrap gap-4 border-4 border-blue-700 text-blue-850 mt-4 w-full items-center justify-between">
+                <div className="text-white bg-blue-500 p-2 text-xl font-bold w-full 2xl:w-auto">USE MY DONATION IN THE SELECTED
                     COMMUNITY:
                 </div>
-                <div className="flex items-center">
-                    <input className="size-6" id="rapidCity" name="Donation_Community" value="Rapid City" type="radio"/>
+                <div className="flex items-center p-2 w-full sm:w-auto">
+                    <input className="size-6" id="rapidCity" name="Donation_Community" value="Rapid City" type="checkbox"/>
                     <label className="w-full font-bold ml-2" htmlFor="rapidCity">Rapid City</label>
                 </div>
 
-                <div className="flex items-center">
-                    <input className="size-6" id="sturgis" name="Donation_Community" value="Sturgis" type="radio"/>
+                <div className="flex items-center p-2 w-full sm:w-auto">
+                    <input className="size-6" id="sturgis" name="Donation_Community" value="Sturgis" type="checkbox"/>
                     <label className="w-full font-bold ml-2" htmlFor="sturgis">Sturgis</label>
                 </div>
 
-                <div className="flex items-center">
+                <div className="flex items-center p-2 w-full sm:w-auto">
                     <input className="size-6" id="northernHills" name="Donation_Community" value="Northern Hills"
-                           type="radio"/>
+                           type="checkbox"/>
                     <label className="w-full font-bold ml-2" htmlFor="northernHills">Northern Hills</label>
                 </div>
 
-                <div className="flex items-center">
+                <div className="flex items-center p-2 w-full sm:w-auto">
                     <input className="size-6" id="southernHills" name="Donation_Community" value="Southern Hills"
-                           type="radio"/>
+                           type="checkbox"/>
                     <label className="w-full font-bold ml-2" htmlFor="southernHills">Southern Hills</label>
                 </div>
 
