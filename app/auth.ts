@@ -15,6 +15,9 @@ export const authOptions = {
             return {...session, user: {...session.user, id: token.sub, isAdmin: token.isAdmin, company: token.company}};
         }
     },
+    pages: {
+        signIn: '/auth/credentials-signin'
+    },
     providers: [
         CredentialsProvider({
             name: "Credentials",

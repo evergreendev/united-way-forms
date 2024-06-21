@@ -22,7 +22,7 @@ const SubmitButton = () => {
 }
 
 
-const UpdateUserForm = ({user, isAdmin, isEditingSelf, companies, callbackUrl}: {
+const UpdateUserForm = ({user, isAdmin, isEditingSelf, companies, callbackUrl, token}: {
     user: {
         id: string;
         user_name: string;
@@ -36,6 +36,7 @@ const UpdateUserForm = ({user, isAdmin, isEditingSelf, companies, callbackUrl}: 
     isEditingSelf: boolean,
     companies: ICompany[],
     callbackUrl: string,
+    token?: string
 }) => {
     const [state, formAction] = useFormState(submitUpdateUserForm, initialState);
     const {pending} = useFormStatus();
@@ -67,7 +68,9 @@ const UpdateUserForm = ({user, isAdmin, isEditingSelf, companies, callbackUrl}: 
             pending ? <div>...</div> : ""
         }
         <div className="flex flex-wrap gap-2 mb-4">
-            <input defaultValue={user.id} name="id" hidden/>
+            <input defaultValue={user.id} name="id" hidden readOnly/>
+            <input defaultValue={token} name="token" hidden readOnly/>
+            <input defaultValue={callbackUrl} name="callbackUrl" hidden readOnly/>
             <InputField error={state.error} name="userName" label="User Name" defaultValue={user.user_name}/>
             <InputField error={state.error} name="email" label="Email" defaultValue={user.email}/>
             {

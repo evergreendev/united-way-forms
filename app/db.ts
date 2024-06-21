@@ -48,19 +48,27 @@ export async function getUserByLogin(userName: string, password: string): Promis
 
         const db = await createConnection();
 
-        const passwordHashQuery = 'SELECT password FROM user WHERE user_name=?';
+        let isEmail = false;
+
+        const sql = 'SELECT * FROM user WHERE user_name= ?';
+        const emailSql = 'SELECT * FROM user WHERE email= ?'
+
+        const values = [userName];
+
+        let [result] = await db.execute<IUser[]>(sql, values);
+
+        if (result.length === 0){
+            [result] = await db.execute<IUser[]>(emailSql, values);
+            isEmail = true;
+        }
+
+        const passwordHashQuery = isEmail ? 'SELECT password FROM user WHERE email=?' : 'SELECT password FROM user WHERE user_name=?';
 
         const [passwordHash] = await db.execute<any[]>(passwordHashQuery, [userName]);
 
         const passwordsMatch = await bcryptjs.compare(password, passwordHash?.[0]?.password);
 
         if (!passwordsMatch) return null;
-
-        const sql = 'SELECT * FROM user WHERE user_name= ?';
-
-        const values = [userName];
-
-        const [result] = await db.execute(sql, values);
 
         await db.end();
 
@@ -369,6 +377,12 @@ export async function clearExpiredTokens() {
                                 FROM user_token
                                 WHERE expiration < NOW()`
     await db.execute(clearExpiredTokens);
+    await db.end();
+}
+
+export async function deleteToken(token:string){
+    const db = await createConnection();
+    await db.execute('DELETE FROM user_token WHERE token=?',[token]);
     await db.end();
 }
 

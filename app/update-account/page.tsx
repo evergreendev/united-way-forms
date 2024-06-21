@@ -24,13 +24,11 @@ const page = async ({searchParams}: { searchParams?: { token?: string, user_id?:
         const user = await getUser(userId||session?.user?.id);
         const userCompany = await getUserCompany(user.id);
         const companies = await fetchCompanies();
-        return <UpdateUserForm callbackUrl="/admin" user={{...user, company:userCompany[0]?.company_id}} companies={companies||[]} isEditingSelf={true} isAdmin={user.isAdmin} />
+        return <UpdateUserForm token={token} callbackUrl="/admin" user={{...user, company:userCompany[0]?.company_id}} companies={companies||[]} isEditingSelf={true} isAdmin={user.isAdmin} />
     }
 
-    return <div>
+    return <div className="max-w-screen-sm mx-auto text-white">
         <UserEmailTokenForm/>
-        <h2>OR</h2>
-        <Login/>
     </div>
 }
 

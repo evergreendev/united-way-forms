@@ -1,7 +1,8 @@
 "use server"
-import {getUserByEmail, updateUser, updateUserCompany} from "@/app/db";
+import {deleteToken, getUserByEmail, updateUser, updateUserCompany} from "@/app/db";
 import bcryptjs from "bcryptjs";
 import {revalidatePath} from "next/cache";
+import {redirect} from "next/navigation";
 
 export const submitUpdateUserForm = async (prevState: any, formData: FormData) => {
     const userName = formData.get('userName')
@@ -11,6 +12,8 @@ export const submitUpdateUserForm = async (prevState: any, formData: FormData) =
     const id = formData.get('id');
     const company = formData.get('company');
     const shouldReceiveSub = formData.get('receive_form_submission_emails')
+    const token = formData.get('token');
+    const callbackUrl = formData.get('callbackUrl');
 
     const validateEmail = (email: any) => {
         return String(email)
@@ -70,7 +73,14 @@ export const submitUpdateUserForm = async (prevState: any, formData: FormData) =
         company_id: company as string,
     });
 
+    if (token){
+        await deleteToken(token as string);
+    }
+
     revalidatePath("/admin/users","page");
+    if (callbackUrl){
+        redirect(callbackUrl as string);
+    }
 
     return {
         error: null,
