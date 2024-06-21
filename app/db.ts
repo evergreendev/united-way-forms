@@ -40,6 +40,8 @@ export async function getUsers() {
 
     const [result] = await db.query<IUser[]>(sql);
 
+    await db.end();
+
     return result;
 }
 
@@ -556,4 +558,5 @@ export async function deleteEntry(id: string) {
     const db = await createConnection();
 
     await db.execute('DELETE FROM form_entry WHERE id = ?', [id]);
+    await db.end();
 }
