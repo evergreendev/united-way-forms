@@ -3,7 +3,6 @@ import UpdateUserForm from "@/app/components/UpdateUserForm";
 import {getCompanies, getUserByID, getUserCompany, validateToken} from "@/app/db";
 import {getServerSession} from "next-auth";
 import {authOptions} from "@/app/auth";
-import Login from "@/app/admin/users/components/Login";
 
 async function getUser(userId:string){
     return await getUserByID(userId);

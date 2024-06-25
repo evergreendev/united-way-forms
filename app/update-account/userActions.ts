@@ -77,6 +77,8 @@ export const submitUpdateUserForm = async (prevState: any, formData: FormData) =
         await deleteToken(token as string);
     }
 
+    console.log("here");
+
     revalidatePath("/admin/users","page");
     if (callbackUrl){
         redirect(callbackUrl as string);
