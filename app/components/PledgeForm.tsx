@@ -44,7 +44,24 @@ const PledgeForm = ({company}: { company: ICompany }) => {
 
     const hourlyRateOfPayRef = useRef<HTMLInputElement>(null);
 
+    const listRef = useRef<HTMLInputElement>(null);
+    const listNameRef = useRef<HTMLInputElement>(null);
+
     const [completeTotal, setCompleteTotal] = useState("0.00");
+
+    const [listNameIsShowing, setListNameIsShowing] = useState(false);
+
+    function handleListNameChange(){
+
+        if (listNameRef.current){
+            listNameRef.current.value = "";
+        }
+
+        if (listRef.current){
+            setListNameIsShowing(!listRef.current.checked);
+        }
+
+    }
 
     function handlePayPeriodChange() {
         if (perPayPeriodRef?.current?.value && numberOfPayPeriodsRef?.current?.value) {
@@ -85,15 +102,17 @@ const PledgeForm = ({company}: { company: ICompany }) => {
         }
     }
 
-    if (state.message){
+    if (state.message) {
         return <h2 className="bg-blue-200 text-blue-950 text-4xl p-6">{state.message}</h2>
     }
+
 
     return <form action={formAction}>
         <input type="text" hidden value={company.internal_id} name="Constituent_ID" readOnly/>
         <input type="text" hidden value={company.id} name="company_id" readOnly/>
         <div className="flex flex-wrap justify-between gap-8">
-            <h2 className="text-3xl font-bold text-orange-400 mb-6 sm:w-5/12">United Way of The Black Hills<br/> Pledge form
+            <h2 className="text-3xl font-bold text-orange-400 mb-6 sm:w-5/12">United Way of The Black Hills<br/> Pledge
+                form
                 for <div
                     className="text-blue-900 text-4xl">{company.company_name}</div></h2>
             <h2 className="text-4xl font-bold text-orange-400 mb-6">{pledgeYear} CAMPAIGN DONATIONS</h2>
@@ -119,26 +138,42 @@ const PledgeForm = ({company}: { company: ICompany }) => {
 
         <div className="flex flex-wrap my-4">
             <div className="flex flex-wrap gap-4">
-                <InputField required error={state.error} name="First_Name" label="First Name"/>
-                <InputField maxLength={1} error={state.error} name="MI" label="MI"/>
-                <InputField required error={state.error} name="Last_Name" label="Last Name"/>
-                <InputField required error={state.error} name="Home_Address" label="Home Address"/>
+                <div className="w-full flex flex-wrap gap-4">
+                    <InputField required error={state.error} name="First_Name" label="First Name"/>
+                    <InputField maxLength={1} error={state.error} name="MI" label="MI"/>
+                    <InputField required error={state.error} width="20rem" name="Last_Name" label="Last Name"/>
+                </div>
+                <InputField required error={state.error} width="100%" name="Home_Address" label="Home Address"/>
                 <InputField required error={state.error} name="City" label="City"/>
                 <InputField required error={state.error} name="State" label="State"/>
                 <InputField required error={state.error} name="Zip" label="Zip"/>
-                <div className="flex-col flex grow max-w-96">
-                    <p className="w-full">Employer/Branch/Department</p>
-                    <div className="border-b-2 border-slate-300 p-2 shadow-sm text-slate-950 bg-gray-200">
-                        {company.company_name}
+
+                <div className="w-full">
+                    <div className="flex-col flex grow max-w-96">
+                        <p className="w-full">Employer/Branch/Department</p>
+                        <div className="border-b-2 border-slate-300 p-2 shadow-sm text-slate-950 bg-gray-200">
+                            {company.company_name}
+                        </div>
                     </div>
                 </div>
+
+                <div className="w-full flex flex-wrap gap-4">
+                    <InputField error={state.error} width="48%" name="Business_Phone" label="Business Phone"/>
+                    <InputField error={state.error} width="48%" name="Business_Email" label="Business Email"/>
+                    <InputField error={state.error} name="Cell_Phone" label="Cell Phone"/>
+                    <InputField error={state.error} name="Personal_Email" label="Personal Email"/>
+                </div>
+
             </div>
-            <div className="flex flex-wrap gap-4 border-4 border-blue-700 text-blue-850 mt-4 w-full items-center justify-between">
-                <div className="text-white bg-blue-500 p-2 text-xl font-bold w-full 2xl:w-auto">USE MY DONATION IN THE SELECTED
+            <div
+                className="flex flex-wrap gap-4 border-4 border-blue-700 text-blue-850 mt-4 w-full items-center justify-between">
+                <div className="text-white bg-blue-500 p-2 text-xl font-bold w-full 2xl:w-auto">USE MY DONATION IN THE
+                    SELECTED
                     COMMUNITY:
                 </div>
                 <div className="flex items-center p-2 w-full sm:w-auto">
-                    <input className="size-6" id="rapidCity" name="Donation_Community" value="Rapid City" type="checkbox"/>
+                    <input className="size-6" id="rapidCity" name="Donation_Community" value="Rapid City"
+                           type="checkbox"/>
                     <label className="w-full font-bold ml-2" htmlFor="rapidCity">Rapid City</label>
                 </div>
 
@@ -316,12 +351,33 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                         </div>
                     </div>
                 </div>
-                <div className="flex grow ml-auto">
+                <div className="flex grow ml-auto w-full mb-6">
                     <div
                         className="text-3xl text-right text-blue-900 p-2 shadow-lg ml-auto mt-8 bg-blue-100 border-2 border-blue-200">
                         TOTAL ANNUAL GIFT OF: <span className="font-bold">
                             ${completeTotal}
                         </span>
+                    </div>
+                </div>
+                <div className="flex flex-col items-end w-full">
+                    <div className="flex items-center mb-6">
+                        <input required onChange={handleListNameChange} className="size-8"
+                               id="List_Name_In_Leadership_Directory" name="List_Name_In_Leadership_Directory"
+                               value="1"
+                               type="radio"/>
+                        <label className="w-80 font-bold ml-2" htmlFor="List_Name_In_Leadership_Directory">
+                            Please list my name (and spouse) in the Leadership Directory as shown below:
+                        </label>
+                    </div>
+                    <div className={`${listNameIsShowing ? "block" : "hidden"} mb-6`}>
+                        <InputField textArea ref={listNameRef} error={state.error} name="Leadership_Directory_Name" label="How names will be listed on leadership directory:"/>
+                    </div>
+                    <div className="flex items-center">
+                        <input required ref={listRef} onChange={handleListNameChange} className="size-8"
+                               id="Dont_List_Name_In_Leadership_Directory" name="List_Name_In_Leadership_Directory"
+                               value="0"
+                               type="radio"/>
+                        <label className="w-80 font-bold ml-2" htmlFor="Dont_List_Name_In_Leadership_Directory">I wish to remain anonymous</label>
                     </div>
                 </div>
                 <div className="bg-orange-300 p-6 my-8 flex flex-wrap gap-4 w-full">

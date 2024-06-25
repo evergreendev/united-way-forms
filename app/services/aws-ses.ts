@@ -90,14 +90,23 @@ export const sendFormSubmissionEmail = async (user: UserDTO, formEntry: EntryDTO
 
     const companyName = formEntry.company_id ? await getCompany(formEntry.company_id) : null;
 
-    const dataTableHtml = Object.entries(formEntry).map((item)=>{
+  const dataTableHtml = Object.entries(formEntry).map((item)=>{
+
+      if (item[0] === "List_Name_In_Leadership_Directory"){
+          return(`
+        <div><strong>${item[0].replaceAll("_", " ")}:</strong> ${item[1] === "1"?"Yes":"No"}</div>
+        <hr/>
+        `)
+      }
+
         return(`
-        <div><strong>${item[0]}:</strong> ${item[1]}</div>
+        <div><strong>${item[0].replaceAll("_", " ")}:</strong> ${item[1]}</div>
         <hr/>
         `)
     })
 
     try {
+
         await transporter.sendMail({
             from: adminMail,
             to: user.email as string,

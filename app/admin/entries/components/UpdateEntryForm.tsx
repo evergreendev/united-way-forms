@@ -57,6 +57,17 @@ const UpdateEntryForm = ({entry, callbackUrl}: {
                             <input defaultChecked={entry[1] === "yes"} type="checkbox" className="size-4 ml-2" id="dollarADay" name="Dollar_A_Day" value="yes"/>
                         </div>
                     }
+                    if (entry[0] === "List_Name_In_Leadership_Directory") {
+                        return <div key={entry[0]} className="w-full text-xl font-bold bg-blue-200">
+                            <label>List Name in Leadership Directory</label>
+                            <label htmlFor={entry[0]} className="ml-4">Yes</label>
+                            <input defaultChecked={entry[1] === 1} type="radio" className="size-4 ml-2 mr-8" id={entry[0]}
+                                   name={entry[0]} value="1"/>
+                            <label htmlFor={"no"+entry[0]}>No</label>
+                            <input defaultChecked={entry[1] !== 1} type="radio" className="size-4 ml-2"
+                                   id={"no" + entry[0]} name={entry[0]} value="0"/>
+                        </div>
+                    }
                     if(entry[0] === "Donation_Community") {
                         return <div
                             key={entry[0]}

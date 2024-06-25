@@ -76,7 +76,8 @@ const EntryTable = ({entryData, companyFilterOption}: {
     }
 
 
-    const Export = ({onExport}: any) => <button className="bg-blue-900 text-white py-2 px-4" onClick={e => onExport()}>Export</button>;
+    const Export = ({onExport}: any) => <button className="bg-blue-900 text-white py-2 px-4"
+                                                onClick={e => onExport()}>Export</button>;
 
     const actionsMemo = useMemo(() => <Export
         onExport={() => downloadCSV(filteredData)}/>, [filteredData, downloadCSV]);
@@ -125,11 +126,19 @@ const EntryTable = ({entryData, companyFilterOption}: {
         for (const [key, value] of Object.entries(row)) {
             if (seenKeys.has(key) || key == "id") continue;
 
-            colsFromEntry.push({
-                name: key.replaceAll("_", " "),
-                minWidth: `${key.length * 12}px`,
-                selector: (row: any) => row[key]
-            })
+            if (key === "List_Name_In_Leadership_Directory") {
+                colsFromEntry.push({
+                    name: key.replaceAll("_", " "),
+                    minWidth: `${key.length * 12}px`,
+                    selector: (row: any) => row[key] === 1 ? "Yes" : "No"
+                })
+            } else {
+                colsFromEntry.push({
+                    name: key.replaceAll("_", " "),
+                    minWidth: `${key.length * 12}px`,
+                    selector: (row: any) => row[key]
+                })
+            }
 
             seenKeys.add(key);
         }
