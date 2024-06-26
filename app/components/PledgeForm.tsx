@@ -369,7 +369,7 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                             Please list my name (and spouse) in the Leadership Directory as shown below:
                         </label>
                     </div>
-                    <div className={`${listNameIsShowing ? "block" : "hidden"} mb-6`}>
+                    <div className={`${listNameIsShowing ? "max-h-96 opacity-100" : "opacity-0 max-h-0"} overflow-hidden transition-all duration-500 mb-6`}>
                         <InputField textArea ref={listNameRef} error={state.error} name="Leadership_Directory_Name" label="How names will be listed on leadership directory:"/>
                     </div>
                     <div className="flex items-center">
