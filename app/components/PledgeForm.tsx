@@ -49,7 +49,7 @@ const PledgeForm = ({company}: { company: ICompany }) => {
 
     const [completeTotal, setCompleteTotal] = useState("0.00");
 
-    const [listNameIsShowing, setListNameIsShowing] = useState(true);
+    const [listNameIsShowing, setListNameIsShowing] = useState(false);
 
     function handleListNameChange(){
 
