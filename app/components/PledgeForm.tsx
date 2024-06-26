@@ -49,7 +49,7 @@ const PledgeForm = ({company}: { company: ICompany }) => {
 
     const [completeTotal, setCompleteTotal] = useState("0.00");
 
-    const [listNameIsShowing, setListNameIsShowing] = useState(false);
+    const [listNameIsShowing, setListNameIsShowing] = useState(true);
 
     function handleListNameChange(){
 
@@ -370,7 +370,7 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                         </label>
                     </div>
                     <div className={`${listNameIsShowing ? "max-h-96 opacity-100" : "opacity-0 max-h-0"} overflow-hidden transition-all duration-500 mb-6`}>
-                        <InputField textArea ref={listNameRef} error={state.error} name="Leadership_Directory_Name" label="How names will be listed on leadership directory:"/>
+                        <InputField textArea ref={listNameRef} error={state.error} name="Leadership_Directory_Name" label="Please print my name (and spouse) in the Leadership Directory as shown below:"/>
                     </div>
                     <div className="flex items-center">
                         <input required ref={listRef} onChange={handleListNameChange} className="size-8"
