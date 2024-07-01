@@ -80,8 +80,8 @@ export const submitUpdateUserForm = async (prevState: any, formData: FormData) =
 
     revalidatePath("/admin/users","page");
     if (callbackUrl){
-        console.log(callbackUrl);
-        redirect(callbackUrl as string);
+/*        console.log(callbackUrl);
+        redirect(callbackUrl as string);*/
     }
 
     return {

@@ -3,6 +3,7 @@ import UpdateUserForm from "@/app/components/UpdateUserForm";
 import {getCompanies, getUserByID, getUserCompany, validateToken} from "@/app/db";
 import {getServerSession} from "next-auth";
 import {authOptions} from "@/app/auth";
+import ClientRedirectToLogin from "@/app/components/ClientRedirectToLogin";
 
 async function getUser(userId:string){
     return await getUserByID(userId);
@@ -25,6 +26,11 @@ const page = async ({searchParams}: { searchParams?: { token?: string, user_id?:
         const companies = await fetchCompanies();
         return <UpdateUserForm token={token} callbackUrl="/admin" user={{...user, company:userCompany[0]?.company_id}} companies={companies||[]} isEditingSelf={true} isAdmin={user.isAdmin} />
     }
+
+    if(token){
+        return <ClientRedirectToLogin callbackUrl="/admin"/> //Have to do this because when running on our server the client crashes when redirected from the server
+    }
+
 
     return <div className="max-w-screen-sm mx-auto text-white">
         <UserEmailTokenForm/>
