@@ -65,6 +65,7 @@ export const submitUpdateUserForm = async (prevState: any, formData: FormData) =
         user_name: userName,
         email: email as string,
         password: password !== "" ? await bcryptjs.hash((password as string), 10) : undefined,
+        is_admin: formData.get('is_admin') === "on",
         receive_form_submission_emails: shouldReceiveSub ? 1 : 0
     });
 
@@ -76,8 +77,6 @@ export const submitUpdateUserForm = async (prevState: any, formData: FormData) =
     if (token){
         await deleteToken(token as string);
     }
-
-    console.log("here");
 
     revalidatePath("/admin/users","page");
     if (callbackUrl){

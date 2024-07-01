@@ -75,8 +75,8 @@ const UpdateUserForm = ({user, isAdmin, isEditingSelf, companies, callbackUrl, t
             <InputField error={state.error} name="email" label="Email" defaultValue={user.email}/>
             {
                 isAdmin && !isEditingSelf ?
-                    <div className="text-blue-950 w-full bg-blue-400 p-2"><label>Is Admin: </label><input
-                        type="checkbox" defaultChecked={user.is_admin === 1}/></div> : ""
+                    <div className="text-blue-950 w-full bg-blue-400 p-2"><label htmlFor="is_admin">Is Admin: </label><input
+                        type="checkbox" defaultChecked={user.is_admin === 1} name="is_admin" id="is_admin"/></div> : ""
             }
             <div className="w-full">
                 <label htmlFor="company">Company: </label>
