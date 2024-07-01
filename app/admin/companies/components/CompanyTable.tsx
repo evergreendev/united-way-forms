@@ -16,11 +16,13 @@ const CompanyTable = ({companyData}: { companyData: any }) => {
             for (const row of selectedRows.selectedRows) {
                 await deleteCompany(row.id);
             }
+            router.refresh();
+            setSelectedRows([]);
         };
         return <button key="delete" onClick={handleDelete} className="bg-red-600 hover:bg-red-500 px-8 py-2 text-white">
             Delete
         </button>;
-    }, [selectedRows]);
+    }, [router,selectedRows]);
 
     return <DataTable
         title="Companies"
@@ -35,6 +37,7 @@ const CompanyTable = ({companyData}: { companyData: any }) => {
         onRowClicked={(row) => {
             router.push('/admin/companies/update/' + row.id);
         }}
+        clearSelectedRows={selectedRows.length === 0}
         columns={[
             {name: "Company Name", selector: (row: any) => row["company_name"], sortable: true, id: "company_name"},
             {name: "Constituent ID", selector: (row: any) => row["internal_id"]},

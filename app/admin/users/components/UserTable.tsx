@@ -16,11 +16,13 @@ const UserTable = ({userData}: { userData: any }) => {
             for (const row of selectedRows.selectedRows) {
                 await deleteUser(row.id);
             }
+            router.refresh();
+            setSelectedRows([]);
         };
         return <button key="delete" onClick={handleDelete} className="bg-red-600 hover:bg-red-500 px-8 py-2 text-white">
             Delete
         </button>;
-    }, [selectedRows]);
+    }, [router,selectedRows]);
 
     return <DataTable
         title="Users"
@@ -30,6 +32,7 @@ const UserTable = ({userData}: { userData: any }) => {
         pointerOnHover
         selectableRows
         contextActions={contextActions}
+        clearSelectedRows={selectedRows.length === 0}
         onSelectedRowsChange={handleRowSelected}
         onRowClicked={(row) => {
             router.push('/admin/users/update/' + row.id);

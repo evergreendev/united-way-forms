@@ -22,6 +22,7 @@ const EntryTable = ({entryData, companyFilterOption}: {
             for (const row of selectedRows.selectedRows) {
                 await deleteEntry(row.id);
             }
+            router.refresh();
         };
         return <button key="delete" onClick={handleDelete} className="bg-red-600 hover:bg-red-500 px-8 py-2 text-white">
             Delete
@@ -178,6 +179,7 @@ const EntryTable = ({entryData, companyFilterOption}: {
         highlightOnHover
         pointerOnHover
         selectableRows
+        clearSelectedRows={selectedRows.length === 0}
         contextActions={contextActions}
         onSelectedRowsChange={handleRowSelected}
         onRowClicked={(row: any) => {
