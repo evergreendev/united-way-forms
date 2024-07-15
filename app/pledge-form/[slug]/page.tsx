@@ -1,4 +1,4 @@
-import {getCompany} from "@/app/db";
+import {getCompanyByInternal} from "@/app/db";
 import PledgeForm from "@/app/components/PledgeForm";
 import { notFound } from 'next/navigation'
 
@@ -6,7 +6,7 @@ import { notFound } from 'next/navigation'
 const page = async ({params}: { params: { slug: string } }) => {
     const companyId = params.slug;
 
-    const company = await getCompany(companyId);
+    const company = await getCompanyByInternal(companyId);
 
     if (company.length === 0) {
         return notFound();

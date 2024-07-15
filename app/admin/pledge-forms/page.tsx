@@ -16,8 +16,8 @@ const page = async () => {
                 return parseInt(company.id||"") === parseInt(session.user.company);
             })?.map(company => {
                 return <div key={company.id} className="mb-6">
-                    <Link href={`/pledge-form/${company.id}`} className="font-bold text-xl text-blue-900 underline">{company.company_name}</Link>
-                    <CopyToClipBoard text={`/pledge-form/${company.id}`}/>
+                    <Link href={`/pledge-form/${company.internal_id}`} className="font-bold text-xl text-blue-900 underline">{company.company_name}</Link>
+                    <CopyToClipBoard text={`/pledge-form/${company.internal_id}`}/>
                 </div>
             })
         }

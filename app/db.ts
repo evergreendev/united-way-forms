@@ -257,6 +257,24 @@ export async function getCompany(id: string) {
     return companyIds;
 }
 
+export async function getCompanyByInternal(id: string) {
+    const db = await createConnection();
+
+    interface ICompany extends RowDataPacket {
+        id: string;
+        company_name: string;
+        internal_id: string;
+    }
+
+    const [companyIds] = await db.execute<ICompany[]>(`SELECT *
+                                                       FROM company
+                                                       WHERE internal_id = ?`, [id]);
+
+    await db.end();
+
+    return companyIds;
+}
+
 export async function updateCompany(company: CompanyDTO) {
     const db = await createConnection();
 
