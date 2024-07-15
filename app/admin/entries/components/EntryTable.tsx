@@ -35,10 +35,48 @@ const EntryTable = ({entryData, companyFilterOption}: {
     // Blatant "inspiration" from https://codepen.io/Jacqueline34/pen/pyVoWr
     function convertArrayOfObjectsToCSV(array: any[]) {
         let result: string;
+        let totalIndexes = {
+            payroll: 0,
+            dollar: 0,
+            fairShare: 0,
+            total: 25
+        }
 
         const columnDelimiter = ',';
         const lineDelimiter = '\n';
-        const keys = Object.keys(data[0]);
+        const keysToGetValuesFrom = Object.keys(data[0]).toSpliced(totalIndexes.total,0, "Entry_Total_Donations");
+        const keys = Object.keys(data[0]).map((key,index) => {
+            if (key === "Number_of_Pay_Periods_Per_Year"){
+                totalIndexes.payroll = index
+            }
+            if (key === "Dollar_A_Day"){
+                totalIndexes.dollar = index
+            }
+            if (key === "Hourly_Rate_of_Pay"){
+                totalIndexes.fairShare = index
+            }
+
+
+
+
+            if (key === "Donation_Community") {
+                return "Area Designation";
+            }
+
+            return key.replaceAll("_", " ");
+
+        }).toSpliced(totalIndexes.total,0, "Entry Total Donations");
+
+        let payrollDeductionTotal = 0;
+        let dollarADayTotal = 0;
+        let fairShareTotal = 0;
+        let totalTotal = 0;
+
+        let currPayAmount = 0;
+
+        let currTotal = 0;
+
+
 
         result = '';
         result += keys.join(columnDelimiter);
@@ -46,15 +84,60 @@ const EntryTable = ({entryData, companyFilterOption}: {
 
         array.forEach(item => {
             let ctr = 0;
-            keys.forEach(key => {
+            currTotal = 0;
+            keysToGetValuesFrom.forEach(key => {
                 if (ctr > 0) result += columnDelimiter;
 
-                result += item[key] || "NO";
+                if(key === "Amount_Per_Pay_Period"){
+                    currPayAmount = item[key];
+                }
+                if (key === "Number_of_Pay_Periods_Per_Year"){
+                    payrollDeductionTotal += item[key] * currPayAmount;
+                    currTotal += item[key] * currPayAmount;
+                }
+
+                if (key === "Dollar_A_Day" && item[key]){
+                    dollarADayTotal += 365;
+                    currTotal += 365;
+                }
+                if (key === "Hourly_Rate_of_Pay"){
+                    fairShareTotal += item[key] * 12;
+                    currTotal += item[key] * 12;
+                }
+
+                if (key === "List_Name_In_Leadership_Directory"){
+                    result += item[key] === 1 ? "YES" : "NO";
+                } else{
+                    if (key === "Entry_Total_Donations"){
+                        result += currTotal;
+                    } else{
+                        result += item[key] || "NO";
+                    }
+                }
 
                 ctr++;
             });
+            totalTotal += currTotal;
             result += lineDelimiter;
         });
+
+        result += lineDelimiter + "TOTAL:";
+
+        for(let i = 0; i < totalIndexes.total; i++){
+            result += columnDelimiter;
+            if (i+1 === totalIndexes.payroll){
+                result += payrollDeductionTotal;
+            }
+            if (i+1 === totalIndexes.dollar){
+                result += dollarADayTotal;
+            }
+            if (i+1 === totalIndexes.fairShare){
+                result += fairShareTotal;
+            }
+            if(i+1 === totalIndexes.total){
+                result += totalTotal;
+            }
+        }
 
         return result;
     }
@@ -126,6 +209,15 @@ const EntryTable = ({entryData, companyFilterOption}: {
 
         for (const [key, value] of Object.entries(row)) {
             if (seenKeys.has(key) || key == "id") continue;
+
+            if (key === "Donation_Community") {
+                colsFromEntry.push({
+                    name: "Area Designation",
+                    minWidth: `${key.length * 12}px`,
+                    selector: (row: any) => row[key]
+                })
+                seenKeys.add(key);
+            }
 
             if (key === "List_Name_In_Leadership_Directory") {
                 colsFromEntry.push({
