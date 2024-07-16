@@ -114,7 +114,7 @@ const EntryTable = ({entryData, companyFilterOption}: {
                     if (key === "Entry_Total_Donations"){
                         result += currTotal;
                     } else if(key === "I_Wish_To_Remain_Anonymous"){
-                        result += !item["Leadership_Directory_Name"] ? "YES" : "NO";
+                        result += !item["List_Name_In_Leadership_Directory"] ? "YES" : "NO";
                     } else{
                         if (key === "Leadership_Directory_Name"){
                             result += item[key] || "";
