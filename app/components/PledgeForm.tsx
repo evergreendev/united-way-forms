@@ -370,7 +370,7 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                         </label>
                     </div>
                     <div className={`${listNameIsShowing ? "max-h-96 opacity-100" : "opacity-0 max-h-0"} overflow-hidden transition-all duration-500 mb-6`}>
-                        <InputField textArea ref={listNameRef} error={state.error} name="Leadership_Directory_Name" label="Please print my name (and spouse) in the Leadership Directory as shown below:"/>
+                        <InputField required={listNameIsShowing} textArea ref={listNameRef} error={state.error} name="Leadership_Directory_Name" label="Please print my name (and spouse) in the Leadership Directory as shown below:"/>
                     </div>
                     <div className="flex items-center">
                         <input required ref={listRef} onChange={handleListNameChange} className="size-8"
