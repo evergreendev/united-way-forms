@@ -41,10 +41,12 @@ const EntryTable = ({entryData, companyFilterOption}: {
             fairShare: 0,
             total: 25
         }
+        const anonymousIndex = 29;
 
         const columnDelimiter = ',';
         const lineDelimiter = '\n';
-        const keysToGetValuesFrom = Object.keys(data[0]).toSpliced(totalIndexes.total,0, "Entry_Total_Donations");
+        const keysToGetValuesFrom = Object.keys(data[0]).toSpliced(totalIndexes.total,0, "Entry_Total_Donations")
+            .toSpliced(anonymousIndex, 0, "I_Wish_To_Remain_Anonymous");
         const keys = Object.keys(data[0]).map((key,index) => {
             if (key === "Number_of_Pay_Periods_Per_Year"){
                 totalIndexes.payroll = index
@@ -65,7 +67,8 @@ const EntryTable = ({entryData, companyFilterOption}: {
 
             return key.replaceAll("_", " ");
 
-        }).toSpliced(totalIndexes.total,0, "Entry Total Donations");
+        }).toSpliced(totalIndexes.total,0, "Entry Total Donations")
+            .toSpliced(anonymousIndex, 0, "I Wish To Remain Anonymous");
 
         let payrollDeductionTotal = 0;
         let dollarADayTotal = 0;
@@ -110,8 +113,16 @@ const EntryTable = ({entryData, companyFilterOption}: {
                 } else{
                     if (key === "Entry_Total_Donations"){
                         result += currTotal;
+                    } else if(key === "I_Wish_To_Remain_Anonymous"){
+                        result += !item["Leadership_Directory_Name"] ? "YES" : "NO";
                     } else{
-                        result += item[key] || "NO";
+                        if (key === "Leadership_Directory_Name"){
+                            result += item[key] || "";
+                        } else{
+                            result += item[key] || "NO";
+                        }
+
+
                     }
                 }
 
