@@ -10,6 +10,7 @@ function DataTableBase<T>(props: TableProps<T>): JSX.Element {
             pagination
             selectableRowsComponentProps={selectProps}
             dense
+            paginationPerPage={30}
             {...props}
         />
     );
