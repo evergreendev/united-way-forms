@@ -77,26 +77,26 @@ const UpdateEntryForm = ({entry, callbackUrl}: {
                                 COMMUNITY:
                             </div>
                             <div className="flex items-center">
-                                <input defaultChecked={entry[1]?.split(" - ").indexOf("Rapid City") !== -1} className="size-6" id="rapidCity" name="Donation_Community" value="Rapid City"
+                                <input defaultChecked={entry[1]?.split(" - ")?.indexOf("Rapid City") !== -1} className="size-6" id="rapidCity" name="Donation_Community" value="Rapid City"
                                        type="checkbox"/>
                                 <label className="w-full font-bold ml-2" htmlFor="rapidCity">Rapid City</label>
                             </div>
 
                             <div className="flex items-center">
-                                <input defaultChecked={entry[1]?.split(" - ").indexOf("Sturgis") !== -1} className="size-6" id="sturgis" name="Donation_Community" value="Sturgis"
+                                <input defaultChecked={entry[1]?.split(" - ")?.indexOf("Sturgis") !== -1} className="size-6" id="sturgis" name="Donation_Community" value="Sturgis"
                                        type="checkbox"/>
                                 <label className="w-full font-bold ml-2" htmlFor="sturgis">Sturgis</label>
                             </div>
 
                             <div className="flex items-center">
-                                <input defaultChecked={entry[1]?.split(" - ").indexOf("Northern Hills") !== -1 } className="size-6" id="northernHills" name="Donation_Community"
+                                <input defaultChecked={entry[1]?.split(" - ")?.indexOf("Northern Hills") !== -1 } className="size-6" id="northernHills" name="Donation_Community"
                                        value="Northern Hills"
                                        type="checkbox"/>
                                 <label className="w-full font-bold ml-2" htmlFor="northernHills">Northern Hills</label>
                             </div>
 
                             <div className="flex items-center">
-                                <input defaultChecked={entry[1]?.split(" - ").indexOf("Southern Hills") !== -1} className="size-6" id="southernHills" name="Donation_Community"
+                                <input defaultChecked={entry[1]?.split(" - ")?.indexOf("Southern Hills") !== -1} className="size-6" id="southernHills" name="Donation_Community"
                                        value="Southern Hills"
                                        type="checkbox"/>
                                 <label className="w-full font-bold ml-2" htmlFor="southernHills">Southern Hills</label>
