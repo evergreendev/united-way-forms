@@ -39,40 +39,70 @@ const EntryTable = ({entryData, companyFilterOption}: {
             payroll: 0,
             dollar: 0,
             fairShare: 0,
-            total: 25
+            check: 0,
+            billing: 0,
+            automatic: 0,
+            creditCard: 0,
+            total: 0
         }
-        const anonymousIndex = 29;
+        let anonymousIndex = 0;
 
         const columnDelimiter = ',';
         const lineDelimiter = '\n';
-        const keysToGetValuesFrom = Object.keys(data[0]).toSpliced(totalIndexes.total,0, "Entry_Total_Donations")
-            .toSpliced(anonymousIndex, 0, "I_Wish_To_Remain_Anonymous");
+
         const keys = Object.keys(data[0]).map((key,index) => {
             if (key === "Number_of_Pay_Periods_Per_Year"){
                 totalIndexes.payroll = index
+                totalIndexes.total = index + 1;
             }
             if (key === "Dollar_A_Day"){
                 totalIndexes.dollar = index
+                totalIndexes.total = index + 1;
             }
             if (key === "Hourly_Rate_of_Pay"){
                 totalIndexes.fairShare = index
+                totalIndexes.total = index + 1;
             }
-
-
+            if(key === "Check/Cash_Amount"){
+                totalIndexes.check = index
+                totalIndexes.total = index + 1;
+            }
+            if(key === "Billing_Amount"){
+                totalIndexes.billing = index
+                totalIndexes.total = index + 1;
+            }
+            if(key === "Automatic_Bank_Withdrawl_Amount"){
+                totalIndexes.automatic = index
+                totalIndexes.total = index + 1;
+            }
+            if(key === "Credit_Card_Amount"){
+                totalIndexes.creditCard = index
+                totalIndexes.total = index + 1;
+            }
 
 
             if (key === "Donation_Community") {
                 return "Area Designation";
             }
 
+            anonymousIndex = index+1;
+
             return key.replaceAll("_", " ");
 
         }).toSpliced(totalIndexes.total,0, "Entry Total Donations")
             .toSpliced(anonymousIndex, 0, "I Wish To Remain Anonymous");
 
+
+        const keysToGetValuesFrom = Object.keys(data[0]).toSpliced(totalIndexes.total,0, "Entry_Total_Donations")
+            .toSpliced(anonymousIndex, 0, "I_Wish_To_Remain_Anonymous");
+
         let payrollDeductionTotal = 0;
         let dollarADayTotal = 0;
         let fairShareTotal = 0;
+        let checkTotal = 0;
+        let billTotal = 0;
+        let automaticTotal = 0;
+        let creditCardTotal = 0;
         let totalTotal = 0;
 
         let currPayAmount = 0;
@@ -107,6 +137,22 @@ const EntryTable = ({entryData, companyFilterOption}: {
                     fairShareTotal += item[key] * 12;
                     currTotal += item[key] * 12;
                 }
+                if (key === "Check/Cash_Amount" && !isNaN(parseFloat(item[key]))){
+                    checkTotal += parseFloat(item[key]);
+                    currTotal += parseFloat(item[key]);
+                }
+                if (key === "Billing_Amount" && !isNaN(parseFloat(item[key]))){
+                    billTotal += parseFloat(item[key]);
+                    currTotal += parseFloat(item[key]);
+                }
+                if (key === "Automatic_Bank_Withdrawl_Amount" && !isNaN(parseFloat(item[key]))){
+                    automaticTotal += item[key] * 12;
+                    currTotal += item[key] * 12;
+                }
+                if (key === "Credit_Card_Amount" && !isNaN(parseFloat(item[key]))){
+                    creditCardTotal += item[key] * 12;
+                    currTotal += item[key] * 12;
+                }
 
                 if (key === "List_Name_In_Leadership_Directory"){
                     result += item[key] === 1 ? "YES" : "NO";
@@ -117,9 +163,9 @@ const EntryTable = ({entryData, companyFilterOption}: {
                         result += !item["List_Name_In_Leadership_Directory"] ? "YES" : "NO";
                     } else{
                         if (key === "Leadership_Directory_Name"){
-                            result += item[key] || "";
+                            result += item[key] ? `"${item[key]}"` : "";
                         } else{
-                            result += item[key] || "NO";
+                            result += item[key] ? `"${item[key]}"` : "NO";
                         }
 
 
@@ -144,6 +190,18 @@ const EntryTable = ({entryData, companyFilterOption}: {
             }
             if (i+1 === totalIndexes.fairShare){
                 result += fairShareTotal;
+            }
+            if(i+1 === totalIndexes.check){
+                result += checkTotal;
+            }
+            if(i+1 === totalIndexes.automatic){
+                result += automaticTotal;
+            }
+            if(i+1 === totalIndexes.creditCard){
+                result += creditCardTotal;
+            }
+            if (i+1 === totalIndexes.billing){
+                result += billTotal;
             }
             if(i+1 === totalIndexes.total){
                 result += totalTotal;

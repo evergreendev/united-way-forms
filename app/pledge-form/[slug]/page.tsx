@@ -12,7 +12,7 @@ const page = async ({params}: { params: { slug: string } }) => {
         return notFound();
     }
 
-    return <div className="bg-blue-50 text-blue-900 min-h-screen mx-auto max-w-screen-xl p-8">
+    return <div className="bg-blue-50 text-blue-900 min-h-screen print:max-h-screen print:overflow-hidden mx-auto max-w-screen-xl p-8 print:p-0 print:max-w-full">
         <PledgeForm company={company[0]}/>
 </div>
 }

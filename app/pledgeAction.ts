@@ -8,6 +8,17 @@ export async function submitPledgeForm(prevState:  { message: string | null, err
     const eduPercent = formData.get('Education_Percentage');
     const healthPercent = formData.get('Health_Percentage');
     const mi = formData.get('MI');
+    const billAmount = formData.get('Billing_Amount');
+
+    if (typeof billAmount === "string" && parseFloat(billAmount) < 100 && billAmount !== "0.00"){
+        return {
+            message: null,
+            error: {
+                message: "Required minimum donation of $100 required for billing",
+                fieldName: "Billing_Amount"
+            }
+        }
+    }
 
     if (typeof mi === "string" && mi.length > 1){
         return {

@@ -30,7 +30,7 @@ const InputField = forwardRef(({name, label,error,defaultValue = "", required = 
                     onChange={onChange}
                     maxLength={maxLength}
                      autoComplete="new-password"
-                    className={`border-b-2 border-slate-300 p-2 shadow-sm text-slate-950`} id={name}
+                    className={`border-b-2 border-slate-300 p-2 print:p-0 shadow-sm text-slate-950`} id={name}
                     name={name}
                     rows={5}
                     ref={ref}
@@ -41,7 +41,7 @@ const InputField = forwardRef(({name, label,error,defaultValue = "", required = 
             onChange={onChange}
             maxLength={maxLength}
             step={step} min={min} autoComplete="new-password"
-            className={`border-b-2 border-slate-300 p-2 shadow-sm text-slate-950`} id={name}
+            className={`border-b-2 border-slate-300 p-2 print:p-0 shadow-sm text-slate-950`} id={name}
             name={name}
             ref={ref}
             required={required}

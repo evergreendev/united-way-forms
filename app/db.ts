@@ -479,7 +479,7 @@ export async function addEntry(entryDTO: EntryDTO) {
 
         for (const [key, value] of Object.entries(entryDTO)) {
             if (key !== "id" && value) {
-                valuesToUpdate.push(`${key}`);
+                valuesToUpdate.push(`\`${key}\``);
                 values.push(value);
                 questionArray.push("?")
             }

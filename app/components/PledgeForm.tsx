@@ -3,7 +3,7 @@ import {ICompany} from "@/app/admin/users/types";
 import {useFormState, useFormStatus} from "react-dom";
 import InputField from "@/app/components/InputField";
 import {submitPledgeForm} from "@/app/pledgeAction";
-import {useEffect, useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import Image from "next/image";
 import logo from "@/public/united-way-horiz.png"
 
@@ -36,11 +36,25 @@ const PledgeForm = ({company}: { company: ICompany }) => {
 
     const [totalFromPay, setTotalFromPay] = useState("0.00");
     const [totalFairShare, setTotalFairShare] = useState("0.00");
+    const [totalCheckCash, setTotalCheckCash] = useState("0.00");
+    const [totalBill, setTotalBill] = useState("0.00");
+    const [totalAutomatic, setTotalAutomatic] = useState("0.00");
+    const [totalCreditCard, setTotalCreditCard] = useState("0.00");
+
     const [dollarADayIsActive, setDollarADayIsActive] = useState(false);
 
     const perPayPeriodRef = useRef<HTMLInputElement>(null);
+    const cashCheckRef50 = useRef<HTMLInputElement>(null);
+    const cashCheckRef100 = useRef<HTMLInputElement>(null);
+    const cashCheckRef150 = useRef<HTMLInputElement>(null);
+    const cashCheckRef200 = useRef<HTMLInputElement>(null);
+    const cashCheckRef250 = useRef<HTMLInputElement>(null);
+    const cashCheckRef = useRef<HTMLInputElement>(null);
+    const otherCheckCashAmountRef = useRef<HTMLInputElement>(null);
     const dollarADayRef = useRef<HTMLInputElement>(null);
     const numberOfPayPeriodsRef = useRef<HTMLInputElement>(null);
+    const automaticRef = useRef<HTMLInputElement>(null);
+    const creditCardRef = useRef<HTMLInputElement>(null);
 
     const hourlyRateOfPayRef = useRef<HTMLInputElement>(null);
 
@@ -51,13 +65,34 @@ const PledgeForm = ({company}: { company: ICompany }) => {
 
     const [listNameIsShowing, setListNameIsShowing] = useState(false);
 
-    function handleListNameChange(){
+    const [otherIsShowing, setOtherIsShowing] = useState(false);
 
-        if (listNameRef.current){
+    function handleCheckCashOtherChange() {
+        if (otherCheckCashAmountRef.current) {
+            setTotalCheckCash(otherCheckCashAmountRef.current.value);
+        }
+
+    }
+
+    function handleTotalAutomatic() {
+        if (automaticRef.current) {
+            setTotalAutomatic((parseFloat(automaticRef.current.value) * 12).toFixed(2));
+        }
+    }
+
+    function handleTotalCreditCard() {
+        if (creditCardRef.current) {
+            setTotalCreditCard((parseFloat(creditCardRef.current.value) * 12).toFixed(2));
+        }
+    }
+
+    function handleListNameChange() {
+
+        if (listNameRef.current) {
             listNameRef.current.value = "";
         }
 
-        if (listRef.current){
+        if (listRef.current) {
             setListNameIsShowing(!listRef.current.checked);
         }
 
@@ -67,6 +102,57 @@ const PledgeForm = ({company}: { company: ICompany }) => {
         if (perPayPeriodRef?.current?.value && numberOfPayPeriodsRef?.current?.value) {
             setTotalFromPay((parseFloat(perPayPeriodRef.current.value) * parseInt(numberOfPayPeriodsRef.current.value)).toFixed(2));
         } else setTotalFromPay("0.00")
+    }
+
+
+    function handleCheckCashClear(e: React.MouseEvent<HTMLButtonElement>) {
+        e.preventDefault()
+        if (cashCheckRef.current
+            && cashCheckRef50.current
+            && cashCheckRef100.current
+            && cashCheckRef150.current
+            && cashCheckRef200.current
+            && cashCheckRef250.current
+            && otherCheckCashAmountRef.current
+        ) {
+            cashCheckRef50.current.checked = false
+            cashCheckRef.current.checked = false
+            cashCheckRef100.current.checked = false
+            cashCheckRef150.current.checked = false
+            cashCheckRef200.current.checked = false
+            cashCheckRef250.current.checked = false
+            setOtherIsShowing(false);
+            setTotalCheckCash("0.00");
+        }
+    }
+
+    function handleCheckCashChange(e: React.ChangeEvent<HTMLInputElement>) {
+        if (cashCheckRef.current
+            && cashCheckRef50.current
+            && cashCheckRef100.current
+            && cashCheckRef150.current
+            && cashCheckRef200.current
+            && cashCheckRef250.current
+            && otherCheckCashAmountRef.current
+        ) {
+
+            if (e.currentTarget === cashCheckRef.current) {//if the other option is chosen make sure the rest of the radio options are off
+                cashCheckRef50.current.checked = false
+                cashCheckRef100.current.checked = false
+                cashCheckRef150.current.checked = false
+                cashCheckRef200.current.checked = false
+                cashCheckRef250.current.checked = false
+                setOtherIsShowing(true);
+                setTotalCheckCash("0.00");
+
+            } else {
+                cashCheckRef.current.checked = false;
+                setOtherIsShowing(false);
+                otherCheckCashAmountRef.current.value = "";
+                setTotalCheckCash(e.currentTarget.value);
+            }
+        }
+
     }
 
     function handleHourlyRateOfPay() {
@@ -84,9 +170,13 @@ const PledgeForm = ({company}: { company: ICompany }) => {
     useEffect(() => {
         const dollarADayTotal = dollarADayIsActive ? 365 : 0;
 
-        setCompleteTotal((parseFloat(totalFromPay) + parseFloat(totalFairShare) + dollarADayTotal).toFixed(2));
 
-    }, [totalFromPay, totalFairShare, dollarADayIsActive]);
+        setCompleteTotal((parseFloat(totalFromPay) + parseFloat(totalFairShare) + parseFloat(totalCheckCash) +
+            parseFloat(totalBill) +
+            parseFloat(totalAutomatic) +
+            parseFloat(totalCreditCard) + dollarADayTotal).toFixed(2));
+
+    }, [totalFromPay, totalFairShare, dollarADayIsActive, totalCheckCash, totalBill, totalAutomatic, totalCreditCard]);
 
     useEffect(() => {
         setTotalAmountRemaining(100 - (stabilityAmount + healthAmount + educationAmount))
@@ -102,9 +192,10 @@ const PledgeForm = ({company}: { company: ICompany }) => {
         }
     }
 
-  /*  if (state.message) {
-        return <h2 className="bg-blue-200 text-blue-950 text-4xl p-6">{state.message}</h2>
-    }*/
+
+    /*  if (state.message) {
+          return <h2 className="bg-blue-200 text-blue-950 text-4xl p-6">{state.message}</h2>
+      }*/
 
 
     return <>
@@ -112,13 +203,17 @@ const PledgeForm = ({company}: { company: ICompany }) => {
             state.message &&
             <><h2 className="bg-blue-200 text-blue-950 text-4xl p-6 print:hidden">{state.message}</h2>
                 <div className="flex print:hidden">
-                    <button onClick={() => {window.print()}} className="bg-slate-800 text-white px-8 py-2 mt-8  hover:bg-slate-900 flex">Print Submission</button>
+                    <button onClick={() => {
+                        window.print()
+                    }} className="bg-slate-800 text-white px-8 py-2 mt-8  hover:bg-slate-900 flex">Print Submission
+                    </button>
                 </div>
 
             </>
 
         }
-        <form className={`print:block print:max-h-screen print:text-sm ${state.message ? "hidden" : ""}`} action={formAction}>
+        <form className={`print:block print:max-h-screen print:text-sm ${state.message ? "hidden" : ""}`}
+              action={formAction}>
             <input type="text" hidden value={company.internal_id} name="Constituent_ID" readOnly/>
             <input type="text" hidden value={company.id} name="company_id" readOnly/>
             <div className="flex flex-wrap justify-between gap-8 print:hidden">
@@ -152,7 +247,7 @@ const PledgeForm = ({company}: { company: ICompany }) => {
 
             <div className="flex flex-wrap my-4">
                 <div className="flex flex-wrap gap-4 print:gap-0">
-                    <div className="w-full flex flex-wrap gap-4">
+                    <div className="w-full flex flex-wrap gap-4 print:gap-0">
                         <InputField required error={state.error} name="First_Name" label="First Name"/>
                         <InputField maxLength={1} error={state.error} name="MI" label="MI"/>
                         <InputField required error={state.error} width="20rem" name="Last_Name" label="Last Name"/>
@@ -171,7 +266,7 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                         </div>
                     </div>
 
-                    <div className="w-full flex flex-wrap gap-4">
+                    <div className="w-full flex flex-wrap gap-4 print:gap-0">
                         <InputField error={state.error} width="48%" name="Business_Phone" label="Business Phone"/>
                         <InputField error={state.error} width="48%" name="Business_Email" label="Business Email"/>
                         <InputField error={state.error} name="Cell_Phone" label="Cell Phone"/>
@@ -180,8 +275,9 @@ const PledgeForm = ({company}: { company: ICompany }) => {
 
                 </div>
                 <div
-                    className="flex flex-wrap gap-4 border-4 border-blue-700 text-blue-850 mt-4 w-full items-center justify-between print:gap-0">
-                    <div className="text-white bg-blue-500 p-2 text-xl font-bold w-full 2xl:w-auto print:text-sm">USE MY DONATION IN
+                    className="flex flex-wrap gap-4 border-4 border-blue-700 text-blue-850 mt-4 print:mt-0 w-full items-center justify-between print:gap-0">
+                    <div className="text-white bg-blue-500 p-2 print:p-0 text-xl font-bold w-full 2xl:w-auto print:text-sm">USE MY
+                        DONATION IN
                         THE
                         SELECTED
                         COMMUNITY:
@@ -222,9 +318,9 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                         no selections
                         are made.
                     </div>
-                    <div className="flex flex-wrap justify-around gap-2 bg-orange-50 grow p-6 mt-4 mb-4 print:m-0">
-                        <div className="sm:w-3/12 mb-6 grow flex flex-col">
-                            <h3 className="mb-2 underline text-lg font-bold">Education</h3>
+                    <div className="flex flex-wrap justify-around gap-2 bg-orange-50 grow p-6 mt-4 mb-4 print:m-0 print:p-0">
+                        <div className="sm:w-3/12 mb-6 print:mb-0 grow flex flex-col">
+                            <h3 className="mb-2 underline text-lg print:text-sm print:mb-0 font-bold">Education</h3>
                             <ul className="list-disc ml-4 print:hidden">
                                 <li>Dolly Parton’s Imagination Library Program</li>
                                 <li>Black Hills Reads</li>
@@ -234,17 +330,17 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                             </ul>
                             <div className="flex mt-auto">
                                 <input name="Education_Percentage"
-                                       className="size-14 p-1 bg-transparent border-b-2 border-b-blue-200" type="number"
+                                       className="size-14 print:size-auto p-1 bg-transparent border-b-2 border-b-blue-200" type="number"
                                        value={educationAmount}
                                        onChange={(e) => handleChange(e.target.value, educationAmount, setEducationAmount)}/>
-                                <div className="flex items-center text-4xl font-bold">% <div className="text-xl"
+                                <div className="flex print:hidden items-center text-4xl font-bold">% <div className="text-xl"
                                                                                              style={{lineHeight: ".9"}}>
                                     <div>of my</div>
                                     gift</div></div>
                             </div>
                         </div>
-                        <div className="sm:w-3/12 mb-6 grow flex flex-col">
-                            <h3 className="mb-2 underline text-lg font-bold">Financial Stability & Basic Needs</h3>
+                        <div className="sm:w-3/12 mb-6 print:mb-0 grow flex flex-col">
+                            <h3 className="mb-2 underline text-lg print:text-sm print:mb-0 font-bold">Financial Stability & Basic Needs</h3>
                             <ul className="list-disc ml-4 print:hidden">
                                 <li>Basic Needs & Economic Assistance</li>
                                 <li>Economic & Job Opportunities</li>
@@ -254,18 +350,18 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                             </ul>
                             <div className="flex mt-auto">
                                 <input name="Financial_Percentage"
-                                       className="size-14 p-1 bg-transparent border-b-2 border-b-blue-200" type="number"
+                                       className="size-14 print:size-auto p-1 bg-transparent border-b-2 border-b-blue-200" type="number"
                                        value={stabilityAmount}
                                        onChange={(e) => handleChange(e.target.value, stabilityAmount, setStabilityAmount)}/>
-                                <div className="flex items-center text-4xl font-bold">% <div className="text-xl"
+                                <div className="flex items-center text-4xl font-bold print:hidden">% <div className="text-xl"
                                                                                              style={{lineHeight: ".9"}}>
                                     <div>of my</div>
                                     gift</div></div>
                             </div>
 
                         </div>
-                        <div className="sm:w-3/12 mb-6 grow flex flex-col">
-                            <h3 className="mb-2 underline text-lg font-bold">Health</h3>
+                        <div className="sm:w-3/12 mb-6 print:mb-0 grow flex flex-col">
+                            <h3 className="mb-2 underline text-lg print:text-sm print:mb-0 font-bold">Health</h3>
                             <ul className="list-disc ml-4 print:hidden">
                                 <li>Mental Health Services</li>
                                 <li>Substance Abuse Counseling</li>
@@ -275,10 +371,10 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                             </ul>
                             <div className="flex mt-auto">
                                 <input name="Health_Percentage"
-                                       className="size-14 p-1 bg-transparent border-b-2 border-b-blue-200" type="number"
+                                       className="size-14 print:size-auto p-1 bg-transparent border-b-2 border-b-blue-200" type="number"
                                        value={healthAmount}
                                        onChange={(e) => handleChange(e.target.value, healthAmount, setHealthAmount)}/>
-                                <div className="flex items-center text-4xl font-bold">% <div className="text-xl"
+                                <div className="flex print:hidden items-center text-4xl font-bold">% <div className="text-xl"
                                                                                              style={{lineHeight: ".9"}}>
                                     <div>of my</div>
                                     gift</div></div>
@@ -296,7 +392,8 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                             Deduction
                         </div>
                         <div className="flex flex-wrap gap-4 print:gap-0 py-6 print:p-0">
-                            <div className="flex flex-wrap gap-4 print:gap-0 print:flex-nowrap w-full items-end bg-blue-200 p-2">
+                            <div
+                                className="flex flex-wrap gap-4 print:gap-0 print:flex-nowrap w-full items-end bg-blue-200 p-2">
                                 <div className="flex items-end">
                                     <span className="text-xl font-bold mr-1 mb-2">$</span>
                                     <InputField onChange={handlePayPeriodChange} ref={perPayPeriodRef} min="0"
@@ -341,7 +438,8 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="flex flex-wrap print:flex-nowrap gap-4 print:gap-0 w-full items-end bg-blue-200 p-2">
+                            <div
+                                className="flex flex-wrap print:flex-nowrap gap-4 print:gap-0 w-full items-end bg-blue-200 p-2">
                                 <div>
                                     <p className="font-bold">FAIRSHARE GIFT</p>
                                     <p>(One hour&apos;s pay per month)</p>
@@ -369,6 +467,198 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                             </div>
                         </div>
                     </div>
+                    <div className="flex flex-wrap sm:flex-nowrap gap-4 bg-blue-50 shadow">
+                        <div
+                            className="print:hidden text-white sm:[writing-mode:vertical-lr] sm:rotate-180 w-full sm:w-auto bg-[#f44d35] font-bold p-8 text-2xl text-center">
+                            Direct Bill
+                        </div>
+                        <div className="flex flex-wrap gap-4 print:gap-0 py-6 print:p-0">
+                            <div
+                                className="flex flex-wrap gap-4 print:gap-0 print:flex-nowrap w-full items-center bg-blue-200 p-2">
+                                <div className="flex items-end">
+                                    <div>
+                                        <div className="flex items-center flex-wrap">
+                                            <p className="font-bold mr-2">Check/Cash</p>
+                                            <div>
+                                                <input ref={cashCheckRef50} onChange={(e) => handleCheckCashChange(e)}
+                                                       className="size-4"
+                                                       id="Check/Cash_Amount50"
+                                                       name="Check/Cash_Amount"
+                                                       value="50"
+                                                       type="radio"/>
+                                                <label className="font-bold ml-2 mr-4"
+                                                       htmlFor="Check/Cash_Amount50">$50</label>
+                                            </div>
+
+                                            <div><input ref={cashCheckRef100} onChange={(e) => handleCheckCashChange(e)}
+                                                        className="size-4"
+                                                        id="Check/Cash_Amount100"
+                                                        name="Check/Cash_Amount"
+                                                        value="100"
+                                                        type="radio"/>
+                                                <label className="font-bold ml-2 mr-4"
+                                                       htmlFor="Check/Cash_Amount100">$100</label></div>
+                                            <div><input ref={cashCheckRef150} onChange={(e) => handleCheckCashChange(e)}
+                                                        className="size-4"
+                                                        id="Check/Cash_Amount150"
+                                                        name="Check/Cash_Amount"
+                                                        value="150"
+                                                        type="radio"/>
+                                                <label className="font-bold ml-2 mr-4"
+                                                       htmlFor="Check/Cash_Amount150">$150</label></div>
+                                            <div><input ref={cashCheckRef200} onChange={(e) => handleCheckCashChange(e)}
+                                                        className="size-4"
+                                                        id="Check/Cash_Amount200"
+                                                        name="Check/Cash_Amount"
+                                                        value="200"
+                                                        type="radio"/>
+                                                <label className="font-bold ml-2 mr-4"
+                                                       htmlFor="Check/Cash_Amount200">$200</label></div>
+                                            <div><input ref={cashCheckRef250} onChange={(e) => handleCheckCashChange(e)}
+                                                        className="size-4"
+                                                        id="Check/Cash_Amount250"
+                                                        name="Check/Cash_Amount"
+                                                        value="250"
+                                                        type="radio"/>
+                                                <label className="font-bold ml-2 mr-4"
+                                                       htmlFor="Check/Cash_Amount250">$250</label></div>
+                                            <div><input ref={cashCheckRef} onChange={(e) => handleCheckCashChange(e)}
+                                                        className="size-4"
+                                                        id="Check/Cash_AmountOtherSwitch"
+                                                        name=""
+                                                        type="radio"/>
+                                                <label className="font-bold ml-2 mr-4"
+                                                       htmlFor="Check/Cash_AmountOtherSwitch">Other</label></div>
+                                        </div>
+                                        <div><InputField name="Check_Number" label="Check Number:" error={state.error}/>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                                <div className={`w-32 ${otherIsShowing ? "" : "hidden"}`}>
+                                    <InputField onChange={handleCheckCashOtherChange} ref={otherCheckCashAmountRef}
+                                                min="0"
+                                                step={".01"}
+                                                type="number" error={state.error} name="Check/Cash_Amount"
+                                                label="Other:"/>
+                                </div>
+                                <div className="text-xl font-bold mr-1 mb-2">=</div>
+                                <div className="flex items-end ml-auto w-64"><span
+                                    className="text-xl font-bold mr-1 mb-2">$</span>
+                                    <div className="flex-col flex grow max-w-96">
+                                        <p className="w-full">Total from Check/Cash</p>
+                                        <div
+                                            className="border-b-2 border-slate-300 p-2 shadow-sm text-slate-950 bg-gray-200">
+                                            {totalCheckCash}
+                                        </div>
+                                    </div>
+                                    <button className={`print:hidden ${totalCheckCash === "0.00" ? "hidden" : ""}  `}
+                                            onClick={(e) => handleCheckCashClear(e)}>clear
+                                    </button>
+                                </div>
+                            </div>
+                            <div className="flex flex-wrap gap-4 w-full p-2">
+                                <div>
+                                    <p className="font-bold mr-2">Bill Me* (will be mailed to home address)</p>
+                                    <p>*Required minimum donation of $100</p>
+                                </div>
+                                <div className="flex items-center">
+                                    <input className="size-4"
+                                           id="Billing_Period_Monthly"
+                                           name="Billing_Period"
+                                           value="Monthly"
+                                           type="radio"/>
+                                    <label className="font-bold ml-2 mr-4"
+                                           htmlFor="Billing_Period_Monthly">Monthly</label>
+                                    <input className="size-4"
+                                           id="Billing_Period_Quarterly"
+                                           name="Billing_Period"
+                                           value="Quarterly"
+                                           type="radio"/>
+                                    <label className="font-bold ml-2 mr-4"
+                                           htmlFor="Billing_Period_Quarterly">Quarterly</label>
+                                    <input className="size-4"
+                                           id="Billing_Period_One_Time"
+                                           name="Billing_Period"
+                                           value="One Time"
+                                           type="radio"/>
+                                    <label className="font-bold ml-2 mr-4"
+                                           htmlFor="Billing_Period_One_Time">One Time</label>
+                                </div>
+                                <div className="flex items-end ml-auto w-64"><span
+                                    className="text-xl font-bold mr-1 mb-2">$</span>
+                                    <div className="flex-col flex grow max-w-96">
+                                        <label htmlFor="Billing_Amount" className="w-full">Total Amount Billed</label>
+                                        {
+                                            state.error?.fieldName === "Billing_Amount" &&
+                                            <div className="text-red-600 font-bold my-3">{state.error.message}</div>
+                                        }
+                                        <input
+                                            name="Billing_Amount"
+                                            id="Billing_Amount"
+                                            value={totalBill}
+                                            type="number"
+                                            step="0.01"
+                                            min="0"
+                                            onChange={(e) => setTotalBill(e.currentTarget.value||"0.00")}
+                                            className="border-b-2 border-slate-300 p-2 shadow-sm text-slate-950"/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div
+                                className="flex flex-wrap print:flex-nowrap gap-4 print:gap-0 w-full items-start bg-blue-200 p-2">
+                                <div className="min-w-56">
+                                    <p className="font-bold">Automatic Bank Withdrawal</p>
+                                </div>
+                                <div>
+                                    <InputField onChange={handleTotalAutomatic} min="0" ref={automaticRef}
+                                                step="0.01" name="Automatic_Bank_Withdrawl_Amount" type="number"
+                                                label="Monthly Withdrawls of" error={state.error}/>
+                                    <p>will begin January 20th</p>
+                                </div>
+
+                                <div className="flex items-end ml-auto w-64 print:w-auto"><span
+                                    className="text-xl font-bold mr-1 mb-2">$</span>
+                                    <div className="flex-col flex grow max-w-96">
+                                        <p className="w-full">Total annual withdrawal amount</p>
+                                        <div
+                                            className="border-b-2 border-slate-300 p-2 shadow-sm text-slate-950 bg-gray-200">
+                                            {totalAutomatic}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div
+                                className="flex flex-wrap print:flex-nowrap gap-4 print:gap-0 w-full items-start p-2">
+                                <div className="min-w-56">
+                                    <p className="font-bold">Credit Card</p>
+                                    <a target="_blank" rel="nofollow"
+                                       className="underline"
+                                       href="https://host.nxt.blackbaud.com/donor-form/?svcid=renxt&formId=6c2a0dee-98df-4d1f-a75b-7bdf933de393&envid=p--S7Pf_n8G0attLPMKklWug&zone=usa">
+                                        Donate Here<br/> (Opens in new tab)</a>
+                                    <p className="italic">Please notate employer<br/> in comment box.</p>
+                                </div>
+                                <div>
+                                    <InputField onChange={handleTotalCreditCard} min="0" ref={creditCardRef}
+                                                step="0.01" name="Credit_Card_Amount" type="number"
+                                                label="Monthly Withdrawls of" error={state.error}/>
+                                    <p>will begin January 20th</p>
+                                </div>
+
+                                <div className="flex items-end ml-auto w-64 print:w-auto"><span
+                                    className="text-xl font-bold mr-1 mb-2">$</span>
+                                    <div className="flex-col flex grow max-w-96">
+                                        <p className="w-full">Total annual withdrawal amount</p>
+                                        <div
+                                            className="border-b-2 border-slate-300 p-2 shadow-sm text-slate-950 bg-gray-200">
+                                            {totalCreditCard}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div className="flex grow ml-auto w-full mb-6 print:m-0">
                         <div
                             className="text-3xl print:text-sm text-right text-blue-900 p-2 shadow-lg ml-auto mt-8 bg-blue-100 border-2 border-blue-200 print:m-0">
@@ -378,8 +668,8 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                         </div>
                     </div>
                     <div className="flex flex-col items-end w-full">
-                        <div className="flex items-center mb-6">
-                            <input required onChange={handleListNameChange} className="size-8"
+                        <div className="flex items-center mb-6 print:mb-0 print:hidden">
+                            <input required onChange={handleListNameChange} className="size-8 print:size-3"
                                    id="List_Name_In_Leadership_Directory" name="List_Name_In_Leadership_Directory"
                                    value="1"
                                    type="radio"/>
@@ -388,13 +678,13 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                             </label>
                         </div>
                         <div
-                            className={`${listNameIsShowing ? "max-h-96 opacity-100" : "opacity-0 max-h-0"} overflow-hidden transition-all duration-500 mb-6`}>
+                            className={`${listNameIsShowing ? "max-h-96 opacity-100" : "opacity-0 max-h-0"} overflow-hidden transition-all duration-500 mb-6 print:mb-0`}>
                             <InputField required={listNameIsShowing} textArea ref={listNameRef} error={state.error}
                                         name="Leadership_Directory_Name"
                                         label="Please print my name (and spouse) in the Leadership Directory as shown below:"/>
                         </div>
                         <div className="flex items-center">
-                            <input required ref={listRef} onChange={handleListNameChange} className="size-8"
+                            <input required ref={listRef} onChange={handleListNameChange} className="size-8 print:size-3"
                                    id="Dont_List_Name_In_Leadership_Directory" name="List_Name_In_Leadership_Directory"
                                    value="0"
                                    type="radio"/>
@@ -413,7 +703,7 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                 </div>
             </div>
             {
-                state.error?.fieldName === "all" ?
+                state.error?.fieldName === "all" || state.error?.fieldName ?
                     <div className="bg-red-200 text-red-800">{state.error.message}</div> : ""
             }
             <SubmitButton/>
