@@ -23,7 +23,7 @@ const InputField = forwardRef(({name, label,error,defaultValue = "", required = 
     const [hidePassword, setHidePassword] = useState(password);
 
     return <div className="flex-col flex grow" style={{maxWidth:maxLength ? maxLength*36+"px" : "100%", width:width?width:"auto"}}>
-        <label className="text-slate-950" htmlFor={name}>{label} {required ?
+        <label className="text-slate-950 print:text-xs" htmlFor={name}>{label} {required ?
             <span className="text-red-600">*</span> : ""}</label>
         {
             textArea ? <textarea
