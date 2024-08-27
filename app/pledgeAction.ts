@@ -58,7 +58,8 @@ export async function submitPledgeForm(prevState:  { message: string | null, err
 
     for (const user of users) {
         const userCompany = user.id ? await getUserCompany(user.id) : null;
-        if (user.receive_form_submission_emails && (user.is_admin || userCompany === formData.get("company_id"))){
+        const company = parseInt(formData.get("company_id") as string);
+        if (user.receive_form_submission_emails && (user.is_admin || userCompany?.[0]?.company_id === company)){
             await sendFormSubmissionEmail(user, json);
         }
     }

@@ -227,7 +227,7 @@ export async function getUserCompany(userId: string) {
     const db = await createConnection();
 
     interface ICompanyIds extends RowDataPacket {
-        company_id: string;
+        company_id: number;
     }
 
     const [companyIds] = await db.execute<ICompanyIds[]>(`SELECT company_id
