@@ -5,8 +5,8 @@ import {getServerSession} from "next-auth";
 import {authOptions} from "@/app/auth";
 
 
-async function fetchData(companyId?: string) {
-    return await getEntries(companyId);
+async function fetchData(isAdmin:boolean, companyId?: string) {
+    return await getEntries(isAdmin, companyId);
 }
 export interface IEntriesWithCompanyName extends IEntry{
     Company_Name: string;
@@ -14,9 +14,10 @@ export interface IEntriesWithCompanyName extends IEntry{
 
 const companies = async ({searchParams}: { searchParams?: { company?: string } }) => {
     const session = await getServerSession(authOptions);
-    const company = session.user.isAdmin ? searchParams?.company : session.user.company;
-    const entryData = await fetchData(company);
+    let company = session.user.isAdmin ? searchParams?.company : session.user.company;
+    const entryData = await fetchData(session.user.isAdmin, company);
     const seenCompanies = new Set<string>();
+    console.log(session.user);
     const companyFilterOptions: { id: string; name: string; }[] = [];
     const entryDataWithCompanyNames = await Promise.all<IEntriesWithCompanyName>(entryData.map(async function(entry){
         const company = entry.company_id ? await getCompany(entry.company_id) : [];

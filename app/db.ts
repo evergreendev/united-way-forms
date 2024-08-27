@@ -508,8 +508,12 @@ export async function addEntry(entryDTO: EntryDTO) {
     }
 }
 
-export async function getEntries(companyId?: string) {
+export async function getEntries(isAdmin: boolean, companyId?: string) {
     const db = await createConnection();
+
+    if (!isAdmin && !companyId) {
+        return [];
+    }
 
     const [entries] = companyId
         ? await db.execute<IEntry[]>(`

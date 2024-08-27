@@ -32,6 +32,8 @@ export const authOptions = {
                     const user = await getUserByLogin(credentials?.username||"", credentials?.password||"");
                     const company = await getUserCompany(user[0].id);
 
+                    console.log(user[0].id)
+
                     if (!user) return null;
 
                     return { id: user[0].id,company: company[0]?.company_id, username: user[0]["user_name"], email: user[0].email, isAdmin: user[0]["is_admin"] };
