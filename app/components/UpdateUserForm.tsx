@@ -78,18 +78,29 @@ const UpdateUserForm = ({user, isAdmin, isEditingSelf, companies, callbackUrl, t
                     <div className="text-blue-950 w-full bg-blue-400 p-2"><label htmlFor="is_admin">Is Admin: </label><input
                         type="checkbox" defaultChecked={user.is_admin === 1} name="is_admin" id="is_admin"/></div> : ""
             }
-            <div className="w-full">
-                <label htmlFor="company">Company: </label>
-                <select className="text-blue-950" name="company" id="company" disabled={!isAdmin}
-                        defaultValue={user.company}>
-                    <option value="">Select Company</option>
-                    {
-                        companies.map(company => {
-                            return <option key={company.id} value={company.id}>{company.company_name}</option>;
-                        })
-                    }
-                </select>
-            </div>
+
+            {
+                isAdmin && isEditingSelf ? <input className="hidden"
+                    type="checkbox" defaultChecked={user.is_admin === 1} name="is_admin" id="is_admin"/> : ""
+            }
+
+            {
+                isAdmin ? <div className="w-full">
+                    <label htmlFor="company">Company: </label>
+                    <select className="text-blue-950" name="company" id="company"
+                            defaultValue={user.company}>
+                        <option value="">Select Company</option>
+                        {
+                            companies.map(company => {
+                                return <option key={company.id} value={company.id}>{company.company_name}</option>;
+                            })
+                        }
+                    </select>
+                </div> : <div className="w-full">
+                    <div>Company:</div>
+                    <div className="border-b-2 border-slate-300 p-2 print:p-0 shadow-sm text-slate-500 bg-slate-100">{companies.find(company => company.id === user.company)?.company_name}</div>
+                </div>
+            }
 
             <div className="w-full">
                 <button onClick={(e) => {

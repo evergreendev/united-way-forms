@@ -69,10 +69,12 @@ export const submitUpdateUserForm = async (prevState: any, formData: FormData) =
         receive_form_submission_emails: shouldReceiveSub ? 1 : 0
     });
 
-    await updateUserCompany({
-        user_id: id as string,
-        company_id: company as string,
-    });
+    if(company){
+        await updateUserCompany({
+            user_id: id as string,
+            company_id: company as string,
+        });
+    }
 
     if (token){
         await deleteToken(token as string);
