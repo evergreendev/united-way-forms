@@ -223,7 +223,7 @@ const EntryTable = ({entryData, companyFilterOption}: {
             csv = `data:text/csv;charset=utf-8,${csv}`;
         }
 
-        link.setAttribute('href', encodeURI(csv));
+        link.setAttribute('href', encodeURI(csv).replaceAll("#",'%23'));
         link.setAttribute('download', filename);
         link.click();
     }
