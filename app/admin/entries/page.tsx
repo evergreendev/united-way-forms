@@ -6,6 +6,8 @@ import {authOptions} from "@/app/auth";
 
 
 async function fetchData(isAdmin:boolean, companyId?: string) {
+    if(isAdmin) return await getEntries(isAdmin);
+
     return await getEntries(isAdmin, companyId);
 }
 export interface IEntriesWithCompanyName extends IEntry{
@@ -17,7 +19,7 @@ const companies = async ({searchParams}: { searchParams?: { company?: string } }
     let company = session.user.isAdmin ? searchParams?.company : session.user.company;
     const entryData = await fetchData(session.user.isAdmin, company);
     const seenCompanies = new Set<string>();
-    console.log(session.user);
+
     const companyFilterOptions: { id: string; name: string; }[] = [];
     const entryDataWithCompanyNames = await Promise.all<IEntriesWithCompanyName>(entryData.map(async function(entry){
         const company = entry.company_id ? await getCompany(entry.company_id) : [];

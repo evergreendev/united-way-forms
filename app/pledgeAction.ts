@@ -9,6 +9,19 @@ export async function submitPledgeForm(prevState:  { message: string | null, err
     const healthPercent = formData.get('Health_Percentage');
     const mi = formData.get('MI');
     const billAmount = formData.get('Billing_Amount');
+    const gaveCreditCard = formData.get('credit_card_given');
+    const creditCardAmount = formData.get('Credit_Card_Amount');
+
+    if (creditCardAmount && parseFloat(creditCardAmount as string) > 0 && gaveCreditCard !== "yes"){
+        return {
+            message: null,
+            error: {
+                message: "If you are giving via credit card please make sure you donate via the link before submitting this form." +
+                    " Once credit card transaction is complete, please return here and check \"I gave via my credit card online\"",
+                fieldName: "credit_card_given"
+            }
+        }
+    }
 
     if (typeof billAmount === "string" && parseFloat(billAmount) < 100 && billAmount !== "0.00"){
         return {

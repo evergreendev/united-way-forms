@@ -150,8 +150,8 @@ const EntryTable = ({entryData, companyFilterOption}: {
                     currTotal += item[key] * 12;
                 }
                 if (key === "Credit_Card_Amount" && !isNaN(parseFloat(item[key]))){
-                    creditCardTotal += item[key] * 12;
-                    currTotal += item[key] * 12;
+                    creditCardTotal += parseFloat(item[key]);
+                    currTotal += parseFloat(item[key]);
                 }
 
                 if (key === "List_Name_In_Leadership_Directory"){

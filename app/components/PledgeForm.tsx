@@ -82,7 +82,7 @@ const PledgeForm = ({company}: { company: ICompany }) => {
 
     function handleTotalCreditCard() {
         if (creditCardRef.current) {
-            setTotalCreditCard((parseFloat(creditCardRef.current.value) * 12).toFixed(2));
+            setTotalCreditCard((parseFloat(creditCardRef.current.value)).toFixed(2));
         }
     }
 
@@ -260,7 +260,8 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                     <div className="w-full">
                         <div className="flex-col flex grow max-w-96">
                             <p className="w-full">Employer/Branch/Department</p>
-                            <div className="border-b-2 border-slate-300 p-2 shadow-sm text-slate-950 bg-gray-200 print:p-0">
+                            <div
+                                className="border-b-2 border-slate-300 p-2 shadow-sm text-slate-950 bg-gray-200 print:p-0">
                                 {company.company_name}
                             </div>
                         </div>
@@ -430,7 +431,8 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                             </div>
                             <div className="flex flex-wrap gap-4 w-full p-2 print:gap-0 print:p-0">
                                 <div className="flex items-center">
-                                    <input ref={dollarADayRef} onChange={handleDollarADayChange} className="size-8 print:size-2"
+                                    <input ref={dollarADayRef} onChange={handleDollarADayChange}
+                                           className="size-8 print:size-2"
                                            id="dollarADay" name="Dollar_A_Day" value="yes"
                                            type="checkbox"/>
                                     <label className="w-full font-bold ml-2" htmlFor="dollarADay">Consider “A Dollar A
@@ -545,7 +547,8 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                                         </div>
                                         <div className="flex gap-3">
                                             <InputField name="Check_Number" label="Check Number:" error={state.error}/>
-                                            <InputField name="Check_Date" label="Check Date:" type="date" error={state.error}/>
+                                            <InputField name="Check_Date" label="Check Date:" type="date"
+                                                        error={state.error}/>
                                         </div>
                                     </div>
 
@@ -653,24 +656,24 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                                        className="underline print:hidden"
                                        href="https://host.nxt.blackbaud.com/donor-form/?svcid=renxt&formId=6c2a0dee-98df-4d1f-a75b-7bdf933de393&envid=p--S7Pf_n8G0attLPMKklWug&zone=usa">
                                         Donate Here<br/> (Opens in new tab)</a>
-                                    <p className="italic">Please notate employer<br/> in comment box.</p>
+                                    <p className="italic">Please notate employer in comment box.</p>
+                                    <p className="font-bold bg-white p-2 print:hidden">Once credit card transaction is complete,
+                                        please return here to submit this form</p>
                                 </div>
-                                <div>
-                                    <InputField onChange={handleTotalCreditCard} min="0" ref={creditCardRef}
-                                                step="0.01" name="Credit_Card_Amount" type="number"
-                                                label="Monthly Withdrawls of" error={state.error}/>
-                                    <p>will begin January 20th</p>
-                                </div>
-
-                                <div className="flex items-end ml-auto w-64 print:w-auto"><span
-                                    className="text-xl font-bold mr-1 mb-2">$</span>
-                                    <div className="flex-col flex grow max-w-96">
-                                        <p className="w-full">Total annual withdrawal amount</p>
-                                        <div
-                                            className="border-b-2 border-slate-300 p-2 shadow-sm text-slate-950 bg-gray-200 print:p-0">
-                                            {totalCreditCard}
-                                        </div>
+                                <div className="flex flex-col items-end ml-auto w-64 print:w-auto">
+                                    <div className="flex"><input className="size-8 print:size-2"
+                                              id="credit_card_given" name="credit_card_given" value="yes"
+                                              type="checkbox"/>
+                                        <label className="w-full font-bold ml-2" htmlFor="credit_card_given">I gave via
+                                            my <br/>credit card online</label></div>
+                                    {state.error?.fieldName === "credit_card_given" ? <p className="text-red-600 text-sm font-bold">{state.error.message}</p> : ""}
+                                    <div className="flex items-end">
+                                        <span className="text-xl font-bold mr-1 mb-2">$</span>
+                                        <InputField onChange={handleTotalCreditCard} min="0" ref={creditCardRef}
+                                                    step="0.01" name="Credit_Card_Amount" type="number"
+                                                    label="Total Credit Card Donation" error={state.error}/>
                                     </div>
+
                                 </div>
                             </div>
                         </div>
