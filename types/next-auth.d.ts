@@ -9,7 +9,7 @@ declare module "next-auth" {
             /** The user's postal address. */
             address: string
             isAdmin: boolean
-            company: string
+            company: { company_id: number }[]
             id: string
         } & DefaultSession["user"]
     }

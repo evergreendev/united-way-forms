@@ -36,7 +36,7 @@ export const authOptions = {
 
                     if (!user) return null;
 
-                    return { id: user[0].id,company: company[0]?.company_id, username: user[0]["user_name"], email: user[0].email, isAdmin: user[0]["is_admin"] };
+                    return { id: user[0].id,company: company, username: user[0]["user_name"], email: user[0].email, isAdmin: user[0]["is_admin"] };
                 } catch (e){
                     return null;
                 }

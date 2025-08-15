@@ -86,19 +86,23 @@ const UpdateUserForm = ({user, isAdmin, isEditingSelf, companies, callbackUrl, t
 
             {
                 isAdmin ? <div className="w-full">
-                    <label htmlFor="company">Company: </label>
+                    <label htmlFor="company">Companies: </label>
                     <select className="text-blue-950" name="company" id="company"
-                            defaultValue={user.company}>
-                        <option value="">Select Company</option>
+                            defaultValue={user.company} multiple>
                         {
                             companies.map(company => {
                                 return <option key={company.id} value={company.id}>{company.company_name}</option>;
                             })
                         }
                     </select>
+                    <div className="text-sm text-gray-600 mt-1">Hold Ctrl (or Cmd on Mac) to select multiple companies</div>
                 </div> : <div className="w-full">
-                    <div>Company:</div>
-                    <div className="border-b-2 border-slate-300 p-2 print:p-0 shadow-sm text-slate-500 bg-slate-100">{companies.find(company => company.id === user.company)?.company_name}</div>
+                    <div>Companies:</div>
+                    <div className="border-b-2 border-slate-300 p-2 print:p-0 shadow-sm text-slate-500 bg-slate-100">
+                        {Array.isArray(user.company) 
+                            ? user.company.map(companyId => companies.find(c => c.id === companyId)?.company_name).join(', ')
+                            : companies.find(company => company.id === user.company)?.company_name}
+                    </div>
                 </div>
             }
 

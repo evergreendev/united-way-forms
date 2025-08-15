@@ -227,7 +227,7 @@ export async function getUserCompany(userId: string) {
     const db = await createConnection();
 
     interface ICompanyIds extends RowDataPacket {
-        company_id: number;
+        company_id: string;
     }
 
     const [companyIds] = await db.execute<ICompanyIds[]>(`SELECT company_id
@@ -324,11 +324,22 @@ export async function updateUserCompany(userCompany: UserCompanyDTO) {
     const db = await createConnection();
     if (!userCompany.user_id) return null;
 
-    await db.execute("DELETE FROM company_user WHERE user_id = ?", [userCompany.user_id]); //delete the old company. this won't be necessary if we ever allow multiple companies on one user.
+    await db.execute("DELETE FROM company_user WHERE user_id = ?", [userCompany.user_id]); // Clear existing companies for this user
 
     if (!userCompany.company_id) return null;
 
-    await db.execute("INSERT INTO company_user (company_id, user_id) values (?,?)", [userCompany.company_id, userCompany.user_id]);
+    // Handle both single company ID (string) and multiple company IDs (array)
+    if (Array.isArray(userCompany.company_id)) {
+        // Insert multiple companies
+        for (const companyId of userCompany.company_id) {
+            if (companyId) {
+                await db.execute("INSERT INTO company_user (company_id, user_id) values (?,?)", [companyId, userCompany.user_id]);
+            }
+        }
+    } else {
+        // Insert single company (backward compatibility)
+        await db.execute("INSERT INTO company_user (company_id, user_id) values (?,?)", [userCompany.company_id, userCompany.user_id]);
+    }
 
     await db.end();
 }
@@ -515,13 +526,15 @@ export async function getEntries(isAdmin: boolean, companyId?: string) {
         return [];
     }
 
+    const companyCount = companyId?.split(",").length || 0;
+
     const [entries] = companyId
         ? await db.execute<IEntry[]>(`
                 SELECT *
                 FROM form_entry
-                WHERE company_id = ?
+                WHERE company_id IN (${"?,".repeat(companyCount - 1) + "?"})
                 ;
-        `,[companyId])
+        `,companyId.split(","))
         : await db.execute<IEntry[]>(`
                 SELECT *
                 FROM form_entry;

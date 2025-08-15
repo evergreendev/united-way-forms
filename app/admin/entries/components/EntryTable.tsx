@@ -294,6 +294,12 @@ const EntryTable = ({entryData, companyFilterOption}: {
                     minWidth: `${key.length * 12}px`,
                     selector: (row: any) => row[key] === 1 ? "Yes" : "No"
                 })
+            } else if(key === "Company_Name") {
+                colsFromEntry.push({
+                    name: key.replaceAll("_", " "),
+                    minWidth: `${key.length * 32}px`,
+                    selector: (row: any) => row[key]
+                })
             } else {
                 colsFromEntry.push({
                     name: key.replaceAll("_", " "),

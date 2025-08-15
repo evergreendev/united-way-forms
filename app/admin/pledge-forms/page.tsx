@@ -8,12 +8,13 @@ const page = async () => {
     const session = await getServerSession(authOptions)
     const companies = await getCompanies();
 
-
     return <div>
         {
             companies?.filter(company => {
                 if (session.user.isAdmin) return true;
-                return parseInt(company.id||"") === parseInt(session.user.company);
+                return session.user.company.find((c: {
+                    company_id: number
+                }) => c.company_id === parseInt(company.id || ""));
             })?.map(company => {
                 return <div key={company.id} className="mb-6">
                     <Link href={`/pledge-form/${company.internal_id}`} className="font-bold text-xl text-blue-900 underline">{company.company_name}</Link>

@@ -34,7 +34,7 @@ const Inner = () => {
                 }
                 {
                     company ? <Link className="hover:text-slate-300 border-r-slate-700 border-r-2 p-2"
-                                    href={`/admin/entries?company=${company}`}>Entries</Link> :
+                                    href={`/admin/entries?company=${company.map(c => c.company_id).join(',')}`}>Entries</Link> :
                         <Link className="hover:text-slate-300 border-r-slate-700 border-r-2 p-2"
                               href={`/admin/entries`}>Entries</Link>
                 }

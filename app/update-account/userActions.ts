@@ -70,9 +70,12 @@ export const submitUpdateUserForm = async (prevState: any, formData: FormData) =
     });
 
     if(company){
+        // Handle multiple company selections from form data
+        const companyValues = formData.getAll('company');
+        
         await updateUserCompany({
             user_id: id as string,
-            company_id: company as string,
+            company_id: companyValues.length > 0 ? companyValues as string[] : company as string,
         });
     }
 

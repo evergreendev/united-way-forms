@@ -16,7 +16,7 @@ export interface IEntriesWithCompanyName extends IEntry{
 
 const companies = async ({searchParams}: { searchParams?: { company?: string } }) => {
     const session = await getServerSession(authOptions);
-    let company = session.user.isAdmin ? searchParams?.company : session.user.company;
+    let company = searchParams?.company;
     const entryData = await fetchData(session.user.isAdmin, company);
     const seenCompanies = new Set<string>();
 

@@ -24,7 +24,10 @@ const page = async ({searchParams}: { searchParams?: { token?: string, user_id?:
         const user = await getUser(userId||session?.user?.id);
         const userCompany = await getUserCompany(user.id);
         const companies = await fetchCompanies();
-        return <UpdateUserForm token={token} callbackUrl="/admin" user={{...user, company:userCompany[0]?.company_id}} companies={companies||[]} isEditingSelf={true} isAdmin={user.isAdmin} />
+        // Map all company IDs to an array for multi-select support
+        const companyIds = userCompany.map(company => company.company_id);
+        
+        return <UpdateUserForm token={token} callbackUrl="/admin" user={{...user, company: companyIds}} companies={companies||[]} isEditingSelf={true} isAdmin={user.isAdmin} />
     }
 
     if(token){

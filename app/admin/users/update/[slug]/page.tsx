@@ -20,7 +20,10 @@ const page = async ({params}: { params: { slug: string } }) => {
     const userCompany = await getUserCompany(userId);
     const companies = await fetchCompanies();
 
-    return <UpdateUserForm callbackUrl="/admin/users" user={{...user, company: userCompany[0]?.company_id}} companies={companies||[]}
+    // Map all company IDs to an array for multi-select support
+    const companyIds = userCompany.map(company => company.company_id);
+    
+    return <UpdateUserForm callbackUrl="/admin/users" user={{...user, company: companyIds}} companies={companies||[]}
                            isEditingSelf={userId === session?.user?.id} isAdmin={session?.user?.isAdmin}/>
 
 
