@@ -1,27 +1,18 @@
 "use server"
-import * as AWS from "aws-sdk";
 import * as nodeMailer from "nodemailer";
 import {generateUserTokenURL, getCompany, getUserByEmail} from "@/app/db";
 import {EntryDTO, UserDTO} from "@/app/admin/users/types";
 
-AWS.config.update({
-    credentials: {
-        accessKeyId: process.env.AWS_ACCESS_KEY_ID || "",
-        secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || "",
-    },
-    region: "us-east-2",
-});
-AWS.config.getCredentials((err, credentials) => {
-    if (err) {
-        console.error(err.stack);
-    }
-});
-const ses = new AWS.SES({apiVersion: "latest"});
-
 const adminMail = "noreply@unitedwayblackhills.org"
 
+
 const transporter = nodeMailer.createTransport({
-    SES: ses
+    host: process.env.EMAIL_HOST,
+    port: Number(process.env.EMAIL_PORT)||587,
+    auth: {
+        user: process.env.EMAIL_USERNAME,
+        pass: process.env.EMAIL_PASSWORD
+    },
 });
 
 export const sendResetPasswordLink = async (prevState: any, formData: FormData) => {
