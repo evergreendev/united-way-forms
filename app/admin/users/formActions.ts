@@ -10,12 +10,17 @@ export const submitCreateUser = async (prevState: any, formData: FormData) => {
     const password = formData.get("password") as string;
     const userName = formData.get("userName") as string;
     const isAdmin = formData.get("isAdmin") === "on";
-    let companyId = formData.get("company");
+    
+    // Get all selected companies (supports multiple selection)
+    const companyValues = formData.getAll("company");
+    let companyId = companyValues.length > 0 ? companyValues : null;
+    
     const companyName = formData.get("companyName");
     const companyInternalId = formData.get("companyInternalId");
     let company;
 
-    if (companyId) {
+    // If only one company is selected, get its details (for backward compatibility)
+    if (companyId && !Array.isArray(companyId)) {
         company = await getCompany(companyId as string);
     }
 
@@ -41,10 +46,34 @@ export const submitCreateUser = async (prevState: any, formData: FormData) => {
     }
 
     if (companyName && companyInternalId) {
-        companyId = await createCompany({
+        // Create the new company
+        const newCompanyId = await createCompany({
             internal_id: companyInternalId as string,
             company_name: companyName as string
         }) as any;
+        
+        // If companyId is null, initialize it as an array
+        if (!companyId) {
+            companyId = [newCompanyId];
+        } 
+        // If companyId is already an array, add the new company ID
+        else if (Array.isArray(companyId)) {
+            // Filter out the "ADD NEW COMPANY" option if it was selected
+            companyId = companyId.filter(id => id !== "ADD NEW COMPANY");
+            companyId.push(newCompanyId);
+        }
+        // If companyId is a string (should not happen with the updated UI), convert to array
+        else {
+            companyId = [companyId, newCompanyId];
+        }
+    } else if (Array.isArray(companyId)) {
+        // Filter out the "ADD NEW COMPANY" option and empty string (No Company) if they were selected
+        companyId = companyId.filter(id => id !== "ADD NEW COMPANY" && id !== "");
+        
+        // If all options were filtered out, set to null
+        if (companyId.length === 0) {
+            companyId = null;
+        }
     }
 
     const result = await createUser({
@@ -55,7 +84,7 @@ export const submitCreateUser = async (prevState: any, formData: FormData) => {
     });
     const newUser = await getUserByEmail(email);
 
-    await updateUserCompany({user_id:newUser[0].id, company_id:companyId as string,})
+    await updateUserCompany({user_id:newUser[0].id, company_id:companyId,})
 
     if (result !== "Success") {
         return {

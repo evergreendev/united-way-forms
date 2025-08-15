@@ -37,11 +37,12 @@ const RegisterUser = ({companies}: { companies: ICompany[] }) => {
     return state.message ? <h2>{state.message}</h2> : <form action={formAction} className="text-slate-950">
         <InputField error={state.error} name="email" label="Email"/>
         <div className="flex flex-wrap gap-2 my-4">
-            <label htmlFor="company" className="w-full">Company</label>
+            <label htmlFor="company" className="w-full">Companies</label>
             <select onChange={(e) => {
-                setIsAddingNewCompany(e.target.value === "ADD NEW COMPANY");
-            }} name="company" className="text-slate-950 p-3">
-                <option value="" disabled selected>Select Company</option>
+                // Check if any of the selected options is "ADD NEW COMPANY"
+                const selectedOptions = Array.from(e.target.selectedOptions);
+                setIsAddingNewCompany(selectedOptions.some(option => option.value === "ADD NEW COMPANY"));
+            }} name="company" className="text-slate-950 p-3" multiple>
                 <option value="" className="font-bold bg-blue-100 border-y-2 border-y-blue-900">No Company (United Way Internal Use)</option>
                 <option value="ADD NEW COMPANY" className="font-bold bg-blue-100 border-y-2">Add New Company</option>
                 {
@@ -51,6 +52,7 @@ const RegisterUser = ({companies}: { companies: ICompany[] }) => {
                     })
                 }
             </select>
+            <div className="text-sm text-gray-600 mt-1">Hold Ctrl (or Cmd on Mac) to select multiple companies</div>
         </div>
         {
             isAddingNewCompany

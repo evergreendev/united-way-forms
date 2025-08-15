@@ -7,9 +7,8 @@ async function fetchData() {
     return await getUsers();
 }
 
-async function fetchUserCompany(userId: string) {
-    const data = await getUserCompany(userId);
-    return data[0];
+async function fetchUserCompanies(userId: string) {
+    return await getUserCompany(userId);
 }
 
 async function fetchCompany(id: string) {
@@ -22,13 +21,22 @@ const users = async () => {
 
     const formattedUserData = await Promise.all(
         userData.map(async x => {
-                const userCompany = await fetchUserCompany(x.id||"")
-                const company = userCompany ? await fetchCompany(userCompany.company_id) : "";
-
+                const userCompanies = await fetchUserCompanies(x.id||"");
+                
+                // Fetch all companies for this user
+                const companyNames = await Promise.all(
+                    userCompanies.map(async (uc) => {
+                        const company = await fetchCompany(uc.company_id);
+                        return company ? company.company_name : "";
+                    })
+                );
+                
+                // Filter out empty strings and join with commas
+                const companyString = companyNames.filter(name => name).join(", ");
 
                 return {
                     ...x,
-                    company: company ? company.company_name : ""
+                    company: companyString
                 }
             }
         ));
