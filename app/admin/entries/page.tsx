@@ -22,7 +22,7 @@ const companies = async ({searchParams}: { searchParams?: { company?: string } }
 
     const companyFilterOptions: { id: string; name: string; }[] = [];
     const entryDataWithCompanyNames = await Promise.all<IEntriesWithCompanyName>(entryData.map(async function(entry){
-        const company = entry.company_id ? await getCompany(entry.company_id) : [];
+        const company = entry.company_id ? await getCompany(parseInt(entry.company_id)) : [];
         const companyName = company[0] ? company[0].company_name : "";
 
         if (entry.company_id && !seenCompanies.has(entry.company_id)) {

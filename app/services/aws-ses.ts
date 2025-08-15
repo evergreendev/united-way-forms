@@ -79,7 +79,7 @@ export const sendResetPasswordLink = async (prevState: any, formData: FormData) 
 export const sendFormSubmissionEmail = async (user: UserDTO, formEntry: EntryDTO) => {
     if (!user.id) return {}
 
-    const companyName = formEntry.company_id ? await getCompany(formEntry.company_id) : null;
+    const companyName = formEntry.company_id ? await getCompany(parseInt(formEntry.company_id)) : null;
 
   const dataTableHtml = Object.entries(formEntry).map((item)=>{
 

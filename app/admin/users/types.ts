@@ -12,7 +12,7 @@ export type UserDTO = {
 export interface IUser extends RowDataPacket, UserDTO{}
 
 export type UserCompanyDTO = {
-    company_id?: string|string[]|null,
+    company_id?: number|number[]|null,
     user_id?: string|null,
 }
 

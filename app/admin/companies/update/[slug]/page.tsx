@@ -6,7 +6,7 @@ import RequireAdminAccess from "@/app/admin/components/RequireAdminAccess";
 const page = async ({params}: { params: { slug: string } }) => {
     const companyId = params.slug;
 
-    const company = await getCompany(companyId);
+    const company = await getCompany(parseInt(companyId));
 
     return <RequireAdminAccess><UpdateCompanyForm callbackUrl="/admin/companies"
                                                   company={company[0]}/></RequireAdminAccess>

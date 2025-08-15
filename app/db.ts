@@ -239,7 +239,7 @@ export async function getUserCompany(userId: string) {
     return companyIds;
 }
 
-export async function getCompany(id: string) {
+export async function getCompany(id: number) {
     const db = await createConnection();
 
     interface ICompany extends RowDataPacket {

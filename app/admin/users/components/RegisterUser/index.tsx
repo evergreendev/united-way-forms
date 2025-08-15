@@ -18,8 +18,7 @@ const initialState = {
 const RegisterUser = ({companies}: { companies: ICompany[] }) => {
     const [state, formAction] = useFormState(submitCreateUser, initialState);
     const [isAddingNewCompany, setIsAddingNewCompany] = useState(false);
-    const companyNameRef = useRef<HTMLInputElement>(null);
-    const companyInternalIdRef = useRef<HTMLInputElement>(null);
+    const [newCompanies, setNewCompanies] = useState<{name: string, internalId: string}[]>([]);
 
     useEffect(() => {
         if (state.success) {
@@ -27,15 +26,18 @@ const RegisterUser = ({companies}: { companies: ICompany[] }) => {
         }
     }, [state]);
     useEffect(() => {
-        if (!isAddingNewCompany && companyNameRef.current && companyInternalIdRef.current) {
-            companyNameRef.current.value = "";
-            companyInternalIdRef.current.value = "";
+        if (!isAddingNewCompany) {
+            setNewCompanies([]);
+        } else if (newCompanies.length === 0) {
+            // Initialize with one empty company when "Add New Company" is selected
+            setNewCompanies([{ name: '', internalId: '' }]);
         }
     }, [isAddingNewCompany]);
 
 
     return state.message ? <h2>{state.message}</h2> : <form action={formAction} className="text-slate-950">
-        <InputField error={state.error} name="email" label="Email"/>
+        <InputField error={state.error} name="email" label="Email" required/>
+        <InputField error={state.error} name="userName" label="User Name"/>
         <div className="flex flex-wrap gap-2 my-4">
             <label htmlFor="company" className="w-full">Companies</label>
             <select onChange={(e) => {
@@ -57,10 +59,56 @@ const RegisterUser = ({companies}: { companies: ICompany[] }) => {
         {
             isAddingNewCompany
                 ? <div className="bg-blue-100 p-2">
-                    <h2 className="font-bold text-lg mb-3">Add New Company</h2>
-                    <InputField name="companyName" label="Company Name" error={state.error} ref={companyNameRef}/>
-                    <InputField name="companyInternalId" label="Constituent ID" error={state.error}
-                                ref={companyInternalIdRef}/>
+                    <h2 className="font-bold text-lg mb-3">Add New Companies</h2>
+                    {newCompanies.map((company, index) => (
+                        <div key={index} className="mb-4 p-3 border-b border-blue-200">
+                            <div className="flex justify-between items-center mb-2">
+                                <h3 className="font-semibold">Company #{index + 1}</h3>
+                                {newCompanies.length > 1 && (
+                                    <button 
+                                        onClick={(e) => {
+                                            e.preventDefault();
+                                            setNewCompanies(newCompanies.filter((_, i) => i !== index));
+                                        }}
+                                        className="text-red-600 hover:text-red-800"
+                                    >
+                                        Remove
+                                    </button>
+                                )}
+                            </div>
+                            <InputField 
+                                name={`companyName_${index}`} 
+                                label="Company Name" 
+                                error={state.error}
+                                defaultValue={company.name}
+                                onChange={() => {
+                                    const updatedCompanies = [...newCompanies];
+                                    updatedCompanies[index].name = (document.getElementById(`companyName_${index}`) as HTMLInputElement).value;
+                                    setNewCompanies(updatedCompanies);
+                                }}
+                            />
+                            <InputField 
+                                name={`companyInternalId_${index}`} 
+                                label="Constituent ID" 
+                                error={state.error}
+                                defaultValue={company.internalId}
+                                onChange={() => {
+                                    const updatedCompanies = [...newCompanies];
+                                    updatedCompanies[index].internalId = (document.getElementById(`companyInternalId_${index}`) as HTMLInputElement).value;
+                                    setNewCompanies(updatedCompanies);
+                                }}
+                            />
+                        </div>
+                    ))}
+                    <button 
+                        onClick={(e) => {
+                            e.preventDefault();
+                            setNewCompanies([...newCompanies, { name: '', internalId: '' }]);
+                        }}
+                        className="mt-2 bg-blue-500 hover:bg-blue-600 text-white py-1 px-4 rounded"
+                    >
+                        Add Another Company
+                    </button>
                 </div>
                 : ""
         }

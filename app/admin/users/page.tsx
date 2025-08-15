@@ -11,7 +11,7 @@ async function fetchUserCompanies(userId: string) {
     return await getUserCompany(userId);
 }
 
-async function fetchCompany(id: string) {
+async function fetchCompany(id: number) {
     const data = await getCompany(id);
     return data[0];
 }

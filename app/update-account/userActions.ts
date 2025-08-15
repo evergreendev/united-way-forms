@@ -75,7 +75,7 @@ export const submitUpdateUserForm = async (prevState: any, formData: FormData) =
         
         await updateUserCompany({
             user_id: id as string,
-            company_id: companyValues.length > 0 ? companyValues as string[] : company as string,
+            company_id: companyValues.length > 0 ? companyValues as unknown as number[] : company as unknown as number,
         });
     }
 
