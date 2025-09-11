@@ -304,7 +304,7 @@ const PledgeForm = ({company}: { company: ICompany }) => {
 
                 </div>
                 <div
-                    className="flex flex-wrap gap-4 border-4 border-blue-700 text-blue-850 mt-4 print:mt-0 w-full items-center justify-between print:gap-0">
+                    className="flex flex-wrap gap-4 border-4 hidden border-blue-700 text-blue-850 mt-4 print:mt-0 w-full items-center justify-between print:gap-0">
                     <div
                         className="text-white bg-blue-500 p-2 print:p-0 text-xl font-bold w-full 2xl:w-auto print:text-sm print:hidden">USE
                         MY
