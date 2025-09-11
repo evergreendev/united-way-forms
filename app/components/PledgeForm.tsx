@@ -34,6 +34,10 @@ const PledgeForm = ({company}: { company: ICompany }) => {
     const [healthAmount, setHealthAmount] = useState(0);
     const [totalAmountRemaining, setTotalAmountRemaining] = useState(100);
 
+    // New allocation mode: even split or single area
+    const [allocationMode, setAllocationMode] = useState<'even' | 'single'>('even');
+    const [singleArea, setSingleArea] = useState<'education' | 'financial' | 'health'>('education');
+
     const [totalFromPay, setTotalFromPay] = useState("0.00");
     const [totalFairShare, setTotalFairShare] = useState("0.00");
     const [totalCheckCash, setTotalCheckCash] = useState("0.00");
@@ -182,6 +186,30 @@ const PledgeForm = ({company}: { company: ICompany }) => {
         setTotalAmountRemaining(100 - (stabilityAmount + healthAmount + educationAmount))
     }, [stabilityAmount, healthAmount, educationAmount]);
 
+    // Auto-calculate percentages based on allocation mode
+    useEffect(() => {
+        if (allocationMode === 'even') {
+            // 33/33/34 to ensure total = 100
+            setEducationAmount(33);
+            setStabilityAmount(33);
+            setHealthAmount(34);
+        } else {
+            if (singleArea === 'education') {
+                setEducationAmount(100);
+                setStabilityAmount(0);
+                setHealthAmount(0);
+            } else if (singleArea === 'financial') {
+                setEducationAmount(0);
+                setStabilityAmount(100);
+                setHealthAmount(0);
+            } else {
+                setEducationAmount(0);
+                setStabilityAmount(0);
+                setHealthAmount(100);
+            }
+        }
+    }, [allocationMode, singleArea]);
+
     function handleChange(newAmount: string, prevAmount: number, updateFunction: (value: number) => void) {
         const newTotalRemaining = (totalAmountRemaining + prevAmount) - parseInt(newAmount);
 
@@ -323,6 +351,14 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                     </div>
                     <div
                         className="flex flex-wrap justify-around gap-2 bg-orange-50 grow p-6 mt-4 mb-4 print:m-0 print:p-0">
+                        {/* Allocation mode selector */}
+
+                        {/* Hidden inputs to preserve backend contract */}
+                        <input type="hidden" name="Education_Percentage" value={educationAmount} readOnly />
+                        <input type="hidden" name="Financial_Percentage" value={stabilityAmount} readOnly />
+                        <input type="hidden" name="Health_Percentage" value={healthAmount} readOnly />
+
+                        {/* Area descriptions (unchanged) */}
                         <div className="sm:w-3/12 mb-6 print:mb-0 grow flex flex-col">
                             <h3 className="mb-2 underline text-lg print:text-sm print:mb-0 font-bold">Education</h3>
                             <ul className="list-disc ml-4 print:hidden">
@@ -332,18 +368,18 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                                 <li>Early Childhood Education & Child Care</li>
                                 <li>Access to Books</li>
                             </ul>
-                            <div className="flex mt-auto">
-                                <input name="Education_Percentage"
-                                       className="size-14 print:size-auto p-1 bg-transparent border-b-2 border-b-blue-200"
-                                       type="number"
-                                       value={educationAmount}
-                                       onChange={(e) => handleChange(e.target.value, educationAmount, setEducationAmount)}/>
-                                <div className="flex print:hidden items-center text-4xl font-bold">% <div
-                                    className="text-xl"
-                                    style={{lineHeight: ".9"}}>
-                                    <div>of my</div>
-                                    gift</div></div>
-                            </div>
+                            {allocationMode === 'single' && (
+                                <div className="mt-2 flex items-center gap-2 print:hidden">
+                                    <input
+                                        id="single_education"
+                                        type="radio"
+                                        className="size-5"
+                                        checked={singleArea === 'education'}
+                                        onChange={() => setSingleArea('education')}
+                                    />
+                                    <label htmlFor="single_education" className="text-sm">Direct my entire gift to Education</label>
+                                </div>
+                            )}
                         </div>
                         <div className="sm:w-3/12 mb-6 print:mb-0 grow flex flex-col">
                             <h3 className="mb-2 underline text-lg print:text-sm print:mb-0 font-bold">Financial
@@ -355,19 +391,18 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                                 <li>Financial Education & Services</li>
                                 <li>Affordable Transportation</li>
                             </ul>
-                            <div className="flex mt-auto">
-                                <input name="Financial_Percentage"
-                                       className="size-14 print:size-auto p-1 bg-transparent border-b-2 border-b-blue-200"
-                                       type="number"
-                                       value={stabilityAmount}
-                                       onChange={(e) => handleChange(e.target.value, stabilityAmount, setStabilityAmount)}/>
-                                <div className="flex items-center text-4xl font-bold print:hidden">% <div
-                                    className="text-xl"
-                                    style={{lineHeight: ".9"}}>
-                                    <div>of my</div>
-                                    gift</div></div>
-                            </div>
-
+                            {allocationMode === 'single' && (
+                                <div className="mt-2 flex items-center gap-2 print:hidden">
+                                    <input
+                                        id="single_financial"
+                                        type="radio"
+                                        className="size-5"
+                                        checked={singleArea === 'financial'}
+                                        onChange={() => setSingleArea('financial')}
+                                    />
+                                    <label htmlFor="single_financial" className="text-sm">Direct my entire gift to Financial Stability & Basic Needs</label>
+                                </div>
+                            )}
                         </div>
                         <div className="sm:w-3/12 mb-6 print:mb-0 grow flex flex-col">
                             <h3 className="mb-2 underline text-lg print:text-sm print:mb-0 font-bold">Health</h3>
@@ -378,19 +413,43 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                                 <li>Food Security</li>
                                 <li>Health Services</li>
                             </ul>
-                            <div className="flex mt-auto">
-                                <input name="Health_Percentage"
-                                       className="size-14 print:size-auto p-1 bg-transparent border-b-2 border-b-blue-200"
-                                       type="number"
-                                       value={healthAmount}
-                                       onChange={(e) => handleChange(e.target.value, healthAmount, setHealthAmount)}/>
-                                <div className="flex print:hidden items-center text-4xl font-bold">% <div
-                                    className="text-xl"
-                                    style={{lineHeight: ".9"}}>
-                                    <div>of my</div>
-                                    gift</div></div>
+                            {allocationMode === 'single' && (
+                                <div className="mt-2 flex items-center gap-2 print:hidden">
+                                    <input
+                                        id="single_health"
+                                        type="radio"
+                                        name="single_area"
+                                        className="size-5"
+                                        checked={singleArea === 'health'}
+                                        onChange={() => setSingleArea('health')}
+                                    />
+                                    <label htmlFor="single_health" className="text-sm">Direct my entire gift to Health</label>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                    <div className="w-full mb-4 print:hidden">
+                        <div className="flex flex-wrap gap-6 items-center justify-center">
+                            <div className="flex items-center gap-2">
+                                <input
+                                    id="alloc_even"
+                                    type="radio"
+                                    className="size-6"
+                                    checked={allocationMode === 'even'}
+                                    onChange={() => setAllocationMode('even')}
+                                />
+                                <label htmlFor="alloc_even" className="font-bold">Evenly distribute my gift across all three areas</label>
                             </div>
-
+                            <div className="flex items-center gap-2">
+                                <input
+                                    id="alloc_single"
+                                    type="radio"
+                                    className="size-6"
+                                    checked={allocationMode === 'single'}
+                                    onChange={() => setAllocationMode('single')}
+                                />
+                                <label htmlFor="alloc_single" className="font-bold">I want to choose one area for my entire gift</label>
+                            </div>
                         </div>
                     </div>
                     {
@@ -678,7 +737,7 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                             </div>
                         </div>
                     </div>
-                    <div className="my-8 w-full flex flex-col items-end gap-4">
+                    <div className="my-8 w-full flex flex-col items-end gap-4 print:hidden">
                         <div className="bg-[#ee3b32] text-white p-6 w-full sm:w-96 self-end">
                             <h3 className="font-bold text-2xl mb-2">Our Legacy Giving Options</h3>
                             <ul className="list-disc ml-6">

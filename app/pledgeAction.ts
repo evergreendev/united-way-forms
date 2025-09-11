@@ -58,10 +58,13 @@ export async function submitPledgeForm(prevState:  { message: string | null, err
 
     formData.forEach((value, key) => {
         if (typeof value === "string" && key.indexOf("$")===-1) {
-            if (json[key]){
+            console.log(key, value);
+            if (json[key] && key !== "single_area"){
                 json[key] += " - "+value;
             } else{
-                json[key] = value;
+                if (key !== "single_area"){
+                    json[key] = value;
+                }
             }
         }
     })
