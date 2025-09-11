@@ -678,6 +678,29 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                             </div>
                         </div>
                     </div>
+                    <div className="my-8 w-full flex flex-col items-end gap-4">
+                        <div className="bg-[#ee3b32] text-white p-6 w-full sm:w-96 self-end">
+                            <h3 className="font-bold text-2xl mb-2">Our Legacy Giving Options</h3>
+                            <ul className="list-disc ml-6">
+                                <li>Beneficiary Designations</li>
+                                <li>Bequests</li>
+                                <li>IRA RMD’s</li>
+                                <li>Stock</li>
+                            </ul>
+                            <p className="mt-4">To learn more about planning your legacy, visit
+                                <a className="underline text-white ml-1" href="https://unitedwayblackhills.org" target="_blank" rel="noopener noreferrer">unitedwayblackhills.org</a>
+                                <span className="mx-1">or</span>
+                                contact Mari Sheldon at
+                                <a className="underline text-white ml-1" href="tel:16055459048">605-545-9048</a>
+                                <span className="mx-1">or</span>
+                                <a className="underline text-white" href="mailto:mari@unitedwayblackhills.org">mari@unitedwayblackhills.org</a>
+                            </p>
+                        </div>
+                        <div className="bg-[#294da1] text-white p-6 w-full sm:w-96 self-end">
+                            <h3 className="font-bold text-2xl mb-2">Stay Informed</h3>
+                            <p>To learn more or to sign up for our newsletter <a className="underline text-white" href="https://unitedwayblackhills.org/for-more-information/" target="_blank" rel="noopener noreferrer">click here</a>.</p>
+                        </div>
+                    </div>
                     <div className="flex grow ml-auto w-full mb-6 print:m-0">
                         <div
                             className="text-3xl print:text-sm text-right text-blue-900 p-2 shadow-lg ml-auto mt-8 bg-blue-100 border-2 border-blue-200 print:m-0">
