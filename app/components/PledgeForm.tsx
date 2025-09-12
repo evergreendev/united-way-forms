@@ -372,17 +372,34 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                                         <label htmlFor="alloc_even" className="font-bold">I want my gift to create real
                                             solutions to cover ALL impact areas of need for our communities.</label>
                                     </div>
-                                    <div className="flex items-center gap-2">
-                                        <input
-                                            id="alloc_single"
-                                            type="radio"
-                                            className="size-6"
-                                            checked={allocationMode === 'single'}
-                                            onChange={() => setAllocationMode('single')}
-                                        />
-                                        <label htmlFor="alloc_single" className="font-bold">Apply all of my gift to a
-                                            specific impact area</label>
+                                    <div className="flex flex-col">
+                                        <div className="flex items-center gap-2">
+                                            <input
+                                                id="alloc_single"
+                                                type="radio"
+                                                className="size-6"
+                                                checked={allocationMode === 'single'}
+                                                onChange={() => setAllocationMode('single')}
+                                            />
+                                            <label htmlFor="alloc_single" className="font-bold">Apply all of my gift to a
+                                                specific impact area</label>
+
+                                        </div>                                            {allocationMode === 'single' && (
+                                        <div className="w-full flex-col mb-4 p-2 print:hidden flex items-center justify-center">
+                                            <select
+                                                id="allocation_select"
+                                                className="border p-2 rounded"
+                                                value={singleArea}
+                                                onChange={(e) => setSingleArea(e.currentTarget.value as 'education' | 'financial' | 'health')}
+                                            >
+                                                <option value="education">Education</option>
+                                                <option value="financial">Financial Stability & Basic Needs</option>
+                                                <option value="health">Health</option>
+                                            </select>
+                                        </div>
+                                    )}
                                     </div>
+
                                 </div>
                             </div>
                             {/* Area descriptions (unchanged) */}
@@ -395,19 +412,6 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                                     <li>Early Childhood Education & Child Care</li>
                                     <li>Access to Books</li>
                                 </ul>
-                                {allocationMode === 'single' && (
-                                    <div className="mt-2 flex items-center gap-2 print:hidden">
-                                        <input
-                                            id="single_education"
-                                            type="radio"
-                                            className="size-5"
-                                            checked={singleArea === 'education'}
-                                            onChange={() => setSingleArea('education')}
-                                        />
-                                        <label htmlFor="single_education" className="text-sm">Direct my entire gift to
-                                            Education</label>
-                                    </div>
-                                )}
                             </div>
                             <div className="sm:w-3/12 mb-6 print:mb-0 grow flex flex-col">
                                 <h3 className="mb-2 underline text-lg print:text-sm print:mb-0 font-bold">Financial
@@ -419,19 +423,6 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                                     <li>Financial Education & Services</li>
                                     <li>Affordable Transportation</li>
                                 </ul>
-                                {allocationMode === 'single' && (
-                                    <div className="mt-2 flex items-center gap-2 print:hidden">
-                                        <input
-                                            id="single_financial"
-                                            type="radio"
-                                            className="size-5"
-                                            checked={singleArea === 'financial'}
-                                            onChange={() => setSingleArea('financial')}
-                                        />
-                                        <label htmlFor="single_financial" className="text-sm">Direct my entire gift to
-                                            Financial Stability & Basic Needs</label>
-                                    </div>
-                                )}
                             </div>
                             <div className="sm:w-3/12 mb-6 print:mb-0 grow flex flex-col">
                                 <h3 className="mb-2 underline text-lg print:text-sm print:mb-0 font-bold">Health</h3>
@@ -442,20 +433,6 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                                     <li>Food Security</li>
                                     <li>Health Services</li>
                                 </ul>
-                                {allocationMode === 'single' && (
-                                    <div className="mt-2 flex items-center gap-2 print:hidden">
-                                        <input
-                                            id="single_health"
-                                            type="radio"
-                                            name="single_area"
-                                            className="size-5"
-                                            checked={singleArea === 'health'}
-                                            onChange={() => setSingleArea('health')}
-                                        />
-                                        <label htmlFor="single_health" className="text-sm">Direct my entire gift to
-                                            Health</label>
-                                    </div>
-                                )}
                             </div>
                         </div>
                     </div>
