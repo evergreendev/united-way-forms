@@ -339,116 +339,123 @@ const PledgeForm = ({company}: { company: ICompany }) => {
 
                 </div>
                 <div className="flex flex-wrap">
-                    <div
-                        className="min-w-48 print:hidden print:mb-0 w-1/12 bg-orange-300 text-xl p-4 font-bold text-slate-600 mr-2 flex items-center">
-                        My contribution
-                        will be used to
-                        support the
-                        greatest need
-                        in my area if
-                        no selections
-                        are made.
-                    </div>
-                    <div
-                        className="flex flex-wrap justify-around gap-2 bg-orange-50 grow p-6 mt-4 mb-4 print:m-0 print:p-0">
-                        {/* Allocation mode selector */}
+                    <div className="flex flex-wrap sm:flex-nowrap">
+                        <div
+                            className="min-w-48 print:hidden print:mb-0 w-1/12 bg-orange-300 text-xl p-4 font-bold text-slate-600 mr-2 flex items-center">
+                            My contribution
+                            will be used to
+                            support the
+                            greatest need
+                            in my area if
+                            no selections
+                            are made.
+                        </div>
+                        <div
+                            className="flex flex-wrap justify-around gap-2 bg-orange-50 grow p-6 mt-4 mb-4 print:m-0 print:p-0">
+                            {/* Allocation mode selector */}
 
-                        {/* Hidden inputs to preserve backend contract */}
-                        <input type="hidden" name="Education_Percentage" value={educationAmount} readOnly />
-                        <input type="hidden" name="Financial_Percentage" value={stabilityAmount} readOnly />
-                        <input type="hidden" name="Health_Percentage" value={healthAmount} readOnly />
+                            {/* Hidden inputs to preserve backend contract */}
+                            <input type="hidden" name="Education_Percentage" value={educationAmount} readOnly/>
+                            <input type="hidden" name="Financial_Percentage" value={stabilityAmount} readOnly/>
+                            <input type="hidden" name="Health_Percentage" value={healthAmount} readOnly/>
 
-                        {/* Area descriptions (unchanged) */}
-                        <div className="sm:w-3/12 mb-6 print:mb-0 grow flex flex-col">
-                            <h3 className="mb-2 underline text-lg print:text-sm print:mb-0 font-bold">Education</h3>
-                            <ul className="list-disc ml-4 print:hidden">
-                                <li>Dolly Parton’s Imagination Library Program</li>
-                                <li>Black Hills Reads</li>
-                                <li>Mentorship & After School Programs</li>
-                                <li>Early Childhood Education & Child Care</li>
-                                <li>Access to Books</li>
-                            </ul>
-                            {allocationMode === 'single' && (
-                                <div className="mt-2 flex items-center gap-2 print:hidden">
-                                    <input
-                                        id="single_education"
-                                        type="radio"
-                                        className="size-5"
-                                        checked={singleArea === 'education'}
-                                        onChange={() => setSingleArea('education')}
-                                    />
-                                    <label htmlFor="single_education" className="text-sm">Direct my entire gift to Education</label>
+                            <div className="w-full mb-4 p-2 print:hidden">
+                                <div className="flex flex-wrap gap-6 items-center justify-center">
+                                    <div className="flex items-center gap-2 w-1/2">
+                                        <input
+                                            id="alloc_even"
+                                            type="radio"
+                                            className="size-6"
+                                            checked={allocationMode === 'even'}
+                                            onChange={() => setAllocationMode('even')}
+                                        />
+                                        <label htmlFor="alloc_even" className="font-bold">I want my gift to create real
+                                            solutions to cover ALL impact areas of need for our communities.</label>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <input
+                                            id="alloc_single"
+                                            type="radio"
+                                            className="size-6"
+                                            checked={allocationMode === 'single'}
+                                            onChange={() => setAllocationMode('single')}
+                                        />
+                                        <label htmlFor="alloc_single" className="font-bold">Apply all of my gift to a
+                                            specific impact area</label>
+                                    </div>
                                 </div>
-                            )}
-                        </div>
-                        <div className="sm:w-3/12 mb-6 print:mb-0 grow flex flex-col">
-                            <h3 className="mb-2 underline text-lg print:text-sm print:mb-0 font-bold">Financial
-                                Stability & Basic Needs</h3>
-                            <ul className="list-disc ml-4 print:hidden">
-                                <li>Basic Needs & Economic Assistance</li>
-                                <li>Economic & Job Opportunities</li>
-                                <li>Affordable Housing</li>
-                                <li>Financial Education & Services</li>
-                                <li>Affordable Transportation</li>
-                            </ul>
-                            {allocationMode === 'single' && (
-                                <div className="mt-2 flex items-center gap-2 print:hidden">
-                                    <input
-                                        id="single_financial"
-                                        type="radio"
-                                        className="size-5"
-                                        checked={singleArea === 'financial'}
-                                        onChange={() => setSingleArea('financial')}
-                                    />
-                                    <label htmlFor="single_financial" className="text-sm">Direct my entire gift to Financial Stability & Basic Needs</label>
-                                </div>
-                            )}
-                        </div>
-                        <div className="sm:w-3/12 mb-6 print:mb-0 grow flex flex-col">
-                            <h3 className="mb-2 underline text-lg print:text-sm print:mb-0 font-bold">Health</h3>
-                            <ul className="list-disc ml-4 print:hidden">
-                                <li>Mental Health Services</li>
-                                <li>Substance Abuse Counseling</li>
-                                <li>Home and Family Life Services</li>
-                                <li>Food Security</li>
-                                <li>Health Services</li>
-                            </ul>
-                            {allocationMode === 'single' && (
-                                <div className="mt-2 flex items-center gap-2 print:hidden">
-                                    <input
-                                        id="single_health"
-                                        type="radio"
-                                        name="single_area"
-                                        className="size-5"
-                                        checked={singleArea === 'health'}
-                                        onChange={() => setSingleArea('health')}
-                                    />
-                                    <label htmlFor="single_health" className="text-sm">Direct my entire gift to Health</label>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                    <div className="w-full mb-4 print:hidden">
-                        <div className="flex flex-wrap gap-6 items-center justify-center">
-                            <div className="flex items-center gap-2">
-                                <input
-                                    id="alloc_even"
-                                    type="radio"
-                                    className="size-6"
-                                    checked={allocationMode === 'even'}
-                                    onChange={() => setAllocationMode('even')}
-                                />
-                                <label htmlFor="alloc_even" className="font-bold">Evenly distribute my gift across all three areas</label>
                             </div>
-                            <div className="flex items-center gap-2">
-                                <input
-                                    id="alloc_single"
-                                    type="radio"
-                                    className="size-6"
-                                    checked={allocationMode === 'single'}
-                                    onChange={() => setAllocationMode('single')}
-                                />
-                                <label htmlFor="alloc_single" className="font-bold">I want to choose one area for my entire gift</label>
+                            {/* Area descriptions (unchanged) */}
+                            <div className="sm:w-3/12 mb-6 print:mb-0 grow flex flex-col">
+                                <h3 className="mb-2 underline text-lg print:text-sm print:mb-0 font-bold">Education</h3>
+                                <ul className="list-disc ml-4 print:hidden">
+                                    <li>Dolly Parton’s Imagination Library Program</li>
+                                    <li>Black Hills Reads</li>
+                                    <li>Mentorship & After School Programs</li>
+                                    <li>Early Childhood Education & Child Care</li>
+                                    <li>Access to Books</li>
+                                </ul>
+                                {allocationMode === 'single' && (
+                                    <div className="mt-2 flex items-center gap-2 print:hidden">
+                                        <input
+                                            id="single_education"
+                                            type="radio"
+                                            className="size-5"
+                                            checked={singleArea === 'education'}
+                                            onChange={() => setSingleArea('education')}
+                                        />
+                                        <label htmlFor="single_education" className="text-sm">Direct my entire gift to
+                                            Education</label>
+                                    </div>
+                                )}
+                            </div>
+                            <div className="sm:w-3/12 mb-6 print:mb-0 grow flex flex-col">
+                                <h3 className="mb-2 underline text-lg print:text-sm print:mb-0 font-bold">Financial
+                                    Stability & Basic Needs</h3>
+                                <ul className="list-disc ml-4 print:hidden">
+                                    <li>Basic Needs & Economic Assistance</li>
+                                    <li>Economic & Job Opportunities</li>
+                                    <li>Affordable Housing</li>
+                                    <li>Financial Education & Services</li>
+                                    <li>Affordable Transportation</li>
+                                </ul>
+                                {allocationMode === 'single' && (
+                                    <div className="mt-2 flex items-center gap-2 print:hidden">
+                                        <input
+                                            id="single_financial"
+                                            type="radio"
+                                            className="size-5"
+                                            checked={singleArea === 'financial'}
+                                            onChange={() => setSingleArea('financial')}
+                                        />
+                                        <label htmlFor="single_financial" className="text-sm">Direct my entire gift to
+                                            Financial Stability & Basic Needs</label>
+                                    </div>
+                                )}
+                            </div>
+                            <div className="sm:w-3/12 mb-6 print:mb-0 grow flex flex-col">
+                                <h3 className="mb-2 underline text-lg print:text-sm print:mb-0 font-bold">Health</h3>
+                                <ul className="list-disc ml-4 print:hidden">
+                                    <li>Mental Health Services</li>
+                                    <li>Substance Abuse Counseling</li>
+                                    <li>Home and Family Life Services</li>
+                                    <li>Food Security</li>
+                                    <li>Health Services</li>
+                                </ul>
+                                {allocationMode === 'single' && (
+                                    <div className="mt-2 flex items-center gap-2 print:hidden">
+                                        <input
+                                            id="single_health"
+                                            type="radio"
+                                            name="single_area"
+                                            className="size-5"
+                                            checked={singleArea === 'health'}
+                                            onChange={() => setSingleArea('health')}
+                                        />
+                                        <label htmlFor="single_health" className="text-sm">Direct my entire gift to
+                                            Health</label>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </div>
@@ -716,16 +723,19 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                                        href="https://host.nxt.blackbaud.com/donor-form/?svcid=renxt&formId=6c2a0dee-98df-4d1f-a75b-7bdf933de393&envid=p--S7Pf_n8G0attLPMKklWug&zone=usa">
                                         Donate Here<br/> (Opens in new tab)</a>
                                     <p className="italic">Please notate employer in comment box.</p>
-                                    <p className="font-bold bg-white p-2 print:hidden">Once credit card transaction is complete,
+                                    <p className="font-bold bg-white p-2 print:hidden">Once credit card transaction is
+                                        complete,
                                         please return here to submit this form</p>
                                 </div>
                                 <div className="flex flex-col items-end ml-auto w-64 print:w-auto">
                                     <div className="flex"><input className="size-8 print:size-2"
-                                              id="credit_card_given" name="credit_card_given" value="yes"
-                                              type="checkbox"/>
+                                                                 id="credit_card_given" name="credit_card_given"
+                                                                 value="yes"
+                                                                 type="checkbox"/>
                                         <label className="w-full font-bold ml-2" htmlFor="credit_card_given">I gave via
                                             my <br/>credit card online</label></div>
-                                    {state.error?.fieldName === "credit_card_given" ? <p className="text-red-600 text-sm font-bold">{state.error.message}</p> : ""}
+                                    {state.error?.fieldName === "credit_card_given" ?
+                                        <p className="text-red-600 text-sm font-bold">{state.error.message}</p> : ""}
                                     <div className="flex items-end">
                                         <span className="text-xl font-bold mr-1 mb-2">$</span>
                                         <InputField onChange={handleTotalCreditCard} min="0" ref={creditCardRef}
@@ -747,17 +757,23 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                                 <li>Stock</li>
                             </ul>
                             <p className="mt-4">To learn more about planning your legacy, visit
-                                <a className="underline text-white ml-1" href="https://unitedwayblackhills.org" target="_blank" rel="noopener noreferrer">unitedwayblackhills.org</a>
+                                <a className="underline text-white ml-1" href="https://unitedwayblackhills.org"
+                                   target="_blank" rel="noopener noreferrer">unitedwayblackhills.org</a>
                                 <span className="mx-1">or</span>
                                 contact Mari Sheldon at
                                 <a className="underline text-white ml-1" href="tel:16055459048">605-545-9048</a>
                                 <span className="mx-1">or</span>
-                                <a className="underline text-white" href="mailto:mari@unitedwayblackhills.org">mari@unitedwayblackhills.org</a>
+                                <a className="underline text-white"
+                                   href="mailto:mari@unitedwayblackhills.org">mari@unitedwayblackhills.org</a>
                             </p>
                         </div>
                         <div className="bg-[#294da1] text-white p-6 w-full sm:w-96 self-end">
                             <h3 className="font-bold text-2xl mb-2">Stay Informed</h3>
-                            <p>To learn more or to sign up for our newsletter <a className="underline text-white" href="https://unitedwayblackhills.org/for-more-information/" target="_blank" rel="noopener noreferrer">click here</a>.</p>
+                            <p>To learn more or to sign up for our newsletter <a className="underline text-white"
+                                                                                 href="https://unitedwayblackhills.org/for-more-information/"
+                                                                                 target="_blank"
+                                                                                 rel="noopener noreferrer">click
+                                here</a>.</p>
                         </div>
                     </div>
                     <div className="flex grow ml-auto w-full mb-6 print:m-0">
