@@ -274,34 +274,65 @@ const PledgeForm = ({company}: { company: ICompany }) => {
             </div>
 
             <div className="flex flex-wrap my-4">
-                <div className="flex flex-wrap gap-4 print:gap-0">
-                    <div className="w-full flex flex-wrap gap-4 print:gap-0">
-                        <InputField required error={state.error} name="First_Name" label="First Name"/>
-                        <InputField maxLength={1} error={state.error} name="MI" label="MI"/>
-                        <InputField required error={state.error} width="20rem" name="Last_Name" label="Last Name"/>
-                    </div>
-                    <InputField required error={state.error} width="100%" name="Home_Address" label="Home Address"/>
-                    <InputField required error={state.error} name="City" label="City"/>
-                    <InputField required error={state.error} name="State" label="State"/>
-                    <InputField required error={state.error} name="Zip" label="Zip"/>
-
-                    <div className="w-full">
-                        <div className="flex-col flex grow max-w-96">
-                            <p className="w-full">Employer/Branch/Department</p>
-                            <div
-                                className="border-b-2 border-slate-300 p-2 shadow-sm text-slate-950 bg-gray-200 print:p-0">
-                                {company.company_name}
-                            </div>
+                <div className="w-full flex flex-col sm:flex-row gap-4">
+                    {/* Left: info boxes (only next to the top inputs) */}
+                    <div className="w-full sm:w-3/12 print:hidden flex flex-col gap-4">
+                        <div className="bg-[#ee3b32] text-white p-6 w-full">
+                            <h3 className="font-bold text-2xl mb-2">Our Legacy Giving Options</h3>
+                            <ul className="list-disc ml-6">
+                                <li>Beneficiary Designations</li>
+                                <li>Bequests</li>
+                                <li>IRA RMD’s</li>
+                                <li>Stock</li>
+                            </ul>
+                            <p className="mt-4">To learn more about planning your legacy, visit<a className="underline text-white ml-1" href="https://unitedwayblackhills.org"
+                                   target="_blank" rel="noopener noreferrer">unitedwayblackhills.org</a> or contact Mari Sheldon at
+                                <a className="underline text-white ml-1" href="tel:16055459048">605-545-9048</a> or <a className="underline text-white"
+                                   href="mailto:mari@unitedwayblackhills.org">mari@unitedwayblackhills.org</a>
+                            </p>
+                        </div>
+                        <div className="bg-[#294da1] text-white p-6 w-full">
+                            <h3 className="font-bold text-2xl mb-2">Stay Informed</h3>
+                            <p>To learn more or to sign up for our newsletter <a className="underline text-white"
+                                                                                  href="https://unitedwayblackhills.org/for-more-information/"
+                                                                                  target="_blank"
+                                                                                  rel="noopener noreferrer">click
+                                here</a>.</p>
                         </div>
                     </div>
 
-                    <div className="w-full flex flex-wrap gap-4 print:gap-0">
-                        <InputField error={state.error} width="48%" name="Business_Phone" label="Business Phone"/>
-                        <InputField error={state.error} width="48%" name="Business_Email" label="Business Email"/>
-                        <InputField error={state.error} name="Cell_Phone" label="Cell Phone"/>
-                        <InputField error={state.error} name="Personal_Email" label="Personal Email"/>
-                    </div>
+                    {/* Right: the existing top input fields */}
+                    <div className="w-full sm:w-9/12">
+                        <div className="flex flex-wrap gap-4 print:gap-0">
+                            <div className="w-full flex flex-wrap gap-4 print:gap-0">
+                                <InputField required error={state.error} name="First_Name" label="First Name"/>
+                                <InputField maxLength={1} error={state.error} name="MI" label="MI"/>
+                                <InputField required error={state.error} width="20rem" name="Last_Name" label="Last Name"/>
+                            </div>
+                            <InputField required error={state.error} width="100%" name="Home_Address" label="Home Address"/>
+                            <InputField required error={state.error} name="City" label="City"/>
+                            <InputField required error={state.error} name="State" label="State"/>
+                            <InputField required error={state.error} name="Zip" label="Zip"/>
 
+                            <div className="w-full">
+                                <div className="flex-col flex grow max-w-96">
+                                    <p className="w-full">Employer/Branch/Department</p>
+                                    <div
+                                        className="border-b-2 border-slate-300 p-2 shadow-sm text-slate-950 bg-gray-200 print:p-0">
+                                        {company.company_name}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="w-full flex flex-wrap gap-4 print:gap-0">
+                                <InputField error={state.error} width="48%" name="Business_Phone" label="Business Phone"/>
+                                <InputField error={state.error} width="48%" name="Business_Email" label="Business Email"/>
+                                <InputField error={state.error} name="Cell_Phone" label="Cell Phone"/>
+                                <InputField error={state.error} name="Personal_Email" label="Personal Email"/>
+                            </div>
+
+                        </div>
+                    </div>
                 </div>
                 <div
                     className="flex flex-wrap gap-4 border-4 hidden border-blue-700 text-blue-850 mt-4 print:mt-0 w-full items-center justify-between print:gap-0">
@@ -722,35 +753,6 @@ const PledgeForm = ({company}: { company: ICompany }) => {
 
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div className="my-8 w-full flex flex-col items-end gap-4 print:hidden">
-                        <div className="bg-[#ee3b32] text-white p-6 w-full sm:w-96 self-end">
-                            <h3 className="font-bold text-2xl mb-2">Our Legacy Giving Options</h3>
-                            <ul className="list-disc ml-6">
-                                <li>Beneficiary Designations</li>
-                                <li>Bequests</li>
-                                <li>IRA RMD’s</li>
-                                <li>Stock</li>
-                            </ul>
-                            <p className="mt-4">To learn more about planning your legacy, visit
-                                <a className="underline text-white ml-1" href="https://unitedwayblackhills.org"
-                                   target="_blank" rel="noopener noreferrer">unitedwayblackhills.org</a>
-                                <span className="mx-1">or</span>
-                                contact Mari Sheldon at
-                                <a className="underline text-white ml-1" href="tel:16055459048">605-545-9048</a>
-                                <span className="mx-1">or</span>
-                                <a className="underline text-white"
-                                   href="mailto:mari@unitedwayblackhills.org">mari@unitedwayblackhills.org</a>
-                            </p>
-                        </div>
-                        <div className="bg-[#294da1] text-white p-6 w-full sm:w-96 self-end">
-                            <h3 className="font-bold text-2xl mb-2">Stay Informed</h3>
-                            <p>To learn more or to sign up for our newsletter <a className="underline text-white"
-                                                                                 href="https://unitedwayblackhills.org/for-more-information/"
-                                                                                 target="_blank"
-                                                                                 rel="noopener noreferrer">click
-                                here</a>.</p>
                         </div>
                     </div>
                     <div className="flex grow ml-auto w-full mb-6 print:m-0">
