@@ -254,7 +254,7 @@ const PledgeForm = ({company}: { company: ICompany }) => {
             </div>
 
             <div className="flex flex-wrap gap-4 print:gap-0 items-center print:hidden">
-                <Image src={logo} className="w-40" alt="United Way of the Black Hills"/>
+                <Image src={logo} className="w-60" alt="United Way of the Black Hills"/>
                 <div className="w-96 grow">
                     <span className="font-bold text-2xl">Mission Statement:</span>
                     <div>
@@ -263,8 +263,7 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                         by
                         delivering measurable long-term solutions to community issues
                         in <span className="font-bold">education, financial stability</span> and <span
-                        className="font-bold">health</span>. For more information look on the backside of this pledge
-                        form.
+                        className="font-bold">health</span>.
                     </div>
                     <div className="text-sm text-slate-700 text-center my-4">
                         621 6th St Ste 100, Rapid City, SD 57701 | Phone: 605-343-5872 / Fax: 605-343-9437 | Email:
@@ -287,7 +286,7 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                             </ul>
                             <p className="mt-4">To learn more about planning your legacy, visit<a className="underline text-white ml-1" href="https://unitedwayblackhills.org"
                                    target="_blank" rel="noopener noreferrer">unitedwayblackhills.org</a> or contact Mari Sheldon at
-                                <a className="underline text-white ml-1" href="tel:16055459048">605-545-9048</a> or <a className="underline text-white"
+                                <a className="underline text-white ml-1 whitespace-nowrap" href="tel:16055459048">605-545-9048</a> or <a className="underline text-white"
                                    href="mailto:mari@unitedwayblackhills.org">mari@unitedwayblackhills.org</a>
                             </p>
                         </div>
