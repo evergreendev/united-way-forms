@@ -3,7 +3,7 @@ import * as nodeMailer from "nodemailer";
 import {generateUserTokenURL, getCompany, getUserByEmail} from "@/app/db";
 import {EntryDTO, UserDTO} from "@/app/admin/users/types";
 
-const adminMail = "noreply@unitedwayblackhills.org"
+const adminMail = "noreply@unitedway.egmrc.com"
 
 
 const transporter = nodeMailer.createTransport({
