@@ -573,8 +573,8 @@ export async function updateEntry(entryDTO: EntryDTO) {
     const values: any = [dateToMySQLDate(new Date())];
 
     for (const [key, value] of Object.entries(entryDTO)) {
-        if (key !== "id") {
-            valuesToUpdate.push(`${key} = ?`);
+        if (key !== "id" && !key.includes(":") && !key.includes("$")) {
+            valuesToUpdate.push(`\`${key}\` = ?`);
             values.push(value);
         }
     }

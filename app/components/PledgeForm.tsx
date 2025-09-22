@@ -190,9 +190,9 @@ const PledgeForm = ({company}: { company: ICompany }) => {
     useEffect(() => {
         if (allocationMode === 'even') {
             // 33/33/34 to ensure total = 100
-            setEducationAmount(33);
-            setStabilityAmount(33);
-            setHealthAmount(34);
+            setEducationAmount(0);
+            setStabilityAmount(0);
+            setHealthAmount(0);
         } else {
             if (singleArea === 'education') {
                 setEducationAmount(100);
@@ -385,9 +385,9 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                             {/* Allocation mode selector */}
 
                             {/* Hidden inputs to preserve backend contract */}
-                            <input type="hidden" name="Education_Percentage" value={educationAmount} readOnly/>
-                            <input type="hidden" name="Financial_Percentage" value={stabilityAmount} readOnly/>
-                            <input type="hidden" name="Health_Percentage" value={healthAmount} readOnly/>
+                            <input type="hidden" name="Education_Percentage" value={educationAmount||""} readOnly/>
+                            <input type="hidden" name="Financial_Percentage" value={stabilityAmount||""} readOnly/>
+                            <input type="hidden" name="Health_Percentage" value={healthAmount||""} readOnly/>
 
                             <div className="w-full mb-4 p-2 print:hidden">
                                 <div className="flex flex-wrap gap-6 items-center justify-center">
