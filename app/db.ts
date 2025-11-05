@@ -1,18 +1,49 @@
 'use server'
-import mysql, {RowDataPacket} from 'mysql2/promise'
+import mysql, {RowDataPacket, Pool} from 'mysql2/promise'
 import {CompanyDTO, EntryDTO, ICompany, IEntry, IUser, UserCompanyDTO, UserDTO} from "@/app/admin/users/types";
 import bcryptjs from "bcryptjs";
 import {headers} from "next/headers";
 
+// Create a single, shared MySQL pool and reuse it across requests to avoid
+// exhausting the database with many parallel connections (ER_CON_COUNT_ERROR).
+// We keep the existing `createConnection` API but return a lightweight wrapper
+// around the pool that exposes `execute`, `query`, and a no-op `end()` so that
+// existing call sites don't try to close the pool.
+
+declare global {
+    // eslint-disable-next-line no-var
+    var mysqlPool: Pool | undefined;
+}
+
+const getPool = (): Pool => {
+    if (!globalThis.mysqlPool) {
+        globalThis.mysqlPool = mysql.createPool({
+            host: process.env.DB_HOST,
+            port: parseInt(process.env.DB_PORT || ""),
+            user: process.env.DB_USER,
+            password: process.env.DB_PASSWORD,
+            database: process.env.DB_NAME,
+            waitForConnections: true,
+            connectionLimit: parseInt(process.env.DB_CONN_LIMIT || "10"),
+            queueLimit: 0,
+            enableKeepAlive: true,
+            keepAliveInitialDelay: 0,
+            idleTimeout: 10000
+        });
+    }
+    return globalThis.mysqlPool;
+};
+
+// A minimal wrapper that looks like a Connection for current usages
+// but is backed by the shared Pool. `end()` is intentionally a no-op.
 const createConnection = async () => {
-    return mysql.createConnection({
-        host: process.env.DB_HOST,
-        port: parseInt(process.env.DB_PORT || ""),
-        user: process.env.DB_USER,
-        password: process.env.DB_PASSWORD,
-        database: process.env.DB_NAME,
-        idleTimeout: 10000
-    });
+    const pool = getPool();
+    return {
+        execute: pool.execute.bind(pool),
+        query: pool.query.bind(pool),
+        // Do NOT end the pool per request; this is a no-op to preserve API
+        end: async () => { /* no-op */ }
+    } as Pick<Pool, 'execute' | 'query'> & { end: () => Promise<void> };
 }
 
 function dateToMySQLDate(date: Date) {
