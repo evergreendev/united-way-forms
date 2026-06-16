@@ -278,9 +278,9 @@ const PledgeForm = ({company}: { company: ICompany }) => {
             </div>
 
             <div className="flex flex-wrap my-4">
-                <div className="w-full flex flex-col sm:flex-row gap-4">
+                <div className="w-full grid grid-cols-1 sm:grid-cols-12 gap-4 print:gap-0 items-center">
                     {/* Left: info boxes (only next to the top inputs) */}
-                    <div className="w-full sm:w-3/12 print:hidden flex flex-col gap-4">
+                    <div className="w-full sm:col-span-3 print:hidden flex flex-col gap-4">
                         <div className="bg-[#ee3b32] text-white p-6 w-full">
                             <h3 className="font-bold text-2xl mb-2">Planning Your Legacy</h3>
                             <ul className="list-disc ml-6">
@@ -305,7 +305,7 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                     </div>
 
                     {/* Right: the existing top input fields */}
-                    <div className="w-full sm:w-9/12">
+                    <div className="w-full sm:col-span-9">
                         <div className="flex flex-wrap gap-4 print:gap-0">
                             <div className="w-full flex flex-wrap gap-4 print:gap-0">
                                 <InputField required error={state.error} name="First_Name" label="First Name"/>
