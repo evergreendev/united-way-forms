@@ -23,14 +23,14 @@ const InputField = forwardRef(({name, label,error,defaultValue = "", required = 
     const [hidePassword, setHidePassword] = useState(password);
 
     return <div className="flex-col flex grow" style={{maxWidth:maxLength ? maxLength*36+"px" : "100%", width:width?width:"auto"}}>
-        <label className="text-slate-950 print:text-xs" htmlFor={name}>{label} {required ?
+        <label className="text-blue-900 print:text-xs" htmlFor={name}>{label} {required ?
             <span className="text-red-600">*</span> : ""}</label>
         {
             textArea ? <textarea
                     onChange={onChange}
                     maxLength={maxLength}
                      autoComplete="new-password"
-                    className={`border-b-2 border-slate-300 p-2 print:p-0 shadow-sm text-slate-950`} id={name}
+                    className={`border-b-2 border-slate-300 p-2 print:p-0 shadow-sm text-blue-900`} id={name}
                     name={name}
                     rows={5}
                     ref={ref}
@@ -41,7 +41,7 @@ const InputField = forwardRef(({name, label,error,defaultValue = "", required = 
             onChange={onChange}
             maxLength={maxLength}
             step={step} min={min} autoComplete="new-password"
-            className={`border-b-2 border-slate-300 p-2 print:p-0 shadow-sm text-slate-950`} id={name}
+            className={`border-b-2 border-slate-300 p-2 print:p-0 shadow-sm text-blue-900`} id={name}
             name={name}
             ref={ref}
             required={required}

@@ -74,20 +74,22 @@ const PledgeForm = ({company}: { company: ICompany }) => {
 
     function handleCheckCashOtherChange() {
         if (otherCheckCashAmountRef.current) {
-            setTotalCheckCash(otherCheckCashAmountRef.current.value);
+            setTotalCheckCash(otherCheckCashAmountRef.current.value || "0.00");
         }
 
     }
 
     function handleTotalAutomatic() {
         if (automaticRef.current) {
-            setTotalAutomatic((parseFloat(automaticRef.current.value) * 12).toFixed(2));
+            const monthlyAmount = parseFloat(automaticRef.current.value);
+            setTotalAutomatic(isNaN(monthlyAmount) ? "0.00" : (monthlyAmount * 12).toFixed(2));
         }
     }
 
     function handleTotalCreditCard() {
         if (creditCardRef.current) {
-            setTotalCreditCard((parseFloat(creditCardRef.current.value)).toFixed(2));
+            const creditCardAmount = parseFloat(creditCardRef.current.value);
+            setTotalCreditCard(isNaN(creditCardAmount) ? "0.00" : creditCardAmount.toFixed(2));
         }
     }
 
@@ -174,12 +176,13 @@ const PledgeForm = ({company}: { company: ICompany }) => {
 
     useEffect(() => {
         const dollarADayTotal = dollarADayIsActive ? 365 : 0;
+        const parseTotal = (amount: string) => parseFloat(amount) || 0;
 
 
-        setCompleteTotal((parseFloat(totalFromPay) + parseFloat(totalFairShare) + parseFloat(totalCheckCash) +
-            parseFloat(totalBill) +
-            parseFloat(totalAutomatic) +
-            parseFloat(totalCreditCard) + dollarADayTotal).toFixed(2));
+        setCompleteTotal((parseTotal(totalFromPay) + parseTotal(totalFairShare) + parseTotal(totalCheckCash) +
+            parseTotal(totalBill) +
+            parseTotal(totalAutomatic) +
+            parseTotal(totalCreditCard) + dollarADayTotal).toFixed(2));
 
     }, [totalFromPay, totalFairShare, dollarADayIsActive, totalCheckCash, totalBill, totalAutomatic, totalCreditCard]);
 
@@ -249,7 +252,7 @@ const PledgeForm = ({company}: { company: ICompany }) => {
             </>
 
         }
-        <form className={`print:block print:max-h-screen print:text-sm ${state.message ? "hidden" : ""}`}
+        <form className={`text-blue-900 print:block print:max-h-screen print:text-sm ${state.message ? "hidden" : ""}`}
               action={formAction}>
             <input type="text" hidden value={company.internal_id} name="Constituent_ID" readOnly/>
             <input type="text" hidden value={company.id} name="company_id" readOnly/>
@@ -262,12 +265,14 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                 <h2 className="text-4xl font-bold text-orange-400 mb-6">{pledgeYear} Epledge Campaign Donations</h2>
             </div>
 
-            <div className="flex flex-wrap gap-4 print:gap-0 items-center print:hidden">
-                <Image src={logo} className="w-60" alt="United Way of the Black Hills"/>
-                <div className="w-96 grow">
+            <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 print:gap-0 items-center print:hidden">
+                <div className="sm:col-span-3">
+                    <Image src={logo} className="w-60" alt="United Way of the Black Hills"/>
+                </div>
+                <div className="sm:col-span-9">
                     <p className="text-xl">
                         Your gift will make a lasting impact. When you give to UWBH, together we&apos;re creating a future
-                        where everyone can reach their full potential
+                        where everyone can reach their full potential.
                     </p>
                 </div>
             </div>
@@ -316,7 +321,7 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                                 <div className="flex-col flex grow max-w-96">
                                     <p className="w-full">Employer/Branch/Department</p>
                                     <div
-                                        className="border-b-2 border-slate-300 p-2 shadow-sm text-slate-950 bg-gray-200 print:p-0">
+                                        className="border-b-2 border-slate-300 p-2 shadow-sm text-blue-900 bg-gray-200 print:p-0">
                                         {company.company_name}
                                     </div>
                                 </div>
@@ -435,19 +440,19 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                             </div>
                             <div className="grid grid-cols-1 sm:grid-cols-4 gap-0 w-full print:grid-cols-4">
                                 <div className="bg-[#587bbd] text-white p-6 print:p-2 min-h-36 print:min-h-0 flex flex-col items-center justify-center text-center">
-                                    <h3 className="mb-4 underline text-lg print:text-sm print:mb-0 font-bold">Healthy Community</h3>
+                                    <h3 className="mb-4 h-7 whitespace-nowrap underline text-base xl:text-lg print:text-sm print:mb-0 print:h-auto font-bold">Healthy Community</h3>
                                     <p className="print:hidden">Improving health and well-being for all</p>
                                 </div>
                                 <div className="bg-[#fdb813] text-white p-6 print:p-2 min-h-36 print:min-h-0 flex flex-col items-center justify-center text-center">
-                                    <h3 className="mb-4 underline text-lg print:text-sm print:mb-0 font-bold">Youth Opportunity</h3>
+                                    <h3 className="mb-4 h-7 whitespace-nowrap underline text-base xl:text-lg print:text-sm print:mb-0 print:h-auto font-bold">Youth Opportunity</h3>
                                     <p className="print:hidden">Helping young people realize their full potential</p>
                                 </div>
                                 <div className="bg-[#ee3b33] text-white p-6 print:p-2 min-h-36 print:min-h-0 flex flex-col items-center justify-center text-center">
-                                    <h3 className="mb-4 underline text-lg print:text-sm print:mb-0 font-bold">Financial Security</h3>
+                                    <h3 className="mb-4 h-7 whitespace-nowrap underline text-base xl:text-lg print:text-sm print:mb-0 print:h-auto font-bold">Financial Security</h3>
                                     <p className="print:hidden">Creating a stronger financial future for every generation</p>
                                 </div>
                                 <div className="bg-[#587bbd] text-white p-6 print:p-2 min-h-36 print:min-h-0 flex flex-col items-center justify-center text-center">
-                                    <h3 className="mb-4 underline text-lg print:text-sm print:mb-0 font-bold">Community Resiliency</h3>
+                                    <h3 className="mb-4 h-7 whitespace-nowrap underline text-base xl:text-lg print:text-sm print:mb-0 print:h-auto font-bold">Community Resiliency</h3>
                                     <p className="print:hidden">Addressing urgent needs today for a better tomorrow</p>
                                 </div>
                             </div>
@@ -482,7 +487,7 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                                     <div className="flex-col flex grow max-w-96">
                                         <p className="w-full">Total payroll deduction</p>
                                         <div
-                                            className="border-b-2 border-slate-300 p-2 shadow-sm text-slate-950 bg-gray-200 print:p-0">
+                                            className="border-b-2 border-slate-300 p-2 shadow-sm text-blue-900 bg-gray-200 print:p-0">
                                             {totalFromPay}
                                         </div>
                                     </div>
@@ -504,7 +509,7 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                                     <div className="flex-col flex grow max-w-96">
                                         <p className="w-full">$1/day amount ($365)</p>
                                         <div
-                                            className="border-b-2 border-slate-300 p-2 shadow-sm text-slate-950 bg-gray-200 print:p-0">
+                                            className="border-b-2 border-slate-300 p-2 shadow-sm text-blue-900 bg-gray-200 print:p-0">
                                             {dollarADayIsActive ? "365.00" : "0.00"}
                                         </div>
                                     </div>
@@ -531,7 +536,7 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                                     <div className="flex-col flex grow max-w-96">
                                         <p className="w-full">Total fairshare pledge (for year)</p>
                                         <div
-                                            className="border-b-2 border-slate-300 p-2 shadow-sm text-slate-950 bg-gray-200 print:p-0">
+                                            className="border-b-2 border-slate-300 p-2 shadow-sm text-blue-900 bg-gray-200 print:p-0">
                                             {totalFairShare}
                                         </div>
                                     </div>
@@ -627,7 +632,7 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                                     <div className="flex-col flex grow max-w-96">
                                         <p className="w-full">Total from Check/Cash</p>
                                         <div
-                                            className="border-b-2 border-slate-300 p-2 shadow-sm text-slate-950 bg-gray-200 print:p-0">
+                                            className="border-b-2 border-slate-300 p-2 shadow-sm text-blue-900 bg-gray-200 print:p-0">
                                             {totalCheckCash}
                                         </div>
                                     </div>
@@ -680,7 +685,7 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                                             step="0.01"
                                             min="0"
                                             onChange={(e) => setTotalBill(e.currentTarget.value || "0.00")}
-                                            className="border-b-2 border-slate-300 p-2 shadow-sm text-slate-950"/>
+                                            className="border-b-2 border-slate-300 p-2 shadow-sm text-blue-900"/>
                                     </div>
                                 </div>
                             </div>
@@ -702,7 +707,7 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                                     <div className="flex-col flex grow max-w-96">
                                         <p className="w-full">Total annual withdrawal amount</p>
                                         <div
-                                            className="border-b-2 border-slate-300 p-2 shadow-sm text-slate-950 bg-gray-200 print:p-0">
+                                            className="border-b-2 border-slate-300 p-2 shadow-sm text-blue-900 bg-gray-200 print:p-0">
                                             {totalAutomatic}
                                         </div>
                                     </div>
