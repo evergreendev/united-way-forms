@@ -262,7 +262,7 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                     form
                     for <div
                         className="text-blue-900 text-4xl">{company.company_name}</div></h2>
-                <h2 className="text-4xl font-bold text-orange-400 mb-6">{pledgeYear} Epledge Campaign Donations</h2>
+                <h2 className="text-4xl font-bold text-orange-400 mb-6">{pledgeYear} Epledge Campaign Donation</h2>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 print:gap-0 items-center print:hidden">
