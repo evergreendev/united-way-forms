@@ -32,11 +32,12 @@ const PledgeForm = ({company}: { company: ICompany }) => {
     const [educationAmount, setEducationAmount] = useState(0);
     const [stabilityAmount, setStabilityAmount] = useState(0);
     const [healthAmount, setHealthAmount] = useState(0);
+    const [resiliencyAmount, setResiliencyAmount] = useState(0);
     const [totalAmountRemaining, setTotalAmountRemaining] = useState(100);
 
     // New allocation mode: even split or single area
     const [allocationMode, setAllocationMode] = useState<'even' | 'single'>('even');
-    const [singleArea, setSingleArea] = useState<'education' | 'financial' | 'health'>('education');
+    const [singleArea, setSingleArea] = useState<'healthy' | 'youth' | 'financial' | 'resiliency'>('healthy');
 
     const [totalFromPay, setTotalFromPay] = useState("0.00");
     const [totalFairShare, setTotalFairShare] = useState("0.00");
@@ -183,29 +184,37 @@ const PledgeForm = ({company}: { company: ICompany }) => {
     }, [totalFromPay, totalFairShare, dollarADayIsActive, totalCheckCash, totalBill, totalAutomatic, totalCreditCard]);
 
     useEffect(() => {
-        setTotalAmountRemaining(100 - (stabilityAmount + healthAmount + educationAmount))
-    }, [stabilityAmount, healthAmount, educationAmount]);
+        setTotalAmountRemaining(100 - (stabilityAmount + healthAmount + educationAmount + resiliencyAmount))
+    }, [stabilityAmount, healthAmount, educationAmount, resiliencyAmount]);
 
     // Auto-calculate percentages based on allocation mode
     useEffect(() => {
         if (allocationMode === 'even') {
-            // 33/33/34 to ensure total = 100
             setEducationAmount(0);
             setStabilityAmount(0);
             setHealthAmount(0);
+            setResiliencyAmount(0);
         } else {
-            if (singleArea === 'education') {
+            if (singleArea === 'healthy') {
                 setEducationAmount(100);
                 setStabilityAmount(0);
                 setHealthAmount(0);
+                setResiliencyAmount(0);
+            } else if (singleArea === 'youth') {
+                setEducationAmount(0);
+                setStabilityAmount(0);
+                setHealthAmount(100);
+                setResiliencyAmount(0);
             } else if (singleArea === 'financial') {
                 setEducationAmount(0);
                 setStabilityAmount(100);
                 setHealthAmount(0);
+                setResiliencyAmount(0);
             } else {
                 setEducationAmount(0);
                 setStabilityAmount(0);
-                setHealthAmount(100);
+                setHealthAmount(0);
+                setResiliencyAmount(100);
             }
         }
     }, [allocationMode, singleArea]);
@@ -250,25 +259,16 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                     form
                     for <div
                         className="text-blue-900 text-4xl">{company.company_name}</div></h2>
-                <h2 className="text-4xl font-bold text-orange-400 mb-6">{pledgeYear} CAMPAIGN DONATIONS</h2>
+                <h2 className="text-4xl font-bold text-orange-400 mb-6">{pledgeYear} Epledge Campaign Donations</h2>
             </div>
 
             <div className="flex flex-wrap gap-4 print:gap-0 items-center print:hidden">
                 <Image src={logo} className="w-60" alt="United Way of the Black Hills"/>
                 <div className="w-96 grow">
-                    <span className="font-bold text-2xl">Mission Statement:</span>
-                    <div>
-                        At United Way of the Black Hills, we unite people and resources to improve lives in the Black
-                        Hills
-                        by
-                        delivering measurable long-term solutions to community issues
-                        in <span className="font-bold">education, financial stability</span> and <span
-                        className="font-bold">health</span>.
-                    </div>
-                    <div className="text-sm text-slate-700 text-center my-4">
-                        621 6th St Ste 100, Rapid City, SD 57701 | Phone: 605-343-5872 / Fax: 605-343-9437 | Email:
-                        info@unitedwayblackhills.org | www.unitedwayblackhills.org
-                    </div>
+                    <p className="text-xl">
+                        Your gift will make a lasting impact. When you give to UWBH, together we&apos;re creating a future
+                        where everyone can reach their full potential
+                    </p>
                 </div>
             </div>
 
@@ -277,17 +277,16 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                     {/* Left: info boxes (only next to the top inputs) */}
                     <div className="w-full sm:w-3/12 print:hidden flex flex-col gap-4">
                         <div className="bg-[#ee3b32] text-white p-6 w-full">
-                            <h3 className="font-bold text-2xl mb-2">Our Legacy Giving Options</h3>
+                            <h3 className="font-bold text-2xl mb-2">Planning Your Legacy</h3>
                             <ul className="list-disc ml-6">
                                 <li>Beneficiary Designations</li>
                                 <li>Bequests</li>
-                                <li>IRA RMD’s</li>
+                                <li>IRA Qualified Distributions</li>
                                 <li>Stock</li>
                             </ul>
-                            <p className="mt-4">To learn more about planning your legacy, visit<a className="underline text-white ml-1" href="https://unitedwayblackhills.org"
-                                   target="_blank" rel="noopener noreferrer">unitedwayblackhills.org</a> or contact Mari Sheldon at
-                                <a className="underline text-white ml-1 whitespace-nowrap" href="tel:16055459048">605-545-9048</a> or <a className="underline text-white"
-                                   href="mailto:mari@unitedwayblackhills.org">mari@unitedwayblackhills.org</a>
+                            <p className="mt-4">To learn more: <a className="underline text-white break-words"
+                                   href="https://unitedwayblackhills.org/creating-a-legacy-of-hope/"
+                                   target="_blank" rel="noopener noreferrer">https://unitedwayblackhills.org/creating-a-legacy-of-hope/</a>
                             </p>
                         </div>
                         <div className="bg-[#294da1] text-white p-6 w-full">
@@ -385,9 +384,10 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                             {/* Allocation mode selector */}
 
                             {/* Hidden inputs to preserve backend contract */}
-                            <input type="hidden" name="Education_Percentage" value={educationAmount||""} readOnly/>
-                            <input type="hidden" name="Financial_Percentage" value={stabilityAmount||""} readOnly/>
-                            <input type="hidden" name="Health_Percentage" value={healthAmount||""} readOnly/>
+                            <input type="hidden" name="Healthy_Community_Percentage" value={educationAmount||""} readOnly/>
+                            <input type="hidden" name="Youth_Opportunity_Percentage" value={healthAmount||""} readOnly/>
+                            <input type="hidden" name="Financial_Security_Percentage" value={stabilityAmount||""} readOnly/>
+                            <input type="hidden" name="Community_Resiliency_Percentage" value={resiliencyAmount||""} readOnly/>
 
                             <div className="w-full mb-4 p-2 print:hidden">
                                 <div className="flex flex-wrap gap-6 items-center justify-center">
@@ -420,11 +420,12 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                                                 id="allocation_select"
                                                 className="border p-2 rounded"
                                                 value={singleArea}
-                                                onChange={(e) => setSingleArea(e.currentTarget.value as 'education' | 'financial' | 'health')}
+                                                onChange={(e) => setSingleArea(e.currentTarget.value as 'healthy' | 'youth' | 'financial' | 'resiliency')}
                                             >
-                                                <option value="education">Education</option>
-                                                <option value="financial">Financial Stability & Basic Needs</option>
-                                                <option value="health">Health</option>
+                                                <option value="healthy">Healthy Community</option>
+                                                <option value="youth">Youth Opportunity</option>
+                                                <option value="financial">Financial Security</option>
+                                                <option value="resiliency">Community Resiliency</option>
                                             </select>
                                         </div>
                                     )}
@@ -432,37 +433,21 @@ const PledgeForm = ({company}: { company: ICompany }) => {
 
                                 </div>
                             </div>
-                            {/* Area descriptions (unchanged) */}
                             <div className="sm:w-3/12 mb-6 print:mb-0 grow flex flex-col">
-                                <h3 className="mb-2 underline text-lg print:text-sm print:mb-0 font-bold">Education</h3>
-                                <ul className="list-disc ml-4 print:hidden">
-                                    <li>Dolly Parton’s Imagination Library Program</li>
-                                    <li>Black Hills Reads</li>
-                                    <li>Mentorship & After School Programs</li>
-                                    <li>Early Childhood Education & Child Care</li>
-                                    <li>Access to Books</li>
-                                </ul>
+                                <h3 className="mb-2 underline text-lg print:text-sm print:mb-0 font-bold">Healthy Community</h3>
+                                <p className="print:hidden">Improving health and well-being for all</p>
                             </div>
                             <div className="sm:w-3/12 mb-6 print:mb-0 grow flex flex-col">
-                                <h3 className="mb-2 underline text-lg print:text-sm print:mb-0 font-bold">Financial
-                                    Stability & Basic Needs</h3>
-                                <ul className="list-disc ml-4 print:hidden">
-                                    <li>Basic Needs & Economic Assistance</li>
-                                    <li>Economic & Job Opportunities</li>
-                                    <li>Affordable Housing</li>
-                                    <li>Financial Education & Services</li>
-                                    <li>Affordable Transportation</li>
-                                </ul>
+                                <h3 className="mb-2 underline text-lg print:text-sm print:mb-0 font-bold">Youth Opportunity</h3>
+                                <p className="print:hidden">Helping young people realize their full potential</p>
                             </div>
                             <div className="sm:w-3/12 mb-6 print:mb-0 grow flex flex-col">
-                                <h3 className="mb-2 underline text-lg print:text-sm print:mb-0 font-bold">Health</h3>
-                                <ul className="list-disc ml-4 print:hidden">
-                                    <li>Mental Health Services</li>
-                                    <li>Substance Abuse Counseling</li>
-                                    <li>Home and Family Life Services</li>
-                                    <li>Food Security</li>
-                                    <li>Health Services</li>
-                                </ul>
+                                <h3 className="mb-2 underline text-lg print:text-sm print:mb-0 font-bold">Financial Security</h3>
+                                <p className="print:hidden">Creating a stronger financial future for every generation</p>
+                            </div>
+                            <div className="sm:w-3/12 mb-6 print:mb-0 grow flex flex-col">
+                                <h3 className="mb-2 underline text-lg print:text-sm print:mb-0 font-bold">Community Resiliency</h3>
+                                <p className="print:hidden">Addressing urgent needs today for a better tomorrow</p>
                             </div>
                         </div>
                     </div>
@@ -555,7 +540,7 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                     <div className="flex flex-wrap sm:flex-nowrap gap-4 bg-blue-50 shadow">
                         <div
                             className="print:hidden text-white sm:[writing-mode:vertical-lr] sm:rotate-180 w-full sm:w-auto bg-[#f44d35] font-bold p-8 text-2xl text-center">
-                            Direct Bill
+                            Other Gift Options
                         </div>
                         <div className="flex flex-wrap gap-4 print:gap-0 py-6 print:p-0">
                             <div
@@ -652,7 +637,7 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                             <div className="flex flex-wrap gap-4 w-full p-2 print:text-xs print:flex-nowrap">
                                 <div>
                                     <p className="font-bold mr-2 print:w-40">Bill Me* (Home address required above)</p>
-                                    <p>*Required minimum donation of $100</p>
+                                    <p>*Required minimum donation of $100/annually</p>
                                 </div>
                                 <div className="flex items-center">
                                     <input className="size-4"
@@ -706,7 +691,7 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                                 <div>
                                     <InputField onChange={handleTotalAutomatic} min="0" ref={automaticRef}
                                                 step="0.01" name="Automatic_Bank_Withdrawl_Amount" type="number"
-                                                label="Monthly Withdrawls of" error={state.error}/>
+                                                label="Monthly withdrawals of" error={state.error}/>
                                     <p>will begin January 20th</p>
                                 </div>
 
@@ -769,7 +754,7 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                                    value="1"
                                    type="radio"/>
                             <label className="w-80 font-bold ml-2" htmlFor="List_Name_In_Leadership_Directory">
-                                Please list my name (and spouse) in the Leadership Directory as shown below:
+                                For a gift of $365 or more, please list my name (and spouse) in the Leadership Directory as shown below:
                             </label>
                         </div>
                         <div
@@ -795,6 +780,10 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                             submitting this form I acknowledge
                             that I authorize all of my donation amounts as submitted</label>
 
+                    </div>
+                    <div className="text-sm text-slate-700 text-center my-4 w-full">
+                        621 6th St Ste 100, Rapid City, SD 57701 | Phone: 605-343-5872 | Email:
+                        info@unitedwayblackhills.org | www.unitedwayblackhills.org
                     </div>
                 </div>
             </div>
