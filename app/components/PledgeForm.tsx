@@ -439,19 +439,19 @@ const PledgeForm = ({company}: { company: ICompany }) => {
                                 </div>
                             </div>
                             <div className="grid grid-cols-1 sm:grid-cols-4 gap-0 w-full print:grid-cols-4">
-                                <div className="bg-[#587bbd] text-white p-6 print:p-2 min-h-36 print:min-h-0 flex flex-col items-center justify-center text-center">
+                                <div className="bg-[#587bbd] text-white p-6 print:p-2 min-h-36 print:min-h-0 flex flex-col items-center text-center">
                                     <h3 className="mb-4 h-7 whitespace-nowrap underline text-base xl:text-lg print:text-sm print:mb-0 print:h-auto font-bold">Healthy Community</h3>
                                     <p className="print:hidden">Improving health and well-being for all</p>
                                 </div>
-                                <div className="bg-[#fdb813] text-white p-6 print:p-2 min-h-36 print:min-h-0 flex flex-col items-center justify-center text-center">
+                                <div className="bg-[#fdb813] text-white p-6 print:p-2 min-h-36 print:min-h-0 flex flex-col items-center text-center">
                                     <h3 className="mb-4 h-7 whitespace-nowrap underline text-base xl:text-lg print:text-sm print:mb-0 print:h-auto font-bold">Youth Opportunity</h3>
                                     <p className="print:hidden">Helping young people realize their full potential</p>
                                 </div>
-                                <div className="bg-[#ee3b33] text-white p-6 print:p-2 min-h-36 print:min-h-0 flex flex-col items-center justify-center text-center">
+                                <div className="bg-[#ee3b33] text-white p-6 print:p-2 min-h-36 print:min-h-0 flex flex-col items-center text-center">
                                     <h3 className="mb-4 h-7 whitespace-nowrap underline text-base xl:text-lg print:text-sm print:mb-0 print:h-auto font-bold">Financial Security</h3>
                                     <p className="print:hidden">Creating a stronger financial future for every generation</p>
                                 </div>
-                                <div className="bg-[#587bbd] text-white p-6 print:p-2 min-h-36 print:min-h-0 flex flex-col items-center justify-center text-center">
+                                <div className="bg-[#587bbd] text-white p-6 print:p-2 min-h-36 print:min-h-0 flex flex-col items-center text-center">
                                     <h3 className="mb-4 h-7 whitespace-nowrap underline text-base xl:text-lg print:text-sm print:mb-0 print:h-auto font-bold">Community Resiliency</h3>
                                     <p className="print:hidden">Addressing urgent needs today for a better tomorrow</p>
                                 </div>
