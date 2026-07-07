@@ -550,7 +550,7 @@ export async function addEntry(entryDTO: EntryDTO) {
     }
 }
 
-export async function getEntries(isAdmin: boolean, companyId?: string) {
+export async function getEntries(isAdmin: boolean, companyId?: string, includeArchived = false) {
     const db = await createConnection();
 
     if (!isAdmin && !companyId) {
@@ -558,17 +558,21 @@ export async function getEntries(isAdmin: boolean, companyId?: string) {
     }
 
     const companyCount = companyId?.split(",").length || 0;
+    const archivedCondition = includeArchived ? "" : "AND COALESCE(archived, 0) = 0";
 
     const [entries] = companyId
         ? await db.execute<IEntry[]>(`
                 SELECT *
                 FROM form_entry
                 WHERE company_id IN (${"?,".repeat(companyCount - 1) + "?"})
+                ${archivedCondition}
                 ;
         `,companyId.split(","))
         : await db.execute<IEntry[]>(`
                 SELECT *
-                FROM form_entry;
+                FROM form_entry
+                WHERE 1 = 1
+                ${archivedCondition};
         `);
 
     await db.end();
@@ -629,5 +633,15 @@ export async function deleteEntry(id: string) {
     const db = await createConnection();
 
     await db.execute('DELETE FROM form_entry WHERE id = ?', [id]);
+    await db.end();
+}
+
+export async function archiveEntry(id: string, archived: boolean) {
+    const db = await createConnection();
+
+    await db.execute(
+        'UPDATE form_entry SET archived = ?, modified_date = ? WHERE id = ?',
+        [archived ? 1 : 0, dateToMySQLDate(new Date()), id]
+    );
     await db.end();
 }

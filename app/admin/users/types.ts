@@ -49,7 +49,8 @@ export type EntryDTO = {
     Number_of_Pay_Periods_Per_Year?: string|null,
     Dollar_A_Day?: string|null,
     Hourly_Rate_of_Pay?: string|null,
-    authorization?: string|null
+    authorization?: string|null,
+    archived?: 0|1|null
 }
 
 export interface IEntry extends RowDataPacket, EntryDTO{}

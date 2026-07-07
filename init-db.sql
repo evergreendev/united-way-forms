@@ -43,6 +43,7 @@ create table form_entry
     Dollar_A_Day                   varchar(255) null,
     Hourly_Rate_of_Pay             varchar(255) null,
     authorization                  varchar(255) null,
+    archived                       tinyint(1)   not null default 0,
     constraint form_entry_company_id_fk
         foreign key (company_id) references company (id)
 );

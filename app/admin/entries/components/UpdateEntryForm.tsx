@@ -48,7 +48,8 @@ const UpdateEntryForm = ({entry, callbackUrl}: {
                         && entry[0] !== "modified_date"
                         && entry[0] !== "company_id"
                         && entry[0] !== "Constituent_ID"
-                    && entry[0] !== "authorization"
+                        && entry[0] !== "authorization"
+                        && entry[0] !== "archived"
                         ;
                 }).map((entry) => {
                     if (entry[0] === "Dollar_A_Day") {
