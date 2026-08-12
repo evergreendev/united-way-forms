@@ -23,11 +23,15 @@ const UpdateEntryForm = ({entry, callbackUrl}: {
     entry: IEntry,
     callbackUrl: string,
 }) => {
-    const initialState: { message?: string | null, error: { message: string, fieldName: string } | null, callbackUrl:string } = {
-    message: null,
-    error: null,
-    callbackUrl: callbackUrl
-}
+    const initialState: {
+        message?: string | null,
+        error: { message: string, fieldName: string } | null,
+        callbackUrl: string
+    } = {
+        message: null,
+        error: null,
+        callbackUrl: callbackUrl
+    }
     const [state, formAction] = useFormState(submitUpdateEntryForm, initialState);
     const router = useRouter();
 
@@ -48,27 +52,29 @@ const UpdateEntryForm = ({entry, callbackUrl}: {
                         && entry[0] !== "modified_date"
                         && entry[0] !== "company_id"
                         && entry[0] !== "Constituent_ID"
-                    && entry[0] !== "authorization"
+                        && entry[0] !== "authorization"
                         ;
                 }).map((entry) => {
                     if (entry[0] === "Dollar_A_Day") {
                         return <div key={entry[0]} className="w-full text-xl font-bold bg-blue-200">
                             <label htmlFor={entry[0]}>Dollar a Day</label>
-                            <input defaultChecked={entry[1] === "yes"} type="checkbox" className="size-4 ml-2" id="dollarADay" name="Dollar_A_Day" value="yes"/>
+                            <input defaultChecked={entry[1] === "yes"} type="checkbox" className="size-4 ml-2"
+                                   id="dollarADay" name="Dollar_A_Day" value="yes"/>
                         </div>
                     }
                     if (entry[0] === "List_Name_In_Leadership_Directory") {
                         return <div key={entry[0]} className="w-full text-xl font-bold bg-blue-200">
                             <label>List Name in Leadership Directory</label>
                             <label htmlFor={entry[0]} className="ml-4">Yes</label>
-                            <input defaultChecked={entry[1] === 1} type="radio" className="size-4 ml-2 mr-8" id={entry[0]}
+                            <input defaultChecked={entry[1] === 1} type="radio" className="size-4 ml-2 mr-8"
+                                   id={entry[0]}
                                    name={entry[0]} value="1"/>
-                            <label htmlFor={"no"+entry[0]}>No</label>
+                            <label htmlFor={"no" + entry[0]}>No</label>
                             <input defaultChecked={entry[1] !== 1} type="radio" className="size-4 ml-2"
                                    id={"no" + entry[0]} name={entry[0]} value="0"/>
                         </div>
                     }
-                    if(entry[0] === "Donation_Community") {
+                    if (entry[0] === "Donation_Community") {
                         return <div
                             key={entry[0]}
                             className="flex flex-wrap gap-4 border-4 border-blue-700 text-blue-850 mt-4 w-full items-center">
@@ -77,36 +83,51 @@ const UpdateEntryForm = ({entry, callbackUrl}: {
                                 COMMUNITY:
                             </div>
                             <div className="flex items-center">
-                                <input defaultChecked={entry[1] && entry[1]?.split(" - ")?.indexOf("Rapid City") !== -1} className="size-6" id="rapidCity" name="Donation_Community" value="Rapid City"
+                                <input defaultChecked={entry[1] && entry[1]?.split(" - ")?.indexOf("Rapid City") !== -1}
+                                       className="size-6" id="rapidCity" name="Donation_Community" value="Rapid City"
                                        type="checkbox"/>
                                 <label className="w-full font-bold ml-2" htmlFor="rapidCity">Rapid City</label>
                             </div>
 
                             <div className="flex items-center">
-                                <input defaultChecked={entry[1] && entry[1]?.split(" - ")?.indexOf("Sturgis") !== -1} className="size-6" id="sturgis" name="Donation_Community" value="Sturgis"
+                                <input defaultChecked={entry[1] && entry[1]?.split(" - ")?.indexOf("Sturgis") !== -1}
+                                       className="size-6" id="sturgis" name="Donation_Community" value="Sturgis"
                                        type="checkbox"/>
                                 <label className="w-full font-bold ml-2" htmlFor="sturgis">Sturgis</label>
                             </div>
 
                             <div className="flex items-center">
-                                <input defaultChecked={entry[1] && entry[1]?.split(" - ")?.indexOf("Northern Hills") !== -1 } className="size-6" id="northernHills" name="Donation_Community"
-                                       value="Northern Hills"
-                                       type="checkbox"/>
+                                <input
+                                    defaultChecked={entry[1] && entry[1]?.split(" - ")?.indexOf("Northern Hills") !== -1}
+                                    className="size-6" id="northernHills" name="Donation_Community"
+                                    value="Northern Hills"
+                                    type="checkbox"/>
                                 <label className="w-full font-bold ml-2" htmlFor="northernHills">Northern Hills</label>
                             </div>
 
                             <div className="flex items-center">
-                                <input defaultChecked={entry[1] && entry[1]?.split(" - ")?.indexOf("Southern Hills") !== -1} className="size-6" id="southernHills" name="Donation_Community"
-                                       value="Southern Hills"
-                                       type="checkbox"/>
+                                <input
+                                    defaultChecked={entry[1] && entry[1]?.split(" - ")?.indexOf("Southern Hills") !== -1}
+                                    className="size-6" id="southernHills" name="Donation_Community"
+                                    value="Southern Hills"
+                                    type="checkbox"/>
                                 <label className="w-full font-bold ml-2" htmlFor="southernHills">Southern Hills</label>
                             </div>
 
                         </div>
                     }
 
+                    if (entry[0] === "Leadership_Directory_Name"){
+                        return <div key={entry[0]} className="w-full">
+                            <InputField key={entry[0]} error={state.error} name={entry[0]}
+                                        label={entry[0].replaceAll("_", " ").replaceAll("Percentage", "%")}
+                                        defaultValue={entry[1]}/>
+                        </div>
+                    }
+
                     return <InputField key={entry[0]} error={state.error} name={entry[0]}
-                                       label={entry[0].replaceAll("_", " ")} defaultValue={entry[1]}/>;
+                                       label={entry[0].replaceAll("_", " ").replaceAll("Percentage", "%")}
+                                       defaultValue={entry[1]}/>;
                 })
             }
         </div>
