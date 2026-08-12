@@ -1,15 +1,17 @@
 "use client"
 import DataTable from "@/app/components/DataTableBase";
-import {useEffect, useMemo, useState} from "react";
-import {deleteEntry} from "@/app/db";
+import {useCallback, useEffect, useMemo, useState} from "react";
+import {archiveEntry, deleteEntry} from "@/app/db";
 import {useRouter} from 'next/navigation'
+import {useSearchParams} from "next/navigation";
 import {TableColumn} from "react-data-table-component";
 import {IEntriesWithCompanyName} from "@/app/admin/entries/page";
 
 
-const EntryTable = ({entryData, companyFilterOption}: {
+const EntryTable = ({entryData, companyFilterOption, showArchived}: {
     entryData: IEntriesWithCompanyName[],
-    companyFilterOption: { name: string, id: string }[]
+    companyFilterOption: { name: string, id: string }[],
+    showArchived: boolean
 }) => {
     const [selectedRows, setSelectedRows] = useState<any>([]);
     const [data, setData] = useState<any>([]);
@@ -17,6 +19,7 @@ const EntryTable = ({entryData, companyFilterOption}: {
         setSelectedRows(selectedRows);
     }
     const router = useRouter();
+    const searchParams = useSearchParams();
     const contextActions = useMemo(() => {
         const handleDelete = async () => {
             for (const row of selectedRows.selectedRows) {
@@ -24,16 +27,39 @@ const EntryTable = ({entryData, companyFilterOption}: {
             }
             router.refresh();
         };
-        return <button key="delete" onClick={handleDelete} className="bg-red-600 hover:bg-red-500 px-8 py-2 text-white">
-            Delete
-        </button>;
-    }, [selectedRows]);
+        const handleArchive = async (archived: boolean) => {
+            for (const row of selectedRows.selectedRows) {
+                await archiveEntry(row.id, archived);
+            }
+            router.refresh();
+        };
+
+        const selected = selectedRows.selectedRows || [];
+        const hasArchivedRows = selected.some((row: IEntriesWithCompanyName) => row.archived);
+
+        return <div className="flex gap-2">
+            {
+                hasArchivedRows ?
+                    <button key="restore" onClick={() => handleArchive(false)}
+                            className="bg-blue-900 hover:bg-blue-800 px-8 py-2 text-white">
+                        Restore
+                    </button>
+                    : <button key="archive" onClick={() => handleArchive(true)}
+                              className="bg-slate-700 hover:bg-slate-600 px-8 py-2 text-white">
+                        Archive
+                    </button>
+            }
+            <button key="delete" onClick={handleDelete} className="bg-red-600 hover:bg-red-500 px-8 py-2 text-white">
+                Delete
+            </button>
+        </div>;
+    }, [router, selectedRows]);
 
     const [filteredData, setFilteredData] = useState<{ [x: string]: unknown; }[]>([]);
     const [activeFilter, setActiveFilter] = useState<string | null>(null)
 
     // Blatant "inspiration" from https://codepen.io/Jacqueline34/pen/pyVoWr
-    function convertArrayOfObjectsToCSV(array: any[]) {
+    const convertArrayOfObjectsToCSV = useCallback((array: any[]) => {
         let result: string;
         let totalIndexes = {
             payroll: 0,
@@ -209,10 +235,10 @@ const EntryTable = ({entryData, companyFilterOption}: {
         }
 
         return result;
-    }
+    }, [data]);
 
 // Blatant "inspiration" from https://codepen.io/Jacqueline34/pen/pyVoWr
-    function downloadCSV(array: any) {
+    const downloadCSV = useCallback((array: any) => {
         const link = document.createElement('a');
         let csv = convertArrayOfObjectsToCSV(array);
         if (csv == null) return;
@@ -226,14 +252,35 @@ const EntryTable = ({entryData, companyFilterOption}: {
         link.setAttribute('href', encodeURI(csv).replaceAll("#",'%23'));
         link.setAttribute('download', filename);
         link.click();
-    }
+    }, [activeFilter, convertArrayOfObjectsToCSV, filteredData]);
 
 
     const Export = ({onExport}: any) => <button className="bg-blue-900 text-white py-2 px-4"
                                                 onClick={e => onExport()}>Export</button>;
 
-    const actionsMemo = useMemo(() => <Export
-        onExport={() => downloadCSV(filteredData)}/>, [filteredData, downloadCSV]);
+    const handleArchivedVisibilityChange = useCallback(() => {
+        const params = new URLSearchParams(searchParams.toString());
+
+        if (showArchived) {
+            params.delete("showArchived");
+        } else {
+            params.set("showArchived", "1");
+        }
+
+        router.push(`/admin/entries${params.toString() ? `?${params.toString()}` : ""}`);
+    }, [router, searchParams, showArchived]);
+
+    const actionsMemo = useMemo(() => <div className="flex gap-2 items-center">
+        <label className="flex items-center gap-2 text-sm">
+            <input
+                type="checkbox"
+                checked={showArchived}
+                onChange={handleArchivedVisibilityChange}
+            />
+            Show archived
+        </label>
+        <Export onExport={() => downloadCSV(filteredData)}/>
+    </div>, [filteredData, downloadCSV, handleArchivedVisibilityChange, showArchived]);
 
     useEffect(() => {
         if (activeFilter === null || activeFilter === "") {
@@ -278,6 +325,16 @@ const EntryTable = ({entryData, companyFilterOption}: {
 
         for (const [key, value] of Object.entries(row)) {
             if (seenKeys.has(key) || key == "id") continue;
+
+            if (key === "archived") {
+                colsFromEntry.push({
+                    name: "Archived",
+                    minWidth: "120px",
+                    selector: (row: any) => row[key] ? "Yes" : "No"
+                })
+                seenKeys.add(key);
+                continue;
+            }
 
             if (key === "Donation_Community") {
                 colsFromEntry.push({

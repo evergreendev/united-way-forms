@@ -5,19 +5,20 @@ import {getServerSession} from "next-auth";
 import {authOptions} from "@/app/auth";
 
 
-async function fetchData(isAdmin:boolean, companyId?: string) {
-    if(isAdmin) return await getEntries(isAdmin);
+async function fetchData(isAdmin:boolean, companyId?: string, showArchived = false) {
+    if(isAdmin) return await getEntries(isAdmin, undefined, showArchived);
 
-    return await getEntries(isAdmin, companyId);
+    return await getEntries(isAdmin, companyId, showArchived);
 }
 export interface IEntriesWithCompanyName extends IEntry{
     Company_Name: string;
 }
 
-const companies = async ({searchParams}: { searchParams?: { company?: string } }) => {
+const companies = async ({searchParams}: { searchParams?: { company?: string, showArchived?: string } }) => {
     const session = await getServerSession(authOptions);
     let company = searchParams?.company;
-    const entryData = await fetchData(session.user.isAdmin, company);
+    const showArchived = searchParams?.showArchived === "1";
+    const entryData = await fetchData(session.user.isAdmin, company, showArchived);
     const seenCompanies = new Set<string>();
 
     const companyFilterOptions: { id: string; name: string; }[] = [];
@@ -36,7 +37,11 @@ const companies = async ({searchParams}: { searchParams?: { company?: string } }
         }
     }))
 
-    return <EntryTable entryData={entryDataWithCompanyNames} companyFilterOption={companyFilterOptions}/>
+    return <EntryTable
+        entryData={entryDataWithCompanyNames}
+        companyFilterOption={companyFilterOptions}
+        showArchived={showArchived}
+    />
 }
 
 export default companies;

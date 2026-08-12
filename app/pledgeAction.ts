@@ -4,9 +4,10 @@ import {sendFormSubmissionEmail} from "@/app/services/aws-ses";
 
 export async function submitPledgeForm(prevState:  { message: string | null, error: { message: string, fieldName: string } | null}, formData: FormData) {
 
-    const finPercent = formData.get('Financial_Percentage');
-    const eduPercent = formData.get('Education_Percentage');
-    const healthPercent = formData.get('Health_Percentage');
+    const finPercent = formData.get('Financial_Security_Percentage');
+    const healthyPercent = formData.get('Healthy_Community_Percentage');
+    const youthPercent = formData.get('Youth_Opportunity_Percentage');
+    const resiliencyPercent = formData.get('Community_Resiliency_Percentage');
     const mi = formData.get('MI');
     const billAmount = formData.get('Billing_Amount');
     const gaveCreditCard = formData.get('credit_card_given');
@@ -43,7 +44,9 @@ export async function submitPledgeForm(prevState:  { message: string | null, err
         }
     }
 
-    if ((parseInt(finPercent as string) + parseInt(eduPercent as string) + parseInt(healthPercent as string)) > 100){
+    const parsePercent = (value: FormDataEntryValue | null) => parseInt(value as string) || 0;
+
+    if ((parsePercent(finPercent) + parsePercent(healthyPercent) + parsePercent(youthPercent) + parsePercent(resiliencyPercent)) > 100){
         return {
             message: null,
             error: {
@@ -59,7 +62,7 @@ export async function submitPledgeForm(prevState:  { message: string | null, err
     formData.forEach((value, key) => {
         if (typeof value === "string" && key.indexOf("$")===-1) {
             if (json[key] && key !== "single_area"){
-                if (key === "Financial_Percentage" || key === "Education_Percentage" || key === "Health_Percentage"){
+                if (key === "Financial_Security_Percentage" || key === "Healthy_Community_Percentage" || key === "Youth_Opportunity_Percentage" || key === "Community_Resiliency_Percentage"){
                     if (value !== "0"){
                         json[key] += " - "+value;
                     }

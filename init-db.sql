@@ -34,11 +34,16 @@ create table form_entry
     Education_Percentage           varchar(255) null,
     Financial_Percentage           varchar(255) null,
     Health_Percentage              varchar(255) null,
+    Healthy_Community_Percentage   varchar(255) null,
+    Youth_Opportunity_Percentage   varchar(255) null,
+    Financial_Security_Percentage  varchar(255) null,
+    Community_Resiliency_Percentage varchar(255) null,
     Amount_Per_Pay_Period          varchar(255) null,
     Number_of_Pay_Periods_Per_Year varchar(255) null,
     Dollar_A_Day                   varchar(255) null,
     Hourly_Rate_of_Pay             varchar(255) null,
     authorization                  varchar(255) null,
+    archived                       tinyint(1)   not null default 0,
     constraint form_entry_company_id_fk
         foreign key (company_id) references company (id)
 );
