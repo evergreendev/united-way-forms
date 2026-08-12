@@ -1,6 +1,6 @@
 'use client'
 import InputField from "@/app/components/InputField";
-import {useEffect} from "react";
+import {FormEvent, useEffect, useState} from "react";
 import {useFormState, useFormStatus} from "react-dom";
 import {useRouter} from "next/navigation";
 import {IEntry} from "@/app/admin/users/types";
@@ -16,6 +16,28 @@ const SubmitButton = () => {
                 className="size-8 border-2 border-l-blue-500 border-white animate-spin rounded-full"/> : 'Update Entry'}
         </button>
     )
+}
+
+type GiftValues = Record<string, FormDataEntryValue | null | undefined>;
+
+const calculateAnnualGift = (values: GiftValues) => {
+    const parseAmount = (value: FormDataEntryValue | null | undefined) =>
+        parseFloat(typeof value === "string" ? value : "") || 0;
+
+    const payPeriods = parseInt(typeof values.Number_of_Pay_Periods_Per_Year === "string"
+        ? values.Number_of_Pay_Periods_Per_Year
+        : "") || 0;
+    const dollarADayTotal = values.Dollar_A_Day === "yes" ? 365 : 0;
+
+    return (
+        parseAmount(values.Amount_Per_Pay_Period) * payPeriods
+        + parseAmount(values.Hourly_Rate_of_Pay) * 12
+        + parseAmount(values["Check/Cash_Amount"])
+        + parseAmount(values.Billing_Amount)
+        + parseAmount(values.Automatic_Bank_Withdrawl_Amount) * 12
+        + parseAmount(values.Credit_Card_Amount)
+        + dollarADayTotal
+    ).toFixed(2);
 }
 
 
@@ -34,6 +56,12 @@ const UpdateEntryForm = ({entry, callbackUrl}: {
     }
     const [state, formAction] = useFormState(submitUpdateEntryForm, initialState);
     const router = useRouter();
+    const [annualGift, setAnnualGift] = useState(() => calculateAnnualGift(entry));
+
+    const updateAnnualGift = (event: FormEvent<HTMLFormElement>) => {
+        const formData = new FormData(event.currentTarget);
+        setAnnualGift(calculateAnnualGift(Object.fromEntries(formData.entries())));
+    }
 
     useEffect(() => {
         if (state.message === "Success") {
@@ -42,7 +70,8 @@ const UpdateEntryForm = ({entry, callbackUrl}: {
         }
     }, [callbackUrl, router, state]);
 
-    return <form className="max-w-screen-xl mx-auto bg-blue-100 p-8 text-blue-950" action={formAction}>
+    return <form className="max-w-screen-xl mx-auto bg-blue-100 p-8 text-blue-950" action={formAction}
+                 onChange={updateAnnualGift}>
         <div className="flex flex-wrap gap-2 mb-4">
             <input defaultValue={entry.id} name="id" hidden readOnly/>
             {
@@ -131,6 +160,12 @@ const UpdateEntryForm = ({entry, callbackUrl}: {
                                        defaultValue={entry[1]}/>;
                 })
             }
+        </div>
+        <div className="flex grow ml-auto w-full mb-6">
+            <div
+                className="text-3xl text-right text-blue-900 p-2 shadow-lg ml-auto bg-blue-100 border-2 border-blue-200">
+                TOTAL ANNUAL GIFT OF: <span className="font-bold">${annualGift}</span>
+            </div>
         </div>
         <SubmitButton/>
     </form>
