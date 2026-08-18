@@ -1,0 +1,15 @@
+ALTER TABLE form_entry
+    ADD COLUMN Business_Phone varchar(255) null,
+    ADD COLUMN Business_Email varchar(255) null,
+    ADD COLUMN Cell_Phone varchar(255) null,
+    ADD COLUMN Personal_Email varchar(255) null,
+    ADD COLUMN `Check/Cash_Amount` varchar(255) null,
+    ADD COLUMN Check_Number varchar(255) null,
+    ADD COLUMN Check_Date varchar(255) null,
+    ADD COLUMN Billing_Period varchar(255) null,
+    ADD COLUMN Billing_Amount varchar(255) null,
+    ADD COLUMN Automatic_Bank_Withdrawl_Amount varchar(255) null,
+    ADD COLUMN credit_card_given varchar(255) null,
+    ADD COLUMN Credit_Card_Amount varchar(255) null,
+    ADD COLUMN List_Name_In_Leadership_Directory varchar(255) null,
+    ADD COLUMN Leadership_Directory_Name varchar(255) null;

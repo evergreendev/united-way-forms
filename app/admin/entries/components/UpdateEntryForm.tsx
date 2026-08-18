@@ -20,6 +20,53 @@ const SubmitButton = () => {
 
 type GiftValues = Record<string, FormDataEntryValue | null | undefined>;
 
+// Controls the display order on the admin entry update form. Keep this aligned
+// with the sections in PledgeForm. Fields not listed here are shown last.
+const entryFieldOrder = [
+    "First_Name",
+    "MI",
+    "Last_Name",
+    "Home_Address",
+    "City",
+    "State",
+    "Zip",
+    "Business_Phone",
+    "Business_Email",
+    "Cell_Phone",
+    "Personal_Email",
+    "Donation_Community",
+    "Healthy_Community_Percentage",
+    "Youth_Opportunity_Percentage",
+    "Financial_Security_Percentage",
+    "Community_Resiliency_Percentage",
+    "Amount_Per_Pay_Period",
+    "Number_of_Pay_Periods_Per_Year",
+    "Dollar_A_Day",
+    "Hourly_Rate_of_Pay",
+    "Check/Cash_Amount",
+    "Check_Number",
+    "Check_Date",
+    "Billing_Period",
+    "Billing_Amount",
+    "Automatic_Bank_Withdrawl_Amount",
+    "credit_card_given",
+    "Credit_Card_Amount",
+    "List_Name_In_Leadership_Directory",
+    "Leadership_Directory_Name",
+] as const;
+
+const entryFieldOrderIndex = new Map<string, number>(
+    entryFieldOrder.map((field, index) => [field, index])
+);
+
+const sortEntryFields = ([firstField]: [string, unknown], [secondField]: [string, unknown]) => {
+    const fallbackIndex = entryFieldOrder.length;
+    const firstIndex = entryFieldOrderIndex.get(firstField) ?? fallbackIndex;
+    const secondIndex = entryFieldOrderIndex.get(secondField) ?? fallbackIndex;
+
+    return firstIndex - secondIndex || firstField.localeCompare(secondField);
+};
+
 const calculateAnnualGift = (values: GiftValues) => {
     const parseAmount = (value: FormDataEntryValue | null | undefined) =>
         parseFloat(typeof value === "string" ? value : "") || 0;
@@ -84,7 +131,7 @@ const UpdateEntryForm = ({entry, callbackUrl}: {
                         && entry[0] !== "authorization"
                         && entry[0] !== "archived"
                         ;
-                }).map((entry) => {
+                }).sort(sortEntryFields).map((entry) => {
                     if (entry[0] === "Dollar_A_Day") {
                         return <div key={entry[0]} className="w-full text-xl font-bold bg-blue-200">
                             <label htmlFor={entry[0]}>Dollar a Day</label>
