@@ -59,6 +59,12 @@ const entryFieldOrderIndex = new Map<string, number>(
     entryFieldOrder.map((field, index) => [field, index])
 );
 
+const hiddenAdminFields = new Set([
+    "Education_Percentage",
+    "Financial_Percentage",
+    "Health_Percentage",
+]);
+
 const sortEntryFields = ([firstField]: [string, unknown], [secondField]: [string, unknown]) => {
     const fallbackIndex = entryFieldOrder.length;
     const firstIndex = entryFieldOrderIndex.get(firstField) ?? fallbackIndex;
@@ -130,6 +136,7 @@ const UpdateEntryForm = ({entry, callbackUrl}: {
                         && entry[0] !== "Constituent_ID"
                         && entry[0] !== "authorization"
                         && entry[0] !== "archived"
+                        && !hiddenAdminFields.has(entry[0])
                         ;
                 }).sort(sortEntryFields).map((entry) => {
                     if (entry[0] === "Dollar_A_Day") {
